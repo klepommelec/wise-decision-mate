@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container } from "@/components/layout/Container";
@@ -58,6 +57,7 @@ const MyDecisions = () => {
   };
 
   const handleDecisionClick = (decision: Decision) => {
+    console.log("Opening decision:", decision.id, decision.title);
     navigate("/", { 
       state: { 
         existingDecision: {

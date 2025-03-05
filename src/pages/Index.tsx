@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
@@ -51,6 +52,13 @@ const Index = () => {
   const locationState = location.state as LocationState | null;
   const existingDecision = locationState?.existingDecision;
 
+  // Log the existing decision for debugging
+  useEffect(() => {
+    if (existingDecision) {
+      console.log("Loading existing decision:", existingDecision);
+    }
+  }, [existingDecision]);
+
   const [step, setStep] = useState<Step>('decision');
   const [decision, setDecision] = useState<{ id: string; title: string; description: string }>({
     id: existingDecision?.id || '',
@@ -64,21 +72,30 @@ const Index = () => {
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    // If we have an existing decision, skip to the options step
-    if (existingDecision && step === 'decision') {
-      console.log("Loading existing decision:", existingDecision);
-      setStep('options');
+    // Update decision state when existingDecision changes
+    if (existingDecision) {
+      setDecision({
+        id: existingDecision.id,
+        title: existingDecision.title,
+        description: existingDecision.description
+      });
       
-      // Set default empty options for the existing decision
-      setOptions([
-        { id: '1', title: '', description: '' },
-        { id: '2', title: '', description: '' }
-      ]);
+      // If we have an existing decision and we're on the decision step, skip to the options step
+      if (step === 'decision') {
+        console.log("Loading existing decision, moving to options step:", existingDecision.id);
+        setStep('options');
+        
+        // Set default empty options for the existing decision
+        setOptions([
+          { id: '1', title: '', description: '' },
+          { id: '2', title: '', description: '' }
+        ]);
+      }
     }
   }, [existingDecision, step]);
 
   const handleDecisionSubmit = async (decisionData: { title: string; description: string }, generateOptions: boolean = false) => {
-    // Keep the existing ID if we're working with an existing decision
+    // Important: Preserve the existing ID when updating decision
     setDecision({
       id: decision.id,
       title: decisionData.title,
@@ -148,7 +165,7 @@ const Index = () => {
           {step === 'decision' && (
             <DecisionForm 
               onSubmit={handleDecisionSubmit} 
-              initialDecision={existingDecision}
+              initialDecision={decision.id ? decision : undefined}
             />
           )}
           

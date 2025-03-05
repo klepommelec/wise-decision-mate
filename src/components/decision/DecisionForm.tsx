@@ -30,10 +30,18 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
   const [useAI, setUseAI] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
+  
+  // Log the initial decision for debugging
+  useEffect(() => {
+    if (initialDecision) {
+      console.log("DecisionForm received initialDecision:", initialDecision);
+    }
+  }, [initialDecision]);
 
   // Auto-submit if initialDecision is provided
   useEffect(() => {
     if (initialDecision && initialDecision.title) {
+      console.log("Auto-submitting with initialDecision:", initialDecision);
       // We need to simulate a submit but without actually calling handleSubmit
       // to avoid saving it again to the database
       onSubmit({ 
@@ -59,8 +67,9 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
     }
 
     try {
-      // If we don't have an initialDecision, it's a new decision
-      if (!initialDecision) {
+      // If we don't have an initialDecision or initialDecision doesn't have an id, it's a new decision
+      if (!initialDecision?.id) {
+        console.log("Creating new decision:", title);
         // Enregistrer la décision dans Supabase
         const { error } = await supabase
           .from('decisions')
@@ -71,6 +80,8 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
           });
 
         if (error) throw error;
+      } else {
+        console.log("Using existing decision:", initialDecision.id);
       }
       
       // Continuer avec le processus normal
@@ -89,10 +100,10 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
       <Card className="glass-card transition-all duration-300">
         <CardHeader>
           <CardTitle className="text-2xl font-medium">
-            {initialDecision ? "Modifier votre décision" : "Quelle décision devez-vous prendre?"}
+            {initialDecision?.id ? "Modifier votre décision" : "Quelle décision devez-vous prendre?"}
           </CardTitle>
           <CardDescription>
-            {initialDecision 
+            {initialDecision?.id 
               ? "Vous pouvez modifier les détails de votre décision."
               : "Décrivez la décision que vous devez prendre. Soyez aussi précis que possible."
             }
