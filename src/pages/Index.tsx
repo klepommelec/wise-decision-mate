@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
-import { Header } from '@/components/layout/Header';
 import { DecisionForm } from '@/components/decision/DecisionForm';
 import { OptionsList } from '@/components/decision/OptionsList';
 import { CriteriaEvaluation } from '@/components/decision/CriteriaEvaluation';
@@ -496,7 +495,6 @@ const Index = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
       <div className="flex-1 flex flex-col">
         {step === 'decision' && (
           <div className="flex-1 flex items-center justify-center py-12">
