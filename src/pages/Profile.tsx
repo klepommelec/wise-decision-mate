@@ -4,6 +4,7 @@ import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { LogOut, User, ArrowLeft, PlusCircle, Settings, Download, Share2, Bell, Calendar, Filter, Moon, Sun, Monitor, ChevronDown, Check, Camera, Upload, Pencil } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -305,7 +306,7 @@ export default function Profile() {
                                 onClick={handleRemoveProfilePicture}
                                 disabled={isUploadingImage}
                               >
-                                <lucide-react.Trash className="h-4 w-4" />
+                                <LucideIcons.Trash className="h-4 w-4" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -546,7 +547,7 @@ export default function Profile() {
                             handleDeleteDecision(decision.id);
                           }
                         }}>
-                                <Trash className="h-3.5 w-3.5" />
+                                <LucideIcons.Trash className="h-3.5 w-3.5" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -622,13 +623,5 @@ function CheckCircle(props: React.SVGProps<SVGSVGElement>) {
   return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
       <polyline points="22 4 12 14.01 9 11.01" />
-    </svg>;
-}
-
-function Trash(props: React.SVGProps<SVGSVGElement>) {
-  return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M3 6h18" />
-      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
     </svg>;
 }
