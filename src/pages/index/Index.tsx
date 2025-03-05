@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -12,6 +13,7 @@ import { useDecisionSteps, type Decision } from './hooks/useDecisionSteps';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+
 interface LocationState {
   existingDecision?: {
     id: string;
@@ -20,6 +22,7 @@ interface LocationState {
     deadline?: string;
   };
 }
+
 const Index = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -45,11 +48,18 @@ const Index = () => {
     handleBackToCriteria,
     handleReset
   } = useDecisionSteps(existingDecision);
+
+  // Set initial scroll position on page load
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     if (existingDecision) {
       console.log("Loading existing decision:", existingDecision);
     }
   }, [existingDecision]);
+
   useEffect(() => {
     // Scroll to top when step changes
     if (contentRef.current) {
@@ -59,9 +69,11 @@ const Index = () => {
       });
     }
   }, [step]);
+
   const handleNewDecision = () => {
     window.location.href = '/';
   };
+
   const handleDecisionClick = (selectedDecision: Decision) => {
     console.log("Opening decision:", selectedDecision.id, selectedDecision.title);
     navigate("/", {
@@ -75,9 +87,11 @@ const Index = () => {
       }
     });
   };
+
   if (!loading && !user) {
     return <Navigate to="/auth" />;
   }
+
   const renderWelcomeScreen = () => {
     if (step !== 'decision' || existingDecision) return null;
     return <div className="max-w-4xl mx-auto mb-1 pt-16">
@@ -97,11 +111,12 @@ const Index = () => {
         </motion.div>
       </div>;
   };
+
   return <div className="flex flex-col min-h-screen" ref={contentRef}>
       <div className="flex-1 flex flex-col">
         {step === 'decision' && <>
             {renderWelcomeScreen()}
-            <div id="decision-form" className="flex-1 flex items-center justify-center py-0">
+            <div id="decision-form" className="flex-1 flex items-center justify-center py-8">
               <Container className="flex justify-center items-center w-full">
                 <motion.div className="w-full max-w-2xl mx-auto" initial={{
               opacity: 0,
@@ -167,4 +182,5 @@ const Index = () => {
       </div>
     </div>;
 };
+
 export default Index;
