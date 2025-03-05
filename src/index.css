@@ -82,14 +82,11 @@
     --sidebar-border: 240 4% 16%;
     --sidebar-ring: 217 91% 60%;
   }
+}
 
+@layer base {
   * {
     @apply border-border;
-  }
-
-  html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 1rem;
   }
 
   body {
