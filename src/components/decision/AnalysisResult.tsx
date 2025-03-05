@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,7 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { ArrowLeft, Download, Star, Check, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, Option, Criterion, Evaluation } from '@/integrations/supabase/client';
 
 interface AnalysisResultProps {
   decisionTitle: string;
@@ -40,7 +41,7 @@ export function AnalysisResult({
   const { user } = useAuth();
 
   const finalScores = useMemo(() => {
-    const scores = {};
+    const scores: Record<string, any> = {};
     
     options.forEach(option => {
       let totalWeightedScore = 0;
@@ -68,7 +69,7 @@ export function AnalysisResult({
       };
     });
     
-    return Object.values(scores).sort((a, b) => b.score - a.score);
+    return Object.values(scores).sort((a: any, b: any) => b.score - a.score);
   }, [options, criteria, evaluations]);
 
   const bestOption = finalScores.length > 0 ? finalScores[0] : null;
@@ -94,7 +95,7 @@ export function AnalysisResult({
     }
   };
 
-  const chartData = finalScores.map(item => ({
+  const chartData = finalScores.map((item: any) => ({
     name: item.title,
     score: item.score
   }));
@@ -148,7 +149,7 @@ export function AnalysisResult({
           <div className="mt-8">
             <h3 className="text-lg font-medium mb-4">Détails des options</h3>
             <div className="space-y-4">
-              {finalScores.map((option, index) => (
+              {finalScores.map((option: any, index: number) => (
                 <Card key={option.id} className={index === 0 ? "border-primary" : ""}>
                   <CardHeader className="pb-2">
                     <div className="flex items-start justify-between">
