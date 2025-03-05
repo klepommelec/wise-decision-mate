@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Option } from './OptionsList';
 import { Criterion, Evaluation } from './CriteriaEvaluation';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, CheckCircle, LightbulbIcon, Info } from 'lucide-react';
+import { ArrowLeft, CheckCircle, LightbulbIcon, Info, Award, BarChart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
@@ -118,6 +118,21 @@ export function AnalysisResult({
     }
   };
   
+  // Trouver les points forts et points faibles de la meilleure option
+  const getStrengthsAndWeaknesses = () => {
+    if (!bestOption) return { strengths: [], weaknesses: [] };
+    
+    const details = bestOption.details;
+    // Trier les détails par score pondéré
+    details.sort((a, b) => b.weightedScore - a.weightedScore);
+    
+    const strengths = details.slice(0, 2).map(d => d.criterionName);
+    const weaknesses = [...details].sort((a, b) => a.weightedScore - b.weightedScore).slice(0, 2).map(d => d.criterionName);
+    
+    return { strengths, weaknesses };
+  };
+  
+  const { strengths, weaknesses } = getStrengthsAndWeaknesses();
   const recommendation = getRecommendation();
   
   return (
@@ -142,12 +157,45 @@ export function AnalysisResult({
         </CardHeader>
         <CardContent className="space-y-8">
           <div className="space-y-4">
-            <div className="bg-secondary/50 p-4 rounded-lg space-y-2 border">
+            <div className="bg-secondary/50 p-4 rounded-lg space-y-4 border">
               <h3 className="font-medium text-lg flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-primary" />
                 {recommendation.title}
               </h3>
               <p className="text-muted-foreground">{recommendation.message}</p>
+              
+              {bestOption && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium flex items-center gap-1.5">
+                      <Award className="h-4 w-4 text-green-500" />
+                      Points forts
+                    </h4>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      {strengths.map((strength, i) => (
+                        <li key={i} className="flex items-center gap-1.5">
+                          <span className="h-1.5 w-1.5 bg-green-500 rounded-full"></span>
+                          {strength}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium flex items-center gap-1.5">
+                      <BarChart className="h-4 w-4 text-amber-500" />
+                      Points à considérer
+                    </h4>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      {weaknesses.map((weakness, i) => (
+                        <li key={i} className="flex items-center gap-1.5">
+                          <span className="h-1.5 w-1.5 bg-amber-500 rounded-full"></span>
+                          {weakness}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
             </div>
             
             <div className="space-y-6 pt-2">

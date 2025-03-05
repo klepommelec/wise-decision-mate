@@ -79,9 +79,21 @@ const generateAICriteria = async (decisionTitle: string, decisionDescription: st
   }
 };
 
-// Fonction pour générer un score aléatoire entre 3 et 10
-const generateRandomScore = (): number => {
-  return Math.floor(Math.random() * 8) + 3; // Score entre 3 et 10
+// Fonction pour générer un score déterministe basé sur le titre de l'option et le nom du critère
+const generateDeterministicScore = (optionTitle: string, criterionName: string): number => {
+  // Utiliser une fonction de hachage simple basée sur les caractères des chaînes
+  const hash = (str: string) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash = hash & hash; // Conversion en 32bit integer
+    }
+    return Math.abs(hash);
+  };
+  
+  // Générer un nombre entre 3 et 10 basé sur le hachage combiné de l'option et du critère
+  const combinedHash = hash(optionTitle + criterionName);
+  return 3 + (combinedHash % 8);
 };
 
 const Index = () => {
@@ -187,17 +199,17 @@ const Index = () => {
       if (aiOptions && aiOptions.length > 0) {
         setOptions(aiOptions);
         
-        // Préparer les évaluations avec des scores aléatoires pour les options IA
-        const randomEvaluations = aiOptions.flatMap(option => 
+        // Préparer les évaluations avec des scores déterministes pour les options IA
+        const deterministicEvaluations = aiOptions.flatMap(option => 
           criteriaData.map(criterion => ({
             optionId: option.id,
             criterionId: criterion.id,
-            score: generateRandomScore() // Utiliser des scores aléatoires entre 3 et 10
+            score: generateDeterministicScore(option.title, criterion.name)
           }))
         );
         
-        console.log("Generated random evaluations:", randomEvaluations);
-        setEvaluations(randomEvaluations);
+        console.log("Generated deterministic evaluations:", deterministicEvaluations);
+        setEvaluations(deterministicEvaluations);
         setIsGeneratingOptions(false);
         toast.success("Options générées avec succès!");
       } else {
@@ -228,17 +240,17 @@ const Index = () => {
     // Si l'utilisateur a modifié les options ou en a ajouté de nouvelles, utilisez celles-ci
     setOptions(optionsData);
     
-    // Préparer les évaluations avec des scores aléatoires pour rendre l'analyse plus intéressante
-    const randomEvaluations = optionsData.flatMap(option => 
+    // Préparer les évaluations avec des scores déterministes
+    const deterministicEvaluations = optionsData.flatMap(option => 
       criteria.map(criterion => ({
         optionId: option.id,
         criterionId: criterion.id,
-        score: generateRandomScore() // Utiliser des scores aléatoires entre 3 et 10
+        score: generateDeterministicScore(option.title, criterion.name)
       }))
     );
     
-    console.log("Generated random evaluations for options:", randomEvaluations);
-    setEvaluations(randomEvaluations);
+    console.log("Generated deterministic evaluations for options:", deterministicEvaluations);
+    setEvaluations(deterministicEvaluations);
     setStep('analysis');
   };
 
