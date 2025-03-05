@@ -17,7 +17,7 @@ export function Header() {
           e.preventDefault();
           navigate('/');
         }}>
-            <img alt="Wise Logo" className="h-8 max-h-[32px] w-auto" src="/lovable-uploads/f71c6126-f5a6-4468-aa33-e82cc93f2a19.png" />
+            <img alt="Wise Logo" className="h-8 max-h-[32px] w-auto" src="/lovable-uploads/22f4b129-c335-42a2-832c-f89150b4eed4.png" />
           </a>
         </div>
         <nav className="flex items-center gap-4">
