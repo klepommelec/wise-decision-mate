@@ -1,8 +1,7 @@
 
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { LogOut, User, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { LogOut, User } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,21 +27,22 @@ export function Header() {
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center gap-2">
+          <a 
+            href="/" 
+            className="flex items-center gap-2"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/';
+            }}
+          >
             <img 
               src="/lovable-uploads/6101851f-2549-45ba-a231-ed9bfb465e2b.png" 
               alt="Wise Logo" 
               className="h-8 max-h-[32px] w-auto" 
             />
-          </Link>
+          </a>
         </div>
         <nav className="flex items-center gap-4">
-          {user && (
-            <Button variant="default" size="sm" onClick={() => navigate("/")} className="mr-2">
-              <Plus className="h-4 w-4 mr-2" />
-              Nouvelle décision
-            </Button>
-          )}
           {loading ? (
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
           ) : user ? (
