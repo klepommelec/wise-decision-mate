@@ -431,7 +431,7 @@ const Index = () => {
       <Header />
       <div className="flex-1 flex flex-col">
         {step === 'decision' && (
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center py-12">
             <Container className="flex justify-center items-center w-full">
               <div className="w-full max-w-2xl mx-auto">
                 <DecisionForm 
