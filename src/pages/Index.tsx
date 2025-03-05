@@ -11,7 +11,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Navigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
-type Step = 'decision' | 'options' | 'criteria' | 'analysis';
+type Step = 'decision' | 'criteria' | 'options' | 'analysis';
 
 interface LocationState {
   existingDecision?: {
@@ -32,17 +32,45 @@ const generateAIOptions = async (decisionTitle: string, decisionDescription: str
       throw new Error(response.error.message);
     }
 
-    return response.data.options;
+    return response.data.options.map(option => ({
+      ...option,
+      isAIGenerated: true
+    }));
   } catch (error: any) {
     console.error('Erreur lors de la génération des options:', error);
     toast.error('Erreur lors de la génération des options avec l\'IA');
     
     // Options par défaut en cas d'erreur
     return [
-      { id: '1', title: 'Option A', description: 'Première solution envisageable pour répondre à cette problématique.' },
-      { id: '2', title: 'Option B', description: 'Alternative qui présente des avantages différents.' },
-      { id: '3', title: 'Option C', description: 'Approche plus innovante ou moins conventionnelle.' },
-      { id: '4', title: 'Statu quo', description: 'Ne rien changer et maintenir la situation actuelle.' }
+      { id: '1', title: 'Option A', description: 'Première solution envisageable pour répondre à cette problématique.', isAIGenerated: true },
+      { id: '2', title: 'Option B', description: 'Alternative qui présente des avantages différents.', isAIGenerated: true },
+      { id: '3', title: 'Option C', description: 'Approche plus innovante ou moins conventionnelle.', isAIGenerated: true },
+      { id: '4', title: 'Statu quo', description: 'Ne rien changer et maintenir la situation actuelle.', isAIGenerated: true }
+    ];
+  }
+};
+
+// Fonction pour générer des critères avec Claude AI
+const generateAICriteria = async (decisionTitle: string, decisionDescription: string): Promise<Criterion[]> => {
+  try {
+    const response = await supabase.functions.invoke('generateAICriteria', {
+      body: { title: decisionTitle, description: decisionDescription }
+    });
+
+    if (response.error) {
+      throw new Error(response.error.message);
+    }
+
+    return response.data.criteria;
+  } catch (error: any) {
+    console.error('Erreur lors de la génération des critères:', error);
+    toast.error('Erreur lors de la génération des critères avec l\'IA');
+    
+    // Critères par défaut en cas d'erreur
+    return [
+      { id: '1', name: 'Coût', weight: 3, isAIGenerated: true },
+      { id: '2', name: 'Qualité', weight: 4, isAIGenerated: true },
+      { id: '3', name: 'Durabilité', weight: 5, isAIGenerated: true }
     ];
   }
 };
@@ -69,6 +97,7 @@ const Index = () => {
   const [criteria, setCriteria] = useState<Criterion[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [isGeneratingOptions, setIsGeneratingOptions] = useState(false);
+  const [isGeneratingCriteria, setIsGeneratingCriteria] = useState(false);
   const { user, loading } = useAuth();
 
   useEffect(() => {
@@ -80,21 +109,48 @@ const Index = () => {
         description: existingDecision.description
       });
       
-      // If we have an existing decision and we're on the decision step, skip to the options step
+      // If we have an existing decision and we're on the decision step, skip to the criteria step
       if (step === 'decision') {
-        console.log("Loading existing decision, moving to options step:", existingDecision.id);
-        setStep('options');
+        console.log("Loading existing decision, moving to criteria step:", existingDecision.id);
+        setStep('criteria');
         
-        // Set default empty options for the existing decision
-        setOptions([
-          { id: '1', title: '', description: '' },
-          { id: '2', title: '', description: '' }
-        ]);
+        // Generate AI criteria for the existing decision
+        generateCriteria(existingDecision.title, existingDecision.description, true);
       }
     }
   }, [existingDecision, step]);
 
-  const handleDecisionSubmit = async (decisionData: { title: string; description: string }, generateOptions: boolean = false) => {
+  const generateCriteria = async (title: string, description: string, autoGenerate: boolean = true) => {
+    if (autoGenerate) {
+      try {
+        setIsGeneratingCriteria(true);
+        toast.info("Génération des critères en cours...");
+        
+        const aiCriteria = await generateAICriteria(title, description);
+        setCriteria(aiCriteria);
+        
+        toast.success("Critères générés avec succès!");
+      } catch (error) {
+        console.error("Error generating criteria:", error);
+        toast.error("Erreur lors de la génération des critères");
+        // Set default criteria
+        setCriteria([
+          { id: '1', name: 'Coût', weight: 3, isAIGenerated: false },
+          { id: '2', name: 'Qualité', weight: 4, isAIGenerated: false }
+        ]);
+      } finally {
+        setIsGeneratingCriteria(false);
+      }
+    } else {
+      // Set default empty criteria if not generating
+      setCriteria([
+        { id: '1', name: 'Coût', weight: 3, isAIGenerated: false },
+        { id: '2', name: 'Qualité', weight: 4, isAIGenerated: false }
+      ]);
+    }
+  };
+
+  const handleDecisionSubmit = async (decisionData: { title: string; description: string }, generateWithAI: boolean = false) => {
     // Important: Preserve the existing ID when updating decision
     setDecision({
       id: decision.id,
@@ -102,45 +158,58 @@ const Index = () => {
       description: decisionData.description
     });
     
-    if (generateOptions) {
-      try {
-        setIsGeneratingOptions(true);
-        toast.info("Génération des options en cours...");
-        
-        const aiOptions = await generateAIOptions(decisionData.title, decisionData.description);
-        setOptions(aiOptions);
-        
-        toast.success("Options générées avec succès!");
-      } catch (error) {
-        console.error("Error generating options:", error);
-        toast.error("Erreur lors de la génération des options");
-        // Set default empty options
-        setOptions([
-          { id: '1', title: '', description: '' },
-          { id: '2', title: '', description: '' }
-        ]);
-      } finally {
-        setIsGeneratingOptions(false);
-      }
-    } else {
-      // Set default empty options if not generating
+    // Generate criteria first
+    await generateCriteria(decisionData.title, decisionData.description, generateWithAI);
+    
+    setStep('criteria');
+  };
+
+  const handleCriteriaComplete = (criteriaData: Criterion[]) => {
+    setCriteria(criteriaData);
+    
+    // After criteria are complete, move to options step
+    if (options.length === 0) {
+      // Set default empty options if we don't have any yet
       setOptions([
-        { id: '1', title: '', description: '' },
-        { id: '2', title: '', description: '' }
+        { id: '1', title: '', description: '', isAIGenerated: false },
+        { id: '2', title: '', description: '', isAIGenerated: false }
       ]);
     }
     
     setStep('options');
   };
 
-  const handleOptionsComplete = (optionsData: Option[]) => {
-    setOptions(optionsData);
-    setStep('criteria');
-  };
-
-  const handleCriteriaComplete = (criteriaData: Criterion[], evaluationsData: Evaluation[]) => {
-    setCriteria(criteriaData);
-    setEvaluations(evaluationsData);
+  const handleOptionsComplete = async (optionsData: Option[], generateWithAI: boolean = false) => {
+    if (generateWithAI && optionsData.every(option => !option.title)) {
+      try {
+        setIsGeneratingOptions(true);
+        toast.info("Génération des options en cours...");
+        
+        const aiOptions = await generateAIOptions(decision.title, decision.description);
+        setOptions(aiOptions);
+        
+        toast.success("Options générées avec succès!");
+      } catch (error) {
+        console.error("Error generating options:", error);
+        toast.error("Erreur lors de la génération des options");
+        setOptions(optionsData);
+      } finally {
+        setIsGeneratingOptions(false);
+      }
+    } else {
+      setOptions(optionsData);
+    }
+    
+    // Prépare les évaluations par défaut
+    const defaultEvaluations = optionsData.flatMap(option => 
+      criteria.map(criterion => ({
+        optionId: option.id,
+        criterionId: criterion.id,
+        score: 5
+      }))
+    );
+    
+    setEvaluations(defaultEvaluations);
     setStep('analysis');
   };
 
@@ -169,6 +238,15 @@ const Index = () => {
             />
           )}
           
+          {step === 'criteria' && (
+            <CriteriaEvaluation 
+              criteria={criteria}
+              isLoading={isGeneratingCriteria}
+              onComplete={handleCriteriaComplete}
+              decisionTitle={decision.title}
+            />
+          )}
+          
           {step === 'options' && (
             <OptionsList 
               decisionTitle={decision.title} 
@@ -178,20 +256,13 @@ const Index = () => {
             />
           )}
           
-          {step === 'criteria' && (
-            <CriteriaEvaluation 
-              options={options}
-              onComplete={handleCriteriaComplete}
-            />
-          )}
-          
           {step === 'analysis' && (
             <AnalysisResult
               decisionTitle={decision.title}
               options={options}
               criteria={criteria}
               evaluations={evaluations}
-              onBack={() => setStep('criteria')}
+              onBack={() => setStep('options')}
               onReset={handleReset}
             />
           )}

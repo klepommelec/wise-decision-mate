@@ -1,18 +1,20 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
-import { ArrowRight, Plus, Trash2 } from 'lucide-react';
+import { ArrowRight, GripVertical, Plus, Sparkles, Trash2 } from 'lucide-react';
 import { Option } from './OptionsList';
 import { cn } from '@/lib/utils';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 
 export interface Criterion {
   id: string;
   name: string;
   weight: number;
+  isAIGenerated?: boolean;
 }
 
 export interface Evaluation {
@@ -22,80 +24,59 @@ export interface Evaluation {
 }
 
 interface CriteriaEvaluationProps {
-  options: Option[];
-  onComplete: (criteria: Criterion[], evaluations: Evaluation[]) => void;
+  criteria: Criterion[];
+  isLoading?: boolean;
+  onComplete: (criteria: Criterion[]) => void;
+  decisionTitle: string;
 }
 
-export function CriteriaEvaluation({ options, onComplete }: CriteriaEvaluationProps) {
-  const [criteria, setCriteria] = useState<Criterion[]>([
-    { id: '1', name: 'Coût', weight: 3 },
-    { id: '2', name: 'Qualité', weight: 4 },
-  ]);
+export function CriteriaEvaluation({ criteria: initialCriteria, isLoading = false, onComplete, decisionTitle }: CriteriaEvaluationProps) {
+  const [criteria, setCriteria] = useState<Criterion[]>(initialCriteria || []);
   
-  const [evaluations, setEvaluations] = useState<Evaluation[]>(
-    options.flatMap(option => 
-      criteria.map(criterion => ({
-        optionId: option.id,
-        criterionId: criterion.id,
-        score: 5
-      }))
-    )
-  );
-  
-  const [step, setStep] = useState<'criteria' | 'evaluation'>('criteria');
+  // Mettre à jour les critères quand les props changent
+  useEffect(() => {
+    if (initialCriteria && initialCriteria.length > 0) {
+      setCriteria(initialCriteria);
+    }
+  }, [initialCriteria]);
   
   const addCriterion = () => {
     const newCriterion = { 
       id: Math.random().toString(36).substr(2, 9), 
       name: '', 
-      weight: 3 
+      weight: 3,
+      isAIGenerated: false
     };
     
     setCriteria([...criteria, newCriterion]);
-    
-    // Add default evaluations for this criterion
-    const newEvaluations = options.map(option => ({
-      optionId: option.id,
-      criterionId: newCriterion.id,
-      score: 5
-    }));
-    
-    setEvaluations([...evaluations, ...newEvaluations]);
   };
   
   const removeCriterion = (id: string) => {
     if (criteria.length <= 2) return;
     setCriteria(criteria.filter(c => c.id !== id));
-    setEvaluations(evaluations.filter(e => e.criterionId !== id));
   };
   
   const updateCriterion = (id: string, field: 'name' | 'weight', value: string | number) => {
     setCriteria(criteria.map(c => 
-      c.id === id ? { ...c, [field]: value } : c
+      c.id === id ? { ...c, [field]: value, isAIGenerated: false } : c
     ));
   };
   
-  const updateEvaluation = (optionId: string, criterionId: string, score: number) => {
-    setEvaluations(evaluations.map(e => 
-      e.optionId === optionId && e.criterionId === criterionId
-        ? { ...e, score }
-        : e
-    ));
-  };
-  
-  const getEvaluationValue = (optionId: string, criterionId: string): number => {
-    const evaluation = evaluations.find(
-      e => e.optionId === optionId && e.criterionId === criterionId
-    );
-    return evaluation ? evaluation.score : 5;
-  };
-  
-  const handleContinue = () => {
-    if (step === 'criteria') {
-      setStep('evaluation');
-    } else {
-      onComplete(criteria, evaluations);
-    }
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    
+    const items = Array.from(criteria);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    
+    // Ajuster les poids en fonction de l'ordre
+    const updatedItems = items.map((item, index) => {
+      // Plus l'index est petit, plus le poids est élevé (5 - plus important, 1 - moins important)
+      const newWeight = Math.max(1, Math.min(5, 5 - Math.floor(index * 5 / items.length)));
+      return { ...item, weight: newWeight };
+    });
+    
+    setCriteria(updatedItems);
   };
   
   const isCriteriaValid = criteria.every(c => c.name.trim() !== '');
@@ -105,146 +86,135 @@ export function CriteriaEvaluation({ options, onComplete }: CriteriaEvaluationPr
       <Card className="glass-card transition-all duration-300">
         <CardHeader>
           <CardTitle className="text-2xl font-medium">
-            {step === 'criteria' ? 'Définissez vos critères' : 'Évaluez vos options'}
+            Définissez vos critères d'évaluation
           </CardTitle>
           <CardDescription>
-            {step === 'criteria' 
-              ? 'Quels facteurs sont importants pour cette décision?' 
-              : 'Notez chaque option selon les critères définis'}
+            Quels facteurs sont importants pour votre décision concernant "{decisionTitle}"?
+            <div className="text-xs mt-1">
+              <span className="flex items-center gap-1">
+                <span className="inline-block w-3 h-3 rounded-full bg-primary/10"></span>
+                Critères standards
+              </span>
+              <span className="flex items-center gap-1 mt-1">
+                <Sparkles className="h-3 w-3 text-amber-500" />
+                <span className="inline-block w-3 h-3 rounded-full bg-amber-100 dark:bg-amber-900/30"></span>
+                Critères suggérés par l'IA
+              </span>
+            </div>
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {step === 'criteria' ? (
-            <div className="space-y-6">
-              {criteria.map((criterion, index) => (
+          <p className="text-muted-foreground mb-4 text-sm">
+            Faites glisser les critères pour les réorganiser selon leur importance. Les critères en haut sont plus importants.
+          </p>
+          
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="criteriaList">
+              {(provided) => (
                 <div 
-                  key={criterion.id} 
-                  className="p-4 border rounded-lg bg-white/50 dark:bg-gray-800/50 animate-slide-in"
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  className="space-y-6" 
+                  {...provided.droppableProps} 
+                  ref={provided.innerRef}
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium">Critère {index + 1}</h3>
-                    {criteria.length > 2 && (
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        onClick={() => removeCriterion(criterion.id)}
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor={`name-${criterion.id}`}>Nom du critère</Label>
-                      <Input
-                        id={`name-${criterion.id}`}
-                        value={criterion.name}
-                        onChange={(e) => updateCriterion(criterion.id, 'name', e.target.value)}
-                        placeholder="Ex: Coût, Qualité, Durabilité..."
-                        className="w-full"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <Label htmlFor={`weight-${criterion.id}`}>Importance (1-5)</Label>
-                        <span className="text-sm font-medium">{criterion.weight}</span>
-                      </div>
-                      <Slider
-                        id={`weight-${criterion.id}`}
-                        min={1}
-                        max={5}
-                        step={1}
-                        value={[criterion.weight]}
-                        onValueChange={(values) => updateCriterion(criterion.id, 'weight', values[0])}
-                        className="w-full"
-                      />
-                      <div className="flex justify-between text-xs text-muted-foreground pt-1">
-                        <span>Peu important</span>
-                        <span>Très important</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              
-              <Button 
-                variant="outline" 
-                className="w-full flex items-center justify-center gap-2" 
-                onClick={addCriterion}
-              >
-                <Plus className="h-4 w-4" />
-                Ajouter un critère
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-8">
-              {options.map((option, optionIndex) => (
-                <div 
-                  key={option.id}
-                  className="space-y-4 p-4 border rounded-lg bg-white/50 dark:bg-gray-800/50 animate-slide-in"
-                  style={{ animationDelay: `${optionIndex * 0.1}s` }}
-                >
-                  <h3 className="font-medium text-lg">{option.title}</h3>
-                  {option.description && (
-                    <p className="text-sm text-muted-foreground mb-2">{option.description}</p>
-                  )}
-                  
-                  <div className="space-y-6">
-                    {criteria.map((criterion) => (
-                      <div key={criterion.id} className="space-y-2">
-                        <div className="flex justify-between">
-                          <Label>
-                            {criterion.name} 
-                            <span className="text-xs ml-2 text-muted-foreground">
-                              (Importance: {criterion.weight}/5)
-                            </span>
-                          </Label>
-                          <span className="text-sm font-medium">
-                            {getEvaluationValue(option.id, criterion.id)}
-                          </span>
+                  {criteria.map((criterion, index) => (
+                    <Draggable key={criterion.id} draggableId={criterion.id} index={index}>
+                      {(provided, snapshot) => (
+                        <div 
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          className={cn(
+                            "p-4 border rounded-lg animate-slide-in",
+                            snapshot.isDragging ? "shadow-lg" : "",
+                            criterion.isAIGenerated 
+                              ? "bg-amber-50/80 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/30" 
+                              : "bg-white/50 dark:bg-gray-800/50"
+                          )}
+                          style={{ 
+                            animationDelay: `${index * 0.1}s`,
+                            ...provided.draggableProps.style
+                          }}
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <div
+                                {...provided.dragHandleProps}
+                                className="cursor-grab p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+                              >
+                                <GripVertical className="h-5 w-5 text-muted-foreground" />
+                              </div>
+                              <h3 className="font-medium">Critère {index + 1}</h3>
+                              {criterion.isAIGenerated && (
+                                <Sparkles className="h-4 w-4 text-amber-500" />
+                              )}
+                            </div>
+                            {criteria.length > 2 && (
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                onClick={() => removeCriterion(criterion.id)}
+                                className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <Label htmlFor={`name-${criterion.id}`}>Nom du critère</Label>
+                              <Input
+                                id={`name-${criterion.id}`}
+                                value={criterion.name}
+                                onChange={(e) => updateCriterion(criterion.id, 'name', e.target.value)}
+                                placeholder="Ex: Coût, Qualité, Durabilité..."
+                                className="w-full"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <Label htmlFor={`weight-${criterion.id}`}>Importance (1-5)</Label>
+                                <span className="text-sm font-medium">{criterion.weight}</span>
+                              </div>
+                              <Slider
+                                id={`weight-${criterion.id}`}
+                                min={1}
+                                max={5}
+                                step={1}
+                                value={[criterion.weight]}
+                                onValueChange={(values) => updateCriterion(criterion.id, 'weight', values[0])}
+                                className="w-full"
+                              />
+                              <div className="flex justify-between text-xs text-muted-foreground pt-1">
+                                <span>Peu important</span>
+                                <span>Très important</span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <Slider
-                          min={1}
-                          max={10}
-                          step={1}
-                          value={[getEvaluationValue(option.id, criterion.id)]}
-                          onValueChange={(values) => 
-                            updateEvaluation(option.id, criterion.id, values[0])
-                          }
-                          className="w-full"
-                        />
-                        <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>Faible</span>
-                          <span>Excellent</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
                 </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-        <CardFooter className={cn(
-          "flex pt-2", 
-          step === 'criteria' ? "justify-end" : "justify-between"
-        )}>
-          {step === 'evaluation' && (
-            <Button 
-              variant="outline" 
-              onClick={() => setStep('criteria')}
-            >
-              Revenir aux critères
-            </Button>
-          )}
+              )}
+            </Droppable>
+          </DragDropContext>
+          
           <Button 
-            onClick={handleContinue} 
-            disabled={step === 'criteria' && !isCriteriaValid}
+            variant="outline" 
+            className="w-full flex items-center justify-center gap-2 mt-6" 
+            onClick={addCriterion}
+          >
+            <Plus className="h-4 w-4" />
+            Ajouter un critère
+          </Button>
+        </CardContent>
+        <CardFooter className="justify-end pt-2">
+          <Button 
+            onClick={() => onComplete(criteria)} 
+            disabled={!isCriteriaValid || isLoading}
             className="gap-2"
           >
-            {step === 'criteria' ? 'Continuer' : 'Voir l\'analyse'}
+            {isLoading ? "Chargement..." : "Continuer"}
             <ArrowRight className="h-4 w-4" />
           </Button>
         </CardFooter>
