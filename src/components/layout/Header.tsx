@@ -32,7 +32,7 @@ export function Header() {
             className="flex items-center gap-2"
             onClick={(e) => {
               e.preventDefault();
-              window.location.href = '/';
+              navigate('/');
             }}
           >
             <img 
