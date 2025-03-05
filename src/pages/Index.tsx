@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
@@ -9,7 +8,15 @@ import { AnalysisResult } from '@/components/decision/AnalysisResult';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { supabase, Option, Criterion, Evaluation, DatabaseOption, DatabaseCriterion, DatabaseEvaluation } from '@/integrations/supabase/client';
+import { 
+  supabase, 
+  Option, 
+  Criterion, 
+  Evaluation, 
+  DatabaseOption, 
+  DatabaseCriterion, 
+  DatabaseEvaluation 
+} from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, List, Calendar, Clock, Star, CheckCircle } from 'lucide-react';
@@ -414,50 +421,41 @@ const Index = () => {
         console.log("Loading data for decision with favorite option:", selectedDecision.id);
         
         // Use type casting to handle the database tables
-        const optionsResponse = await supabase
+        const { data: optionsData, error: optionsError } = await supabase
           .from('options')
           .select('*')
-          .eq('decision_id', selectedDecision.id) as unknown as { 
-            data: DatabaseOption[], 
-            error: any 
-          };
+          .eq('decision_id', selectedDecision.id);
           
-        const criteriaResponse = await supabase
+        const { data: criteriaData, error: criteriaError } = await supabase
           .from('criteria')
           .select('*')
-          .eq('decision_id', selectedDecision.id) as unknown as { 
-            data: DatabaseCriterion[], 
-            error: any 
-          };
+          .eq('decision_id', selectedDecision.id);
           
-        const evaluationsResponse = await supabase
+        const { data: evaluationsData, error: evaluationsError } = await supabase
           .from('evaluations')
           .select('*')
-          .eq('decision_id', selectedDecision.id) as unknown as { 
-            data: DatabaseEvaluation[], 
-            error: any 
-          };
+          .eq('decision_id', selectedDecision.id);
         
-        if (optionsResponse.error) throw optionsResponse.error;
-        if (criteriaResponse.error) throw criteriaResponse.error;
-        if (evaluationsResponse.error) throw evaluationsResponse.error;
+        if (optionsError) throw optionsError;
+        if (criteriaError) throw criteriaError;
+        if (evaluationsError) throw evaluationsError;
         
         // Map the database response to our application interfaces
-        const fetchedOptions: Option[] = optionsResponse.data.map(item => ({
+        const fetchedOptions: Option[] = (optionsData as DatabaseOption[]).map(item => ({
           id: item.id,
           title: item.title,
           description: item.description || '',
           decision_id: item.decision_id
         }));
         
-        const fetchedCriteria: Criterion[] = criteriaResponse.data.map(item => ({
+        const fetchedCriteria: Criterion[] = (criteriaData as DatabaseCriterion[]).map(item => ({
           id: item.id,
           name: item.name,
           weight: item.weight,
           decision_id: item.decision_id
         }));
         
-        const fetchedEvaluations: Evaluation[] = evaluationsResponse.data.map(item => ({
+        const fetchedEvaluations: Evaluation[] = (evaluationsData as DatabaseEvaluation[]).map(item => ({
           optionId: item.option_id,
           criterionId: item.criterion_id,
           score: item.score,
