@@ -80,7 +80,7 @@ const Index = () => {
   }
   const renderWelcomeScreen = () => {
     if (step !== 'decision' || existingDecision) return null;
-    return <div className="max-w-4xl mx-auto">
+    return <div className="max-w-4xl mx-auto ">
         <motion.div initial={{
         opacity: 0,
         y: 20
@@ -91,9 +91,7 @@ const Index = () => {
         duration: 0.5
       }} className="text-center mb-12">
           <h1 className="text-4xl font-bold tracking-tight mb-3">Prenez des décisions éclairées</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Notre outil vous aide à structurer votre réflexion et à analyser objectivement les options qui s'offrent à vous.
-          </p>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Notre outil vous aide à structurer votre réflexion et à analyser objectivement les options qui s'offrent à vous.</p>
         </motion.div>
       </div>;
   };
