@@ -40,7 +40,7 @@ export function Header() {
                 onClick={() => navigate("/new-decision")}
               >
                 Nouvelle décision
-                <ArrowRight className="h-4 w-4 ml-0.5" />
+                <ArrowRight className="h-4 w-4" />
               </Button>
               <Button 
                 variant="ghost" 
