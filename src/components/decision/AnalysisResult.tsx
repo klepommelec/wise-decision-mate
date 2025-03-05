@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import type { Option, Criterion, Evaluation } from '@/integrations/supabase/client';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 interface AnalysisResultProps {
   decisionTitle: string;
@@ -40,6 +41,7 @@ export function AnalysisResult({
 }: AnalysisResultProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [expandedOption, setExpandedOption] = useState<string | null>(null);
+  const [selectedCriterion, setSelectedCriterion] = useState<string | null>(null);
   const { user } = useAuth();
 
   const finalScores = useMemo(() => {
@@ -84,6 +86,23 @@ export function AnalysisResult({
     
     return Object.values(scores).sort((a: any, b: any) => b.score - a.score);
   }, [options, criteria, evaluations]);
+
+  const criteriaChartData = useMemo(() => {
+    const criterionToUse = selectedCriterion || (criteria.length > 0 ? criteria[0].id : null);
+    
+    if (!criterionToUse) return [];
+    
+    return options.map(option => {
+      const evaluation = evaluations.find(e => 
+        e.optionId === option.id && e.criterionId === criterionToUse
+      );
+      
+      return {
+        name: option.title,
+        score: evaluation ? evaluation.score : 0
+      };
+    });
+  }, [options, criteria, evaluations, selectedCriterion]);
 
   const bestOption = finalScores.length > 0 ? finalScores[0] : null;
 
@@ -180,23 +199,63 @@ export function AnalysisResult({
           </div>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart
-              data={chartData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="score" fill="#8884d8">
-                {chartData.map((entry: any, index: number) => (
-                  <Cell key={`cell-${index}`} fill={index === 0 ? '#4f46e5' : '#8884d8'} />
+          <div className="mb-8">
+            <h3 className="text-lg font-medium mb-4">Score global par option</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={chartData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="score" fill="#8884d8">
+                  {chartData.map((entry: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={index === 0 ? '#4f46e5' : '#8884d8'} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium">Score par critère</h3>
+              <div className="flex gap-2">
+                {criteria.map((criterion) => (
+                  <Button
+                    key={criterion.id}
+                    variant="outline"
+                    size="sm"
+                    className={cn(
+                      "text-xs",
+                      selectedCriterion === criterion.id && "bg-primary/10 border-primary"
+                    )}
+                    onClick={() => setSelectedCriterion(criterion.id)}
+                  >
+                    {criterion.name}
+                  </Button>
                 ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+              </div>
+            </div>
+            
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={criteriaChartData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                barSize={20}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis domain={[0, 5]} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="score" fill="#82ca9d" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
           
           <div className="mt-8">
             <h3 className="text-lg font-medium mb-4">Détails des options</h3>
