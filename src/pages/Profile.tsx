@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
-import { LogOut, User, ArrowLeft, PlusCircle, Settings, Download, Share2, Bell, Calendar, Filter, Moon, Sun, Monitor, ChevronDown, Check, Camera, Trash, Upload, Pencil } from "lucide-react";
+import { LogOut, User, ArrowLeft, PlusCircle, Settings, Download, Share2, Bell, Calendar, Filter, Moon, Sun, Monitor, ChevronDown, Check, Camera, Upload, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -305,7 +305,7 @@ export default function Profile() {
                                 onClick={handleRemoveProfilePicture}
                                 disabled={isUploadingImage}
                               >
-                                <Trash className="h-4 w-4" />
+                                <lucide-react.Trash className="h-4 w-4" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
