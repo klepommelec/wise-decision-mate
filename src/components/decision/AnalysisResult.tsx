@@ -6,7 +6,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { ArrowLeft, Download, Star, Check, ArrowRight, ChevronDown, ChevronUp, Info } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
-import { supabase, Option, Criterion, Evaluation } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
+import type { Option, Criterion, Evaluation } from '@/integrations/supabase/types';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 
 interface AnalysisResultProps {
@@ -136,9 +137,12 @@ export function AnalysisResult({
               <div className="flex items-center gap-2 mb-3">
                 <Star className="h-5 w-5 text-yellow-500" />
                 <h3 className="text-lg font-medium">Option suggérée</h3>
-                
-                <div className="ml-auto flex items-center gap-2">
-                  <div className="text-xl font-bold">{bestOption.score}/5</div>
+              </div>
+              
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xl font-semibold">{bestOption.title}</p>
+                <div className="flex items-center gap-2">
+                  <div className="text-xl font-bold">{bestOption.score}</div>
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -151,7 +155,7 @@ export function AnalysisResult({
                     ) : (
                       <>
                         <Check className="h-4 w-4" />
-                        Enregistrer
+                        Enregistrer comme choix
                       </>
                     )}
                   </Button>
@@ -159,8 +163,7 @@ export function AnalysisResult({
               </div>
               
               <div>
-                <p className="text-xl font-semibold">{bestOption.title}</p>
-                <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{bestOption.description}</p>
+                <p className="text-sm text-muted-foreground line-clamp-2">{bestOption.description}</p>
               </div>
             </div>
           )}
