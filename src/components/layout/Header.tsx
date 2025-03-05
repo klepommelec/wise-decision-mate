@@ -37,7 +37,7 @@ export function Header() {
             <img 
               src="/lovable-uploads/186b0d3f-32c0-4a2b-ab1b-8cb8cd49bf79.png" 
               alt="Wise Logo" 
-              className="h-10" 
+              className="h-8.5" /* Reduced from h-10 (by 15%) */
             />
           </button>
         </div>
