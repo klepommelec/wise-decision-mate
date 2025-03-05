@@ -41,6 +41,8 @@ export function AnalysisResult({
 }: AnalysisResultProps) {
   const [showDetails, setShowDetails] = useState(false);
   
+  console.log("Analyzing with evaluations:", evaluations);
+  
   const totalWeight = criteria.reduce((sum, c) => sum + c.weight, 0);
   
   const optionScores: OptionScore[] = options.map(option => {
@@ -48,7 +50,13 @@ export function AnalysisResult({
       const evaluation = evaluations.find(
         e => e.optionId === option.id && e.criterionId === criterion.id
       );
-      const score = evaluation ? evaluation.score : 0;
+      
+      // Vérifier si nous avons trouvé une évaluation correspondante
+      if (!evaluation) {
+        console.warn(`No evaluation found for option ${option.id} and criterion ${criterion.id}`);
+      }
+      
+      const score = evaluation ? evaluation.score : 5; // Default to 5 if no evaluation found
       const normalizedWeight = criterion.weight / totalWeight;
       const weightedScore = score * normalizedWeight;
       
@@ -62,6 +70,7 @@ export function AnalysisResult({
     });
     
     const totalScore = details.reduce((sum, d) => sum + d.weightedScore, 0);
+    console.log(`Option ${option.title} scored ${totalScore.toFixed(2)}`);
     
     return {
       option,
@@ -74,13 +83,19 @@ export function AnalysisResult({
   optionScores.sort((a, b) => b.score - a.score);
   
   const bestOption = optionScores[0];
-  const maxScore = Math.max(...optionScores.map(os => os.score));
   
   const getProgressPercentage = (score: number) => {
     return (score / 10) * 100;
   };
   
   const getRecommendation = () => {
+    if (optionScores.length < 2) {
+      return {
+        title: "Analyse impossible",
+        message: "Il faut au moins deux options pour effectuer une analyse comparative."
+      };
+    }
+    
     const topScore = bestOption.score;
     const secondBestScore = optionScores[1]?.score || 0;
     const scoreDifference = topScore - secondBestScore;

@@ -79,6 +79,11 @@ const generateAICriteria = async (decisionTitle: string, decisionDescription: st
   }
 };
 
+// Fonction pour générer un score aléatoire entre 3 et 10
+const generateRandomScore = (): number => {
+  return Math.floor(Math.random() * 8) + 3; // Score entre 3 et 10
+};
+
 const Index = () => {
   const location = useLocation();
   const locationState = location.state as LocationState | null;
@@ -182,16 +187,17 @@ const Index = () => {
       if (aiOptions && aiOptions.length > 0) {
         setOptions(aiOptions);
         
-        // Préparer les évaluations par défaut avec les options IA
-        const defaultEvaluations = aiOptions.flatMap(option => 
+        // Préparer les évaluations avec des scores aléatoires pour les options IA
+        const randomEvaluations = aiOptions.flatMap(option => 
           criteriaData.map(criterion => ({
             optionId: option.id,
             criterionId: criterion.id,
-            score: 5
+            score: generateRandomScore() // Utiliser des scores aléatoires entre 3 et 10
           }))
         );
         
-        setEvaluations(defaultEvaluations);
+        console.log("Generated random evaluations:", randomEvaluations);
+        setEvaluations(randomEvaluations);
         setIsGeneratingOptions(false);
         toast.success("Options générées avec succès!");
       } else {
@@ -222,16 +228,17 @@ const Index = () => {
     // Si l'utilisateur a modifié les options ou en a ajouté de nouvelles, utilisez celles-ci
     setOptions(optionsData);
     
-    // Préparer les évaluations par défaut avec les options manuelles ou modifiées
-    const defaultEvaluations = optionsData.flatMap(option => 
+    // Préparer les évaluations avec des scores aléatoires pour rendre l'analyse plus intéressante
+    const randomEvaluations = optionsData.flatMap(option => 
       criteria.map(criterion => ({
         optionId: option.id,
         criterionId: criterion.id,
-        score: 5
+        score: generateRandomScore() // Utiliser des scores aléatoires entre 3 et 10
       }))
     );
     
-    setEvaluations(defaultEvaluations);
+    console.log("Generated random evaluations for options:", randomEvaluations);
+    setEvaluations(randomEvaluations);
     setStep('analysis');
   };
 
