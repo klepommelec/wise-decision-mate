@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -8,7 +8,7 @@ import { CriteriaEvaluation, Criterion, Evaluation } from '@/components/decision
 import { AnalysisResult } from '@/components/decision/AnalysisResult';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
 type Step = 'decision' | 'options' | 'criteria' | 'analysis';
@@ -64,16 +64,46 @@ const generateAIOptions = async (decisionTitle: string, decisionDescription: str
 };
 
 const Index = () => {
+  const location = useLocation();
+  const decisionFromState = location.state as { 
+    decisionId: string;
+    decisionTitle: string;
+    decisionDescription: string | null;
+  } | null;
+
   const [step, setStep] = useState<Step>('decision');
-  const [decision, setDecision] = useState({ title: '', description: '' });
+  const [decision, setDecision] = useState({ 
+    id: decisionFromState?.decisionId || '',
+    title: decisionFromState?.decisionTitle || '', 
+    description: decisionFromState?.decisionDescription || '' 
+  });
   const [options, setOptions] = useState<Option[]>([]);
   const [criteria, setCriteria] = useState<Criterion[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [isGeneratingOptions, setIsGeneratingOptions] = useState(false);
   const { user, loading } = useAuth();
 
+  // If we have a decision from state, skip to options step
+  useEffect(() => {
+    if (decisionFromState && decision.title) {
+      // Check if we need to initialize with empty options
+      setOptions([
+        { id: '1', title: '', description: '', isAIGenerated: false },
+        { id: '2', title: '', description: '', isAIGenerated: false }
+      ]);
+      setStep('options');
+
+      // Clear location state after using it
+      window.history.replaceState({}, document.title);
+    }
+  }, [decisionFromState]);
+
   const handleDecisionSubmit = async (decisionData: { title: string; description: string }, generateOptions: boolean = false) => {
-    setDecision(decisionData);
+    setDecision({ 
+      ...decision, 
+      title: decisionData.title, 
+      description: decisionData.description 
+    });
     
     if (generateOptions) {
       try {
@@ -136,7 +166,13 @@ const Index = () => {
       <Container>
         <div className="min-h-[80vh] flex flex-col justify-center items-center py-12">
           {step === 'decision' && (
-            <DecisionForm onSubmit={handleDecisionSubmit} />
+            <DecisionForm 
+              onSubmit={handleDecisionSubmit} 
+              initialDecision={decisionFromState ? {
+                title: decisionFromState.decisionTitle,
+                description: decisionFromState.decisionDescription || ''
+              } : undefined}
+            />
           )}
           
           {step === 'options' && (

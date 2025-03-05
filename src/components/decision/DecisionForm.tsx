@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,15 +14,28 @@ import { useNavigate } from 'react-router-dom';
 
 interface DecisionFormProps {
   onSubmit: (decision: { title: string; description: string }, generateOptions?: boolean) => void;
+  initialDecision?: { title: string; description: string };
 }
 
-export function DecisionForm({ onSubmit }: DecisionFormProps) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
+  const [title, setTitle] = useState(initialDecision?.title || '');
+  const [description, setDescription] = useState(initialDecision?.description || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [useAI, setUseAI] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // If there's an initial decision, auto-submit the form
+  useEffect(() => {
+    if (initialDecision?.title) {
+      // Auto-submit with a slight delay to allow rendering
+      const timer = setTimeout(() => {
+        handleSubmit(new Event('submit') as any);
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [initialDecision]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,19 +53,22 @@ export function DecisionForm({ onSubmit }: DecisionFormProps) {
     }
 
     try {
-      // Enregistrer la décision dans Supabase
-      const { error } = await supabase
-        .from('decisions')
-        .insert({
-          user_id: user.id,
-          title,
-          description
-        });
+      // Skip saving to Supabase if we're using an existing decision
+      if (!initialDecision) {
+        // Enregistrer la décision dans Supabase
+        const { error } = await supabase
+          .from('decisions')
+          .insert({
+            user_id: user.id,
+            title,
+            description
+          });
 
-      if (error) throw error;
+        if (error) throw error;
+      }
       
       // Continuer avec le processus normal
-      onSubmit({ title, description }, useAI);
+      onSubmit({ title, description }, useAI && !initialDecision);
       setIsSubmitting(false);
       
     } catch (error: any) {
@@ -60,7 +76,7 @@ export function DecisionForm({ onSubmit }: DecisionFormProps) {
       toast.error(error.message || "Une erreur est survenue");
       setIsSubmitting(false);
     }
-  }, [title, description, useAI, user, navigate, onSubmit]);
+  }, [title, description, useAI, user, navigate, onSubmit, initialDecision]);
   
   return (
     <div className="w-full max-w-2xl mx-auto animate-fade-in">
@@ -99,6 +115,7 @@ export function DecisionForm({ onSubmit }: DecisionFormProps) {
                 id="ai-options"
                 checked={useAI}
                 onCheckedChange={setUseAI}
+                disabled={!!initialDecision}
               />
               <div className="grid gap-1.5">
                 <Label
@@ -118,7 +135,7 @@ export function DecisionForm({ onSubmit }: DecisionFormProps) {
               className="w-full transition-all" 
               disabled={!title.trim() || isSubmitting}
             >
-              {isSubmitting ? "Traitement..." : "Continuer"}
+              {isSubmitting ? "Traitement..." : initialDecision ? "Continuer avec cette décision" : "Continuer"}
             </Button>
           </form>
         </CardContent>

@@ -57,6 +57,17 @@ const MyDecisions = () => {
     }).format(date);
   };
 
+  const handleDecisionClick = (decision: Decision) => {
+    // Navigate to the index page with decision id as state
+    navigate('/', { 
+      state: { 
+        decisionId: decision.id, 
+        decisionTitle: decision.title, 
+        decisionDescription: decision.description 
+      }
+    });
+  };
+
   return (
     <>
       <Header />
@@ -109,11 +120,7 @@ const MyDecisions = () => {
                 <Card 
                   key={decision.id}
                   className="hover:shadow-md transition-shadow cursor-pointer"
-                  onClick={() => {
-                    // For now, we'll just display a message
-                    // In the future, this could navigate to a detail view
-                    toast.info("Fonctionnalité à venir: voir les détails de la décision");
-                  }}
+                  onClick={() => handleDecisionClick(decision)}
                 >
                   <CardHeader>
                     <div className="flex justify-between items-start mb-2">
