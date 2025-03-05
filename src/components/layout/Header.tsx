@@ -1,5 +1,5 @@
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { LogOut, User, Plus } from "lucide-react";
@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 export function Header() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSignOut = async () => {
     try {
@@ -21,6 +22,16 @@ export function Header() {
     } catch (error: any) {
       toast.error("Erreur lors de la déconnexion");
       console.error("Erreur de déconnexion:", error);
+    }
+  };
+
+  const handleNewDecision = () => {
+    if (location.pathname === '/') {
+      // Si déjà sur la page d'accueil, recharger la page
+      window.location.reload();
+    } else {
+      // Sinon, naviguer vers la page d'accueil
+      navigate('/');
     }
   };
 
@@ -38,7 +49,7 @@ export function Header() {
         </div>
         <nav className="flex items-center gap-4">
           {user && (
-            <Button variant="default" size="sm" onClick={() => navigate("/")} className="mr-2">
+            <Button variant="default" size="sm" onClick={handleNewDecision} className="mr-2">
               <Plus className="h-4 w-4 mr-2" />
               Nouvelle décision
             </Button>
