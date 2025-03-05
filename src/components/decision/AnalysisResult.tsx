@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -45,18 +44,30 @@ export function AnalysisResult({
   
   const totalWeight = criteria.reduce((sum, c) => sum + c.weight, 0);
   
-  const optionScores: OptionScore[] = options.map(option => {
+  const ensureDescription = (option: Option): Option => {
+    if (option.description && option.description.trim() !== '') {
+      return option;
+    }
+    
+    return {
+      ...option,
+      description: `Option considérant ${option.title.toLowerCase()} comme solution potentielle.`
+    };
+  };
+  
+  const optionsWithDescriptions = options.map(ensureDescription);
+  
+  const optionScores: OptionScore[] = optionsWithDescriptions.map(option => {
     const details = criteria.map(criterion => {
       const evaluation = evaluations.find(
         e => e.optionId === option.id && e.criterionId === criterion.id
       );
       
-      // Vérifier si nous avons trouvé une évaluation correspondante
       if (!evaluation) {
         console.warn(`No evaluation found for option ${option.id} and criterion ${criterion.id}`);
       }
       
-      const score = evaluation ? evaluation.score : 5; // Default to 5 if no evaluation found
+      const score = evaluation ? evaluation.score : 5;
       const normalizedWeight = criterion.weight / totalWeight;
       const weightedScore = score * normalizedWeight;
       
@@ -79,7 +90,6 @@ export function AnalysisResult({
     };
   });
   
-  // Sort options by score (highest first)
   optionScores.sort((a, b) => b.score - a.score);
   
   const bestOption = optionScores[0];
@@ -118,12 +128,10 @@ export function AnalysisResult({
     }
   };
   
-  // Trouver les points forts et points faibles de la meilleure option
   const getStrengthsAndWeaknesses = () => {
     if (!bestOption) return { strengths: [], weaknesses: [] };
     
     const details = bestOption.details;
-    // Trier les détails par score pondéré
     details.sort((a, b) => b.weightedScore - a.weightedScore);
     
     const strengths = details.slice(0, 2).map(d => d.criterionName);

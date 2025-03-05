@@ -79,6 +79,34 @@ const generateAICriteria = async (decisionTitle: string, decisionDescription: st
   }
 };
 
+// Fonction pour générer une description pour une option ou un critère ajouté manuellement
+const generateDescription = async (
+  title: string, 
+  context: string, 
+  type: 'option' | 'criterion'
+): Promise<string> => {
+  try {
+    const response = await supabase.functions.invoke('generateDescription', {
+      body: { title, context, type }
+    });
+
+    if (response.error) {
+      throw new Error(response.error.message);
+    }
+
+    return response.data.description;
+  } catch (error: any) {
+    console.error(`Erreur lors de la génération de description pour ${type}:`, error);
+    
+    // Descriptions par défaut en cas d'erreur
+    if (type === 'option') {
+      return `Option considérant ${title.toLowerCase()} comme solution potentielle à cette problématique.`;
+    } else {
+      return `Évalue dans quelle mesure chaque option satisfait le critère de ${title.toLowerCase()}.`;
+    }
+  }
+};
+
 // Fonction pour générer un score déterministe basé sur le titre de l'option et le nom du critère
 const generateDeterministicScore = (optionTitle: string, criterionName: string): number => {
   // Utiliser une fonction de hachage simple basée sur les caractères des chaînes
@@ -119,6 +147,7 @@ const Index = () => {
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [isGeneratingOptions, setIsGeneratingOptions] = useState(false);
   const [isGeneratingCriteria, setIsGeneratingCriteria] = useState(false);
+  const [isProcessingManualEntries, setIsProcessingManualEntries] = useState(false);
   const { user, loading } = useAuth();
 
   useEffect(() => {
@@ -186,7 +215,25 @@ const Index = () => {
   };
 
   const handleCriteriaComplete = async (criteriaData: Criterion[]) => {
-    setCriteria(criteriaData);
+    setIsProcessingManualEntries(true);
+    
+    // Traiter chaque critère pour s'assurer qu'il a une description complète
+    const processedCriteria = [...criteriaData];
+    const criteriaToProcess = processedCriteria.filter(criterion => 
+      !criterion.isAIGenerated
+    );
+    
+    // Gérer les critères ajoutés manuellement (on ne modifie pas leurs poids)
+    if (criteriaToProcess.length > 0) {
+      for (const criterion of criteriaToProcess) {
+        // Nous ne modifions que les critères sans description
+        // Comme le modèle ne stocke pas de descriptions pour les critères, 
+        // cette partie est préparée pour de futures extensions
+        console.log(`Criterion ${criterion.name} processed`);
+      }
+    }
+    
+    setCriteria(processedCriteria);
     
     // Générer automatiquement des options avec l'IA après la définition des critères
     try {
@@ -199,9 +246,44 @@ const Index = () => {
       if (aiOptions && aiOptions.length > 0) {
         setOptions(aiOptions);
         
+        // Traiter chaque option pour s'assurer qu'elle a une description
+        const processedOptions = [...options];
+        const optionsToProcess = processedOptions.filter(option => 
+          !option.isAIGenerated && (!option.description || option.description.trim() === '')
+        );
+        
+        // Générer des descriptions pour les options ajoutées manuellement
+        if (optionsToProcess.length > 0) {
+          toast.info("Traitement des options ajoutées manuellement...");
+          
+          for (let i = 0; i < optionsToProcess.length; i++) {
+            const option = optionsToProcess[i];
+            if (!option.description || option.description.trim() === '') {
+              try {
+                const description = await generateDescription(
+                  option.title, 
+                  decision.title, 
+                  'option'
+                );
+                
+                // Mettre à jour l'option avec la description générée
+                const index = processedOptions.findIndex(o => o.id === option.id);
+                if (index !== -1) {
+                  processedOptions[index] = {
+                    ...processedOptions[index],
+                    description
+                  };
+                }
+              } catch (error) {
+                console.error("Erreur lors de la génération de description pour l'option:", error);
+              }
+            }
+          }
+        }
+        
         // Préparer les évaluations avec des scores déterministes pour les options IA
         const deterministicEvaluations = aiOptions.flatMap(option => 
-          criteriaData.map(criterion => ({
+          processedCriteria.map(criterion => ({
             optionId: option.id,
             criterionId: criterion.id,
             score: generateDeterministicScore(option.title, criterion.name)
@@ -230,6 +312,7 @@ const Index = () => {
       ]);
     } finally {
       setIsGeneratingOptions(false);
+      setIsProcessingManualEntries(false);
       setStep('options');
     }
   };
@@ -237,11 +320,48 @@ const Index = () => {
   const handleOptionsComplete = async (optionsData: Option[], generateWithAI: boolean = false) => {
     console.log("handleOptionsComplete called with:", optionsData, generateWithAI);
     
+    setIsProcessingManualEntries(true);
+    
+    // Traiter chaque option pour s'assurer qu'elle a une description
+    const processedOptions = [...optionsData];
+    const optionsToProcess = processedOptions.filter(option => 
+      !option.isAIGenerated && (!option.description || option.description.trim() === '')
+    );
+    
+    // Générer des descriptions pour les options ajoutées manuellement
+    if (optionsToProcess.length > 0) {
+      toast.info("Traitement des options ajoutées manuellement...");
+      
+      for (let i = 0; i < optionsToProcess.length; i++) {
+        const option = optionsToProcess[i];
+        if (!option.description || option.description.trim() === '') {
+          try {
+            const description = await generateDescription(
+              option.title, 
+              decision.title, 
+              'option'
+            );
+            
+            // Mettre à jour l'option avec la description générée
+            const index = processedOptions.findIndex(o => o.id === option.id);
+            if (index !== -1) {
+              processedOptions[index] = {
+                ...processedOptions[index],
+                description
+              };
+            }
+          } catch (error) {
+            console.error("Erreur lors de la génération de description pour l'option:", error);
+          }
+        }
+      }
+    }
+    
     // Si l'utilisateur a modifié les options ou en a ajouté de nouvelles, utilisez celles-ci
-    setOptions(optionsData);
+    setOptions(processedOptions);
     
     // Préparer les évaluations avec des scores déterministes
-    const deterministicEvaluations = optionsData.flatMap(option => 
+    const deterministicEvaluations = processedOptions.flatMap(option => 
       criteria.map(criterion => ({
         optionId: option.id,
         criterionId: criterion.id,
@@ -251,6 +371,7 @@ const Index = () => {
     
     console.log("Generated deterministic evaluations for options:", deterministicEvaluations);
     setEvaluations(deterministicEvaluations);
+    setIsProcessingManualEntries(false);
     setStep('analysis');
   };
 
@@ -282,7 +403,7 @@ const Index = () => {
           {step === 'criteria' && (
             <CriteriaEvaluation 
               criteria={criteria}
-              isLoading={isGeneratingCriteria}
+              isLoading={isGeneratingCriteria || isProcessingManualEntries}
               onComplete={handleCriteriaComplete}
               decisionTitle={decision.title}
             />
@@ -292,7 +413,7 @@ const Index = () => {
             <OptionsList 
               decisionTitle={decision.title} 
               onComplete={handleOptionsComplete}
-              isLoading={isGeneratingOptions}
+              isLoading={isGeneratingOptions || isProcessingManualEntries}
               initialOptions={options}
             />
           )}
