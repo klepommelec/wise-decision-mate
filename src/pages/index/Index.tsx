@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -99,7 +100,7 @@ const Index = () => {
 
   const renderWelcomeScreen = () => {
     if (step !== 'decision' || existingDecision) return null;
-    return <div className="max-w-4xl mx-auto mb-1 pt-16 py-0">
+    return <div className="max-w-4xl mx-auto mb-1 pt-6 pb-0">
         <motion.div initial={{
         opacity: 0,
         y: 20
