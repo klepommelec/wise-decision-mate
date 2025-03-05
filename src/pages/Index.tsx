@@ -375,6 +375,12 @@ const Index = () => {
     setStep('analysis');
   };
 
+  const handleBackToCriteria = () => {
+    // Save the current options before going back
+    console.log("Navigating back to criteria screen");
+    setStep('criteria');
+  };
+
   const handleReset = () => {
     setStep('decision');
     setDecision({ id: '', title: '', description: '' });
@@ -413,6 +419,7 @@ const Index = () => {
             <OptionsList 
               decisionTitle={decision.title} 
               onComplete={handleOptionsComplete}
+              onBack={handleBackToCriteria}
               isLoading={isGeneratingOptions || isProcessingManualEntries}
               initialOptions={options}
             />
