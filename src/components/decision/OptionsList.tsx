@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowRight, Plus, Sparkles, Trash2 } from 'lucide-react';
+import { ArrowRight, Plus, Sparkles, Trash2, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
 import { Progress } from '@/components/ui/progress';
@@ -22,11 +22,12 @@ export interface Option {
 interface OptionsListProps {
   decisionTitle: string;
   onComplete: (options: Option[], generateWithAI?: boolean) => void;
+  onBack?: () => void; // Add this line to include the onBack prop
   isLoading?: boolean;
   initialOptions?: Option[];
 }
 
-export function OptionsList({ decisionTitle, onComplete, isLoading = false, initialOptions }: OptionsListProps) {
+export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = false, initialOptions }: OptionsListProps) {
   const [options, setOptions] = useState<Option[]>(
     initialOptions && initialOptions.length > 0
       ? initialOptions
@@ -257,7 +258,17 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
             </div>
           </div>
         </CardContent>
-        <CardFooter className="justify-end pt-2">
+        <CardFooter className="justify-between pt-2">
+          {onBack && (
+            <Button 
+              onClick={onBack} 
+              variant="back"
+              className="gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Retour aux critères
+            </Button>
+          )}
           <Button 
             onClick={handleSubmit} 
             disabled={!isValid || isLoading}
