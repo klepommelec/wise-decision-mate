@@ -12,7 +12,7 @@ import { DecisionsList } from './components/DecisionsList';
 import { useDecisionSteps, type Decision } from './hooks/useDecisionSteps';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Brain, ThumbsUp, Award } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface LocationState {
   existingDecision?: {
@@ -98,53 +98,6 @@ const Index = () => {
             Notre outil vous aide à structurer votre réflexion et à analyser objectivement les options qui s'offrent à vous.
           </p>
         </motion.div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-col items-center text-center p-6 rounded-lg border bg-card"
-          >
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-              <Brain className="h-6 w-6 text-primary" />
-            </div>
-            <h3 className="text-lg font-medium mb-2">Structurez votre réflexion</h3>
-            <p className="text-muted-foreground">
-              Définissez clairement votre décision et identifiez tous les critères pertinents.
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-col items-center text-center p-6 rounded-lg border bg-card"
-          >
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-              <ThumbsUp className="h-6 w-6 text-primary" />
-            </div>
-            <h3 className="text-lg font-medium mb-2">Évaluez vos options</h3>
-            <p className="text-muted-foreground">
-              Comparez objectivement chaque option selon vos critères personnels.
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            className="flex flex-col items-center text-center p-6 rounded-lg border bg-card"
-          >
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-              <Award className="h-6 w-6 text-primary" />
-            </div>
-            <h3 className="text-lg font-medium mb-2">Obtenez des résultats clairs</h3>
-            <p className="text-muted-foreground">
-              Visualisez les résultats et recevez une recommandation pour vous aider à décider.
-            </p>
-          </motion.div>
-        </div>
         
         <motion.div 
           initial={{ opacity: 0 }}
