@@ -34,7 +34,11 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
           <button onClick={handleLogoClick} className="flex items-center gap-2">
-            <span className="text-xl font-bold">Wise</span>
+            <img 
+              src="/lovable-uploads/6101851f-2549-45ba-a231-ed9bfb465e2b.png" 
+              alt="Wise Logo" 
+              className="h-8 max-h-[32px] w-auto" 
+            />
           </button>
         </div>
         <nav className="flex items-center gap-4">
