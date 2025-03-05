@@ -10,7 +10,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { supabase, Option, Criterion, Evaluation, findRecommendedOption } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, List, Calendar, Clock, Star, CheckCircle } from 'lucide-react';
+import { ArrowRight, List, Calendar, Clock, Star, CheckCircle, PlusCircle } from 'lucide-react';
 
 type Step = 'decision' | 'criteria' | 'options' | 'analysis';
 
@@ -382,12 +382,10 @@ const Index = () => {
     console.log("Generated deterministic evaluations for options:", deterministicEvaluations);
     setEvaluations(deterministicEvaluations);
     
-    // Calculate the recommended option based on evaluations
     const recommendedOption = findRecommendedOption(processedOptions, criteria, deterministicEvaluations);
     
     if (recommendedOption && decision.id) {
       try {
-        // Update the recommended option in the database
         const { error } = await supabase
           .from('decisions')
           .update({ 
@@ -399,7 +397,6 @@ const Index = () => {
           console.error("Error updating AI recommendation:", error);
         } else {
           console.log("Updated AI recommendation:", recommendedOption);
-          // Update the local recommendations map
           setRecommendationsMap(prev => ({
             ...prev,
             [decision.id]: recommendedOption
@@ -425,6 +422,10 @@ const Index = () => {
     setOptions([]);
     setCriteria([]);
     setEvaluations([]);
+  };
+
+  const handleNewDecision = () => {
+    window.location.href = '/';
   };
 
   const handleDecisionClick = (selectedDecision: Decision) => {
@@ -457,7 +458,6 @@ const Index = () => {
       
       setUserDecisions(data || []);
       
-      // Create a map of decision ids to recommendations
       const recMap: Record<string, string> = {};
       data?.forEach(decision => {
         if (decision.ai_recommendation) {
@@ -513,33 +513,72 @@ const Index = () => {
           <Container>
             <div className="w-full max-w-2xl mx-auto">
               {step === 'criteria' && (
-                <CriteriaEvaluation 
-                  criteria={criteria}
-                  isLoading={isGeneratingCriteria || isProcessingManualEntries}
-                  onComplete={handleCriteriaComplete}
-                  decisionTitle={decision.title}
-                />
+                <div>
+                  <div className="flex justify-end mb-4">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleNewDecision}
+                      className="gap-2"
+                    >
+                      <PlusCircle className="h-4 w-4" />
+                      Nouvelle décision
+                    </Button>
+                  </div>
+                  <CriteriaEvaluation 
+                    criteria={criteria}
+                    isLoading={isGeneratingCriteria || isProcessingManualEntries}
+                    onComplete={handleCriteriaComplete}
+                    decisionTitle={decision.title}
+                  />
+                </div>
               )}
               
               {step === 'options' && (
-                <OptionsList 
-                  decisionTitle={decision.title} 
-                  onComplete={handleOptionsComplete}
-                  onBack={handleBackToCriteria}
-                  isLoading={isGeneratingOptions || isProcessingManualEntries}
-                  initialOptions={options}
-                />
+                <div>
+                  <div className="flex justify-end mb-4">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleNewDecision}
+                      className="gap-2"
+                    >
+                      <PlusCircle className="h-4 w-4" />
+                      Nouvelle décision
+                    </Button>
+                  </div>
+                  <OptionsList 
+                    decisionTitle={decision.title} 
+                    onComplete={handleOptionsComplete}
+                    onBack={handleBackToCriteria}
+                    isLoading={isGeneratingOptions || isProcessingManualEntries}
+                    initialOptions={options}
+                  />
+                </div>
               )}
               
               {step === 'analysis' && (
-                <AnalysisResult
-                  decisionTitle={decision.title}
-                  options={options}
-                  criteria={criteria}
-                  evaluations={evaluations}
-                  onBack={() => setStep('options')}
-                  onReset={handleReset}
-                />
+                <div>
+                  <div className="flex justify-end mb-4">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleNewDecision}
+                      className="gap-2"
+                    >
+                      <PlusCircle className="h-4 w-4" />
+                      Nouvelle décision
+                    </Button>
+                  </div>
+                  <AnalysisResult
+                    decisionTitle={decision.title}
+                    options={options}
+                    criteria={criteria}
+                    evaluations={evaluations}
+                    onBack={() => setStep('options')}
+                    onReset={handleReset}
+                  />
+                </div>
               )}
             </div>
           </Container>

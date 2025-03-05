@@ -2,9 +2,9 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { Sparkles, Calendar } from 'lucide-react';
+import { Sparkles, Calendar, PlusCircle } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -110,6 +110,11 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
       setIsSubmitting(false);
     }
   }, [title, deadline, useAI, user, navigate, onSubmit, initialDecision]);
+
+  const handleNewDecision = () => {
+    // Rechargement de la page pour commencer une nouvelle décision
+    window.location.href = '/';
+  };
   
   return (
     <div className="w-full max-w-2xl mx-auto animate-fade-in pt-10">
@@ -188,6 +193,16 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
             </Button>
           </form>
         </CardContent>
+        <CardFooter>
+          <Button 
+            variant="outline" 
+            className="w-full flex items-center gap-2 mt-2" 
+            onClick={handleNewDecision}
+          >
+            <PlusCircle className="h-4 w-4" />
+            Nouvelle décision
+          </Button>
+        </CardFooter>
       </Card>
     </div>
   );
