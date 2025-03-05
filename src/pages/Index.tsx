@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
@@ -24,6 +23,7 @@ interface LocationState {
 // Fonction pour générer des options avec Claude AI
 const generateAIOptions = async (decisionTitle: string, decisionDescription: string): Promise<Option[]> => {
   try {
+    console.log("Attempting to generate AI options for:", decisionTitle);
     const response = await supabase.functions.invoke('generateAIOptions', {
       body: { title: decisionTitle, description: decisionDescription }
     });
@@ -32,9 +32,12 @@ const generateAIOptions = async (decisionTitle: string, decisionDescription: str
       throw new Error(response.error.message);
     }
 
+    console.log("AI options response:", response.data);
+    
+    // Ensure each option has a valid ID
     return response.data.options.map((option, index) => ({
       ...option,
-      id: (index + 1).toString(),
+      id: `ai-${index + 1}`,
       isAIGenerated: true
     }));
   } catch (error: any) {
@@ -43,10 +46,10 @@ const generateAIOptions = async (decisionTitle: string, decisionDescription: str
     
     // Options par défaut en cas d'erreur
     return [
-      { id: '1', title: 'Option A', description: 'Première solution envisageable pour répondre à cette problématique.', isAIGenerated: true },
-      { id: '2', title: 'Option B', description: 'Alternative qui présente des avantages différents.', isAIGenerated: true },
-      { id: '3', title: 'Option C', description: 'Approche plus innovante ou moins conventionnelle.', isAIGenerated: true },
-      { id: '4', title: 'Statu quo', description: 'Ne rien changer et maintenir la situation actuelle.', isAIGenerated: true }
+      { id: 'ai-1', title: 'Option A', description: 'Première solution envisageable pour répondre à cette problématique.', isAIGenerated: true },
+      { id: 'ai-2', title: 'Option B', description: 'Alternative qui présente des avantages différents.', isAIGenerated: true },
+      { id: 'ai-3', title: 'Option C', description: 'Approche plus innovante ou moins conventionnelle.', isAIGenerated: true },
+      { id: 'ai-4', title: 'Statu quo', description: 'Ne rien changer et maintenir la situation actuelle.', isAIGenerated: true }
     ];
   }
 };
@@ -169,43 +172,58 @@ const Index = () => {
     setCriteria(criteriaData);
     
     // After criteria are complete, move to options step
+    // Initialize with empty options if none exist
+    if (options.length === 0) {
+      setOptions([
+        { id: '1', title: '', description: '', isAIGenerated: false },
+        { id: '2', title: '', description: '', isAIGenerated: false }
+      ]);
+    }
+    
     setStep('options');
   };
 
   const handleOptionsComplete = async (optionsData: Option[], generateWithAI: boolean = false) => {
     console.log("handleOptionsComplete called with:", optionsData, generateWithAI);
+    console.log("Generate with AI flag:", generateWithAI);
     
-    if (generateWithAI && (optionsData.length === 0 || optionsData.every(option => !option.title.trim()))) {
+    if (generateWithAI) {
       try {
         setIsGeneratingOptions(true);
         toast.info("Génération des options en cours...");
         
         const aiOptions = await generateAIOptions(decision.title, decision.description);
         console.log("AI options generated:", aiOptions);
-        setOptions(aiOptions);
         
-        // Prépare les évaluations par défaut avec les options IA
-        const defaultEvaluations = aiOptions.flatMap(option => 
-          criteria.map(criterion => ({
-            optionId: option.id,
-            criterionId: criterion.id,
-            score: 5
-          }))
-        );
-        
-        setEvaluations(defaultEvaluations);
-        toast.success("Options générées avec succès!");
-        
-        // Passer directement à l'analyse
-        setStep('analysis');
+        if (aiOptions && aiOptions.length > 0) {
+          setOptions(aiOptions);
+          
+          // Préparer les évaluations par défaut avec les options IA
+          const defaultEvaluations = aiOptions.flatMap(option => 
+            criteria.map(criterion => ({
+              optionId: option.id,
+              criterionId: criterion.id,
+              score: 5
+            }))
+          );
+          
+          setEvaluations(defaultEvaluations);
+          toast.success("Options générées avec succès!");
+          
+          // Passer à l'analyse
+          setStep('analysis');
+        } else {
+          toast.error("Aucune option n'a pu être générée. Veuillez essayer à nouveau.");
+          setIsGeneratingOptions(false);
+        }
       } catch (error) {
         console.error("Error generating options:", error);
         toast.error("Erreur lors de la génération des options");
         setOptions(optionsData);
-      } finally {
         setIsGeneratingOptions(false);
       }
     } else {
+      // Use manual options
       setOptions(optionsData);
       
       // Prépare les évaluations par défaut avec les options manuelles

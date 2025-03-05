@@ -67,14 +67,17 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
     console.log("handleSubmit called with options:", options);
     console.log("useAI setting:", useAI);
     
-    // Si toutes les options sont vides et que useAI est true, demander à l'IA de générer des options
-    const allEmpty = options.every(o => !o.title.trim());
+    // Check if all options are empty (titles specifically)
+    const allEmptyTitles = options.every(o => !o.title.trim());
+    console.log("All option titles empty?", allEmptyTitles);
     
-    // Passer correctement le paramètre generateWithAI à la fonction onComplete
-    onComplete(options, allEmpty && useAI);
+    // Pass options and the generateWithAI flag to the onComplete function
+    // Generate with AI if all options are empty and AI is enabled
+    onComplete(options, allEmptyTitles && useAI);
   };
   
-  const isValid = options.length >= 2 || useAI;
+  // Valid if we have at least 2 options with content OR AI is enabled
+  const isValid = (options.length >= 2 && options.some(o => o.title.trim() !== '')) || useAI;
   
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
