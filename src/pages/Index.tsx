@@ -427,19 +427,25 @@ const Index = () => {
   }
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header />
-      <Container>
-        <div className="min-h-[100vh] flex flex-col">
-          <div className="flex-1 flex items-center justify-center min-h-screen w-full">
-            <div className="w-full max-w-2xl mx-auto">
-              {step === 'decision' && (
+      <div className="flex-1 flex flex-col">
+        {step === 'decision' && (
+          <div className="flex-1 flex items-center justify-center">
+            <Container className="flex justify-center items-center w-full">
+              <div className="w-full max-w-2xl mx-auto">
                 <DecisionForm 
                   onSubmit={handleDecisionSubmit} 
                   initialDecision={decision.id ? decision : undefined}
                 />
-              )}
-              
+              </div>
+            </Container>
+          </div>
+        )}
+        
+        {step !== 'decision' && (
+          <Container>
+            <div className="w-full max-w-2xl mx-auto">
               {step === 'criteria' && (
                 <CriteriaEvaluation 
                   criteria={criteria}
@@ -470,91 +476,95 @@ const Index = () => {
                 />
               )}
             </div>
-          </div>
+          </Container>
+        )}
 
-          {user && step === 'decision' && (
-            <div className="w-full max-w-5xl mx-auto py-12">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Mes Décisions</h2>
-                <Button onClick={() => handleReset()} className="gap-2">
-                  Nouvelle décision
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {loadingDecisions ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[1, 2, 3].map((i) => (
-                    <Card key={i} className="h-[180px] animate-pulse">
-                      <CardHeader>
-                        <div className="h-5 bg-muted rounded w-3/4 mb-2"></div>
-                        <div className="h-4 bg-muted rounded w-1/2"></div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="h-4 bg-muted rounded w-full mb-2"></div>
-                        <div className="h-4 bg-muted rounded w-2/3"></div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              ) : userDecisions.length === 0 ? (
-                <Card className="p-8 text-center">
-                  <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                    <List className="text-primary h-6 w-6" />
-                  </div>
-                  <CardTitle className="mb-2">Aucune décision</CardTitle>
-                  <CardDescription className="mb-6">
-                    Vous n'avez pas encore enregistré de décisions
-                  </CardDescription>
-                  <Button onClick={() => handleReset()}>
-                    Créer votre première décision
+        {user && step === 'decision' && (
+          <div className="w-full mt-auto">
+            <Container className="py-12">
+              <div className="w-full max-w-5xl mx-auto">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold">Mes Décisions</h2>
+                  <Button onClick={() => handleReset()} className="gap-2">
+                    Nouvelle décision
+                    <ArrowRight className="h-4 w-4" />
                   </Button>
-                </Card>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {userDecisions.map((decision) => (
-                    <Card 
-                      key={decision.id}
-                      className="hover:shadow-md transition-shadow cursor-pointer"
-                      onClick={() => handleDecisionClick(decision)}
-                    >
-                      <CardHeader>
-                        <div className="flex justify-between items-start mb-2">
-                          <CardTitle className="line-clamp-1">{decision.title}</CardTitle>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <CardDescription className="flex items-center gap-1 text-xs">
-                            <Clock className="h-3 w-3" />
-                            {formatDate(decision.deadline)}
-                          </CardDescription>
-                          
-                          {decision.favorite_option && (
-                            <div className="text-xs bg-green-100 dark:bg-green-950 text-green-800 dark:text-green-300 px-2 py-0.5 rounded-md">
-                              ★ {decision.favorite_option}
-                            </div>
-                          )}
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        {decision.description ? (
-                          <p className="text-sm text-muted-foreground line-clamp-3">
-                            {decision.description}
-                          </p>
-                        ) : (
-                          <p className="text-sm text-muted-foreground italic">
-                            Pas de description
-                          </p>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
                 </div>
-              )}
-            </div>
-          )}
-        </div>
-      </Container>
-    </>
+
+                {loadingDecisions ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[1, 2, 3].map((i) => (
+                      <Card key={i} className="h-[180px] animate-pulse">
+                        <CardHeader>
+                          <div className="h-5 bg-muted rounded w-3/4 mb-2"></div>
+                          <div className="h-4 bg-muted rounded w-1/2"></div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="h-4 bg-muted rounded w-full mb-2"></div>
+                          <div className="h-4 bg-muted rounded w-2/3"></div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : userDecisions.length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                      <List className="text-primary h-6 w-6" />
+                    </div>
+                    <CardTitle className="mb-2">Aucune décision</CardTitle>
+                    <CardDescription className="mb-6">
+                      Vous n'avez pas encore enregistré de décisions
+                    </CardDescription>
+                    <Button onClick={() => handleReset()}>
+                      Créer votre première décision
+                    </Button>
+                  </Card>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {userDecisions.map((decision) => (
+                      <Card 
+                        key={decision.id}
+                        className="hover:shadow-md transition-shadow cursor-pointer"
+                        onClick={() => handleDecisionClick(decision)}
+                      >
+                        <CardHeader>
+                          <div className="flex justify-between items-start mb-2">
+                            <CardTitle className="line-clamp-1">{decision.title}</CardTitle>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <CardDescription className="flex items-center gap-1 text-xs">
+                              <Clock className="h-3 w-3" />
+                              {formatDate(decision.deadline)}
+                            </CardDescription>
+                            
+                            {decision.favorite_option && (
+                              <div className="text-xs bg-green-100 dark:bg-green-950 text-green-800 dark:text-green-300 px-2 py-0.5 rounded-md">
+                                ★ {decision.favorite_option}
+                              </div>
+                            )}
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          {decision.description ? (
+                            <p className="text-sm text-muted-foreground line-clamp-3">
+                              {decision.description}
+                            </p>
+                          ) : (
+                            <p className="text-sm text-muted-foreground italic">
+                              Pas de description
+                            </p>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Container>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
