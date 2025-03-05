@@ -24,7 +24,9 @@ import {
   Filter,
   Moon,
   Sun,
-  Monitor
+  Monitor,
+  ChevronDown,
+  Check
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
@@ -163,6 +165,32 @@ export default function Profile() {
     );
   }
 
+  const getThemeIcon = () => {
+    switch (theme) {
+      case 'light':
+        return <Sun className="h-4 w-4 mr-2" />;
+      case 'dark':
+        return <Moon className="h-4 w-4 mr-2" />;
+      case 'system':
+        return <Monitor className="h-4 w-4 mr-2" />;
+      default:
+        return <Sun className="h-4 w-4 mr-2" />;
+    }
+  };
+
+  const getThemeLabel = () => {
+    switch (theme) {
+      case 'light':
+        return 'Clair';
+      case 'dark':
+        return 'Sombre';
+      case 'system':
+        return 'Système';
+      default:
+        return 'Clair';
+    }
+  };
+
   return (
     <Container className="py-10">
       <div className="max-w-4xl mx-auto">
@@ -217,35 +245,47 @@ export default function Profile() {
                           <div className="space-y-4 py-4">
                             <div className="flex justify-between items-center">
                               <span>Thème</span>
-                              <div className="flex gap-2">
-                                <Button 
-                                  variant={theme === "light" ? "default" : "outline"} 
-                                  size="sm"
-                                  onClick={() => setTheme("light")}
-                                  className="gap-1"
-                                >
-                                  <Sun className="h-3.5 w-3.5" />
-                                  Clair
-                                </Button>
-                                <Button 
-                                  variant={theme === "dark" ? "default" : "outline"} 
-                                  size="sm"
-                                  onClick={() => setTheme("dark")}
-                                  className="gap-1"
-                                >
-                                  <Moon className="h-3.5 w-3.5" />
-                                  Sombre
-                                </Button>
-                                <Button 
-                                  variant={theme === "system" ? "default" : "outline"} 
-                                  size="sm"
-                                  onClick={() => setTheme("system")}
-                                  className="gap-1"
-                                >
-                                  <Monitor className="h-3.5 w-3.5" />
-                                  Système
-                                </Button>
-                              </div>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="outline" size="sm" className="flex items-center gap-1">
+                                    {getThemeIcon()}
+                                    {getThemeLabel()}
+                                    <ChevronDown className="h-3.5 w-3.5 ml-1" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem 
+                                    onClick={() => setTheme("light")}
+                                    className="flex items-center"
+                                  >
+                                    <Sun className="h-3.5 w-3.5 mr-2" />
+                                    <span>Clair</span>
+                                    {theme === "light" && (
+                                      <Check className="h-3.5 w-3.5 ml-2" />
+                                    )}
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem 
+                                    onClick={() => setTheme("dark")}
+                                    className="flex items-center"
+                                  >
+                                    <Moon className="h-3.5 w-3.5 mr-2" />
+                                    <span>Sombre</span>
+                                    {theme === "dark" && (
+                                      <Check className="h-3.5 w-3.5 ml-2" />
+                                    )}
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem 
+                                    onClick={() => setTheme("system")}
+                                    className="flex items-center"
+                                  >
+                                    <Monitor className="h-3.5 w-3.5 mr-2" />
+                                    <span>Système</span>
+                                    {theme === "system" && (
+                                      <Check className="h-3.5 w-3.5 ml-2" />
+                                    )}
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </div>
                             <div className="flex justify-between items-center">
                               <span>Notifications par email</span>
