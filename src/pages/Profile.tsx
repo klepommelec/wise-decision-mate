@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container } from "@/components/layout/Container";
@@ -53,6 +52,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useTheme } from "@/hooks/use-theme";
+import { Separator } from "@/components/ui/separator";
 
 export default function Profile() {
   const { user, loading } = useAuth();
@@ -80,12 +80,10 @@ export default function Profile() {
         .select("*")
         .eq("user_id", user?.id);
       
-      // Filtrage des favoris si activé
       if (showFavorites) {
         query = query.not('favorite_option', 'is', null);
       }
       
-      // Tri selon la sélection de l'utilisateur
       if (sortBy === "recent") {
         query = query.order("created_at", { ascending: false });
       } else if (sortBy === "alphabetical") {
@@ -244,6 +242,21 @@ export default function Profile() {
                           </DialogHeader>
                           <div className="space-y-4 py-4">
                             <div className="flex justify-between items-center">
+                              <span>Notifications par email</span>
+                              <Button variant="outline" size="sm">Configurer</Button>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span>Changer de mot de passe</span>
+                              <Button variant="outline" size="sm">Modifier</Button>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span>Exporter mes données</span>
+                              <Button variant="outline" size="sm">Exporter</Button>
+                            </div>
+                            
+                            <Separator className="my-4" />
+                            
+                            <div className="flex justify-between items-center">
                               <span>Thème</span>
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -286,18 +299,6 @@ export default function Profile() {
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span>Notifications par email</span>
-                              <Button variant="outline" size="sm">Configurer</Button>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span>Changer de mot de passe</span>
-                              <Button variant="outline" size="sm">Modifier</Button>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span>Exporter mes données</span>
-                              <Button variant="outline" size="sm">Exporter</Button>
                             </div>
                           </div>
                         </DialogContent>
@@ -565,7 +566,6 @@ export default function Profile() {
   );
 }
 
-// Composants d'icônes supplémentaires
 function GridIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
