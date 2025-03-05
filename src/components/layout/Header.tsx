@@ -33,7 +33,7 @@ export function Header() {
             e.preventDefault();
             navigate("/");
           }}>
-            <span className="text-xl font-bold">Mate</span>
+            <span className="text-xl font-bold">Wise</span>
           </Link>
         </div>
         <nav className="flex items-center gap-4">
