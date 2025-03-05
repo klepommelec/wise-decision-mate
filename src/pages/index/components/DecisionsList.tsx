@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -6,6 +7,7 @@ import { ArrowRight, List, Clock, Star, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/context/AuthContext';
+
 interface Decision {
   id: string;
   title: string;
@@ -15,42 +17,46 @@ interface Decision {
   favorite_option?: string | null;
   ai_recommendation?: string | null;
 }
+
 interface DecisionsListProps {
   onDecisionClick: (decision: Decision) => void;
   onNewDecision: () => void;
 }
-export function DecisionsList({
-  onDecisionClick,
-  onNewDecision
-}: DecisionsListProps) {
+
+export function DecisionsList({ onDecisionClick, onNewDecision }: DecisionsListProps) {
   const [userDecisions, setUserDecisions] = useState<Decision[]>([]);
   const [loadingDecisions, setLoadingDecisions] = useState(true);
   const [recommendationsMap, setRecommendationsMap] = useState<Record<string, string>>({});
-  const {
-    user
-  } = useAuth();
+  const { user } = useAuth();
+
   useEffect(() => {
     fetchDecisionsWithRecommendations();
   }, [user]);
+
   const fetchDecisionsWithRecommendations = async () => {
     if (!user) return;
+
     try {
       setLoadingDecisions(true);
-      const {
-        data,
-        error
-      } = await supabase.from("decisions").select("id, title, description, created_at, deadline, favorite_option, ai_recommendation").eq("user_id", user.id).order("created_at", {
-        ascending: false
-      });
+      const { data, error } = await supabase
+        .from("decisions")
+        .select("id, title, description, created_at, deadline, favorite_option, ai_recommendation")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
       if (error) throw error;
+      
       setUserDecisions(data || []);
+      
       const recMap: Record<string, string> = {};
       data?.forEach(decision => {
         if (decision.ai_recommendation) {
           recMap[decision.id] = decision.ai_recommendation;
         }
       });
+      
       setRecommendationsMap(recMap);
+      
     } catch (error: any) {
       console.error("Erreur lors de la récupération des décisions:", error);
       toast.error("Impossible de charger vos décisions");
@@ -58,26 +64,31 @@ export function DecisionsList({
       setLoadingDecisions(false);
     }
   };
+
   const formatDate = (dateString: string | undefined | null) => {
     if (!dateString) return "Pas de deadline";
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("fr-FR", {
       day: "numeric",
       month: "long",
-      year: "numeric"
+      year: "numeric",
     }).format(date);
   };
-  return <div className="w-full max-w-5xl mx-auto">
+
+  return (
+    <div className="w-full max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Mon historique</h2>
+        <h2 className="text-2xl font-bold">Mes Décisions</h2>
         <Button onClick={onNewDecision} className="gap-2">
           Nouvelle décision
           <ArrowRight className="h-4 w-4" />
         </Button>
       </div>
 
-      {loadingDecisions ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map(i => <Card key={i} className="h-[180px] animate-pulse">
+      {loadingDecisions ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="h-[180px] animate-pulse">
               <CardHeader>
                 <div className="h-5 bg-muted rounded w-3/4 mb-2"></div>
                 <div className="h-4 bg-muted rounded w-1/2"></div>
@@ -86,8 +97,11 @@ export function DecisionsList({
                 <div className="h-4 bg-muted rounded w-full mb-2"></div>
                 <div className="h-4 bg-muted rounded w-2/3"></div>
               </CardContent>
-            </Card>)}
-        </div> : userDecisions.length === 0 ? <Card className="p-8 text-center">
+            </Card>
+          ))}
+        </div>
+      ) : userDecisions.length === 0 ? (
+        <Card className="p-8 text-center">
           <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
             <List className="text-primary h-6 w-6" />
           </div>
@@ -98,8 +112,15 @@ export function DecisionsList({
           <Button onClick={onNewDecision}>
             Créer votre première décision
           </Button>
-        </Card> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {userDecisions.map(decision => <Card key={decision.id} className="hover:shadow-md transition-shadow cursor-pointer border border-gray-200" onClick={() => onDecisionClick(decision)}>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {userDecisions.map((decision) => (
+            <Card 
+              key={decision.id}
+              className="hover:shadow-md transition-shadow cursor-pointer border border-gray-200"
+              onClick={() => onDecisionClick(decision)}
+            >
               <CardHeader>
                 <div className="flex justify-between items-start mb-2">
                   <CardTitle className="line-clamp-1">{decision.title}</CardTitle>
@@ -112,20 +133,31 @@ export function DecisionsList({
                 </div>
               </CardHeader>
               <CardContent>
-                {decision.favorite_option ? <div className="flex items-center gap-1.5 text-green-700 dark:text-green-500 text-sm font-medium">
+                {decision.favorite_option ? (
+                  <div className="flex items-center gap-1.5 text-green-700 dark:text-green-500 text-sm font-medium">
                     <CheckCircle className="h-4 w-4" />
                     <span className="line-clamp-1">{decision.favorite_option}</span>
-                  </div> : <div>
-                    {recommendationsMap[decision.id] ? <div className="flex items-center gap-1.5 text-yellow-700 dark:text-yellow-500 text-sm text-muted-foreground">
+                  </div>
+                ) : (
+                  <div>
+                    {recommendationsMap[decision.id] ? (
+                      <div className="flex items-center gap-1.5 text-yellow-700 dark:text-yellow-500 text-sm text-muted-foreground">
                         <Star className="h-3.5 w-3.5" />
                         <span>Recommandation IA: {recommendationsMap[decision.id]}</span>
-                      </div> : <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
                         <Star className="h-3.5 w-3.5" />
                         <span>Pas encore de recommandation</span>
-                      </div>}
-                  </div>}
+                      </div>
+                    )}
+                  </div>
+                )}
               </CardContent>
-            </Card>)}
-        </div>}
-    </div>;
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
