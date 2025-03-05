@@ -8,12 +8,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { ArrowRight, Plus, Sparkles, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
+import { Progress } from '@/components/ui/progress';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface Option {
   id: string;
   title: string;
   description: string;
   isAIGenerated?: boolean;
+  isLoading?: boolean;
 }
 
 interface OptionsListProps {
@@ -28,8 +31,8 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
     initialOptions && initialOptions.length > 0
       ? initialOptions
       : [
-          { id: '1', title: '', description: '', isAIGenerated: false },
-          { id: '2', title: '', description: '', isAIGenerated: false },
+          { id: '1', title: '', description: '', isAIGenerated: false, isLoading: false },
+          { id: '2', title: '', description: '', isAIGenerated: false, isLoading: false },
         ]
   );
   
@@ -38,7 +41,10 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
   // Update options when initialOptions changes
   useEffect(() => {
     if (initialOptions && initialOptions.length > 0) {
-      setOptions(initialOptions);
+      setOptions(initialOptions.map(option => ({
+        ...option,
+        isLoading: false
+      })));
     }
   }, [initialOptions]);
   
@@ -47,7 +53,8 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
       id: Math.random().toString(36).substr(2, 9), 
       title: '', 
       description: '',
-      isAIGenerated: false
+      isAIGenerated: false,
+      isLoading: false
     };
     setOptions([...options, newOption]);
   };
@@ -61,6 +68,57 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
     setOptions(options.map(o => 
       o.id === id ? { ...o, [field]: value, isAIGenerated: false } : o
     ));
+  };
+
+  // Function to generate description for an option
+  const generateDescription = async (option: Option) => {
+    if (!option.title.trim() || option.isAIGenerated || option.isLoading) return;
+    
+    try {
+      // Set loading state for this specific option
+      setOptions(prevOptions => prevOptions.map(o => 
+        o.id === option.id ? { ...o, isLoading: true } : o
+      ));
+      
+      // Call the generateDescription edge function
+      const response = await supabase.functions.invoke('generateDescription', {
+        body: { 
+          title: option.title, 
+          context: decisionTitle, 
+          type: 'option' 
+        }
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+      
+      // Update the option with the generated description
+      setOptions(prevOptions => prevOptions.map(o => 
+        o.id === option.id 
+          ? { 
+              ...o, 
+              description: response.data.description, 
+              isLoading: false 
+            } 
+          : o
+      ));
+    } catch (error) {
+      console.error('Erreur lors de la génération de description:', error);
+      
+      // Reset loading state on error
+      setOptions(prevOptions => prevOptions.map(o => 
+        o.id === option.id ? { ...o, isLoading: false } : o
+      ));
+    }
+  };
+  
+  // Function to handle blur event on title input
+  const handleTitleBlur = (option: Option) => {
+    // Generate description if title has content and option doesn't already have a description
+    if (option.title.trim() && (!option.description || option.description.trim() === '')) {
+      generateDescription(option);
+    }
   };
   
   const handleSubmit = () => {
@@ -142,19 +200,28 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
                       id={`title-${option.id}`}
                       value={option.title}
                       onChange={(e) => updateOption(option.id, 'title', e.target.value)}
+                      onBlur={() => handleTitleBlur(option)}
                       placeholder="Ex: Acheter une maison neuve"
                       className="w-full"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor={`description-${option.id}`}>Description (optionnel)</Label>
-                    <Textarea
-                      id={`description-${option.id}`}
-                      value={option.description}
-                      onChange={(e) => updateOption(option.id, 'description', e.target.value)}
-                      placeholder="Détails, avantages et inconvénients de cette option..."
-                      className="min-h-[80px]"
-                    />
+                    {option.isLoading ? (
+                      <div className="space-y-2 animate-pulse">
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                        <Progress className="h-1 mt-1" value={50} />
+                      </div>
+                    ) : (
+                      <Textarea
+                        id={`description-${option.id}`}
+                        value={option.description}
+                        onChange={(e) => updateOption(option.id, 'description', e.target.value)}
+                        placeholder="Détails, avantages et inconvénients de cette option..."
+                        className="min-h-[80px]"
+                      />
+                    )}
                   </div>
                 </div>
               </div>
