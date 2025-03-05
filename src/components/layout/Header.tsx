@@ -13,7 +13,6 @@ export function Header() {
 
   const handleSignOut = async () => {
     try {
-      // Utiliser le contexte d'authentification
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
@@ -25,11 +24,18 @@ export function Header() {
     }
   };
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // Naviguer vers la page d'accueil et forcer un rechargement de l'état
+    navigate("/", { replace: true });
+    window.location.href = "/";
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2" onClick={handleLogoClick}>
             <span className="text-xl font-bold">Wise</span>
           </Link>
         </div>
