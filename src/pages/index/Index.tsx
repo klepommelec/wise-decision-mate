@@ -12,6 +12,7 @@ import { useDecisionSteps, type Decision } from './hooks/useDecisionSteps';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+
 interface LocationState {
   existingDecision?: {
     id: string;
@@ -20,6 +21,7 @@ interface LocationState {
     deadline?: string;
   };
 }
+
 const Index = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -45,13 +47,14 @@ const Index = () => {
     handleBackToCriteria,
     handleReset
   } = useDecisionSteps(existingDecision);
+
   useEffect(() => {
     if (existingDecision) {
       console.log("Loading existing decision:", existingDecision);
     }
   }, [existingDecision]);
+
   useEffect(() => {
-    // Scroll to top when step changes
     if (contentRef.current) {
       contentRef.current.scrollIntoView({
         behavior: 'smooth',
@@ -59,9 +62,11 @@ const Index = () => {
       });
     }
   }, [step]);
+
   const handleNewDecision = () => {
     window.location.href = '/';
   };
+
   const handleDecisionClick = (selectedDecision: Decision) => {
     console.log("Opening decision:", selectedDecision.id, selectedDecision.title);
     navigate("/", {
@@ -75,46 +80,43 @@ const Index = () => {
       }
     });
   };
+
   if (!loading && !user) {
     return <Navigate to="/auth" />;
   }
+
   const renderWelcomeScreen = () => {
     if (step !== 'decision' || existingDecision) return null;
-    return <div className="max-w-4xl mx-auto ">
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.5
-      }} className="text-center mb-12">
-          <h1 className="text-4xl font-bold tracking-tight mb-3">Prenez des décisions éclairées</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Notre outil vous aide à structurer votre réflexion et à analyser objectivement les options qui s'offrent à vous.</p>
-        </motion.div>
-      </div>;
+    return (
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ duration: 0.5 }} 
+        className="text-center mb-12"
+      >
+        <h1 className="text-4xl font-bold tracking-tight mb-3">Prenez des décisions éclairées</h1>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Notre outil vous aide à structurer votre réflexion et à analyser objectivement les options qui s'offrent à vous.</p>
+      </motion.div>
+    );
   };
+
   return <div className="flex flex-col min-h-screen" ref={contentRef}>
       <div className="flex-1 flex flex-col py-[40px]">
-        {step === 'decision' && <>
-            {renderWelcomeScreen()}
-            <div id="decision-form" className="flex-1 flex items-center justify-center py-0">
-              <Container className="flex justify-center items-center w-full">
-                <motion.div className="w-full max-w-2xl mx-auto" initial={{
-              opacity: 0,
-              y: 20
-            }} animate={{
-              opacity: 1,
-              y: 0
-            }} transition={{
-              duration: 0.4
-            }}>
-                  <DecisionForm onSubmit={handleDecisionSubmit} initialDecision={decision.id ? decision : undefined} />
-                </motion.div>
-              </Container>
-            </div>
-          </>}
+        {step === 'decision' && (
+          <div className="flex-1 flex flex-col items-center justify-center py-0">
+            <Container className="flex flex-col justify-center items-center w-full max-w-4xl mx-auto">
+              {renderWelcomeScreen()}
+              <motion.div 
+                className="w-full max-w-2xl mx-auto" 
+                initial={{ opacity: 0, y: 20 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.4 }}
+              >
+                <DecisionForm onSubmit={handleDecisionSubmit} initialDecision={decision.id ? decision : undefined} />
+              </motion.div>
+            </Container>
+          </div>
+        )}
         
         <AnimatePresence mode="wait">
           {step !== 'decision' && <Container>
@@ -165,4 +167,5 @@ const Index = () => {
       </div>
     </div>;
 };
+
 export default Index;
