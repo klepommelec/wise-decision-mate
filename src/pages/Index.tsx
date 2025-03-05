@@ -31,10 +31,34 @@ const generateAIOptions = async (decisionTitle: string, decisionDescription: str
     
     // Options par défaut en cas d'erreur
     return [
-      { id: '1', title: 'Option A', description: 'Première solution envisageable pour répondre à cette problématique.' },
-      { id: '2', title: 'Option B', description: 'Alternative qui présente des avantages différents.' },
-      { id: '3', title: 'Option C', description: 'Approche plus innovante ou moins conventionnelle.' },
-      { id: '4', title: 'Statu quo', description: 'Ne rien changer et maintenir la situation actuelle.' }
+      { 
+        id: '1', 
+        title: 'Option A', 
+        description: 'Première solution envisageable pour répondre à cette problématique.',
+        isAIGenerated: true,
+        imageUrl: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80'
+      },
+      { 
+        id: '2', 
+        title: 'Option B', 
+        description: 'Alternative qui présente des avantages différents.',
+        isAIGenerated: true,
+        imageUrl: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=800&q=80'
+      },
+      { 
+        id: '3', 
+        title: 'Option C', 
+        description: 'Approche plus innovante ou moins conventionnelle.',
+        isAIGenerated: true,
+        imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80'
+      },
+      { 
+        id: '4', 
+        title: 'Statu quo', 
+        description: 'Ne rien changer et maintenir la situation actuelle.',
+        isAIGenerated: true,
+        imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80'
+      }
     ];
   }
 };
@@ -65,8 +89,8 @@ const Index = () => {
         toast.error("Erreur lors de la génération des options");
         // Set default empty options
         setOptions([
-          { id: '1', title: '', description: '' },
-          { id: '2', title: '', description: '' }
+          { id: '1', title: '', description: '', isAIGenerated: false },
+          { id: '2', title: '', description: '', isAIGenerated: false }
         ]);
       } finally {
         setIsGeneratingOptions(false);
@@ -74,8 +98,8 @@ const Index = () => {
     } else {
       // Set default empty options if not generating
       setOptions([
-        { id: '1', title: '', description: '' },
-        { id: '2', title: '', description: '' }
+        { id: '1', title: '', description: '', isAIGenerated: false },
+        { id: '2', title: '', description: '', isAIGenerated: false }
       ]);
     }
     

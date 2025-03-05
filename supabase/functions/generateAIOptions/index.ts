@@ -10,6 +10,14 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// Generic option images for different categories
+const optionImages = [
+  "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80", // tech
+  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80", // business
+  "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=800&q=80", // productivity
+  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80", // finance
+]
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -85,7 +93,15 @@ Réponds uniquement avec ce JSON, sans autre texte.`
       // Try to extract the JSON part
       const jsonMatch = contentText.match(/\[\s*\{.*\}\s*\]/s)
       if (jsonMatch) {
-        options = JSON.parse(jsonMatch[0])
+        const parsedOptions = JSON.parse(jsonMatch[0])
+        
+        // Add imageUrl and isAIGenerated properties to each option
+        options = parsedOptions.map((option, index) => ({
+          ...option,
+          id: crypto.randomUUID(),
+          imageUrl: optionImages[index % optionImages.length],
+          isAIGenerated: true
+        }))
       } else {
         // Fallback if the response is not in the expected format
         throw new Error('Format de réponse invalide')
@@ -94,10 +110,10 @@ Réponds uniquement avec ce JSON, sans autre texte.`
       console.error('Erreur lors du parsing de la réponse:', e)
       // Provide fallback options in case of parsing error
       options = [
-        { title: "Option A", description: "Première option par défaut suite à une erreur de traitement." },
-        { title: "Option B", description: "Deuxième option par défaut suite à une erreur de traitement." },
-        { title: "Option C", description: "Troisième option par défaut suite à une erreur de traitement." },
-        { title: "Option D", description: "Quatrième option par défaut suite à une erreur de traitement." }
+        { id: crypto.randomUUID(), title: "Option A", description: "Première option par défaut suite à une erreur de traitement.", imageUrl: optionImages[0], isAIGenerated: true },
+        { id: crypto.randomUUID(), title: "Option B", description: "Deuxième option par défaut suite à une erreur de traitement.", imageUrl: optionImages[1], isAIGenerated: true },
+        { id: crypto.randomUUID(), title: "Option C", description: "Troisième option par défaut suite à une erreur de traitement.", imageUrl: optionImages[2], isAIGenerated: true },
+        { id: crypto.randomUUID(), title: "Option D", description: "Quatrième option par défaut suite à une erreur de traitement.", imageUrl: optionImages[3], isAIGenerated: true }
       ]
     }
 
