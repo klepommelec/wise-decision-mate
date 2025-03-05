@@ -12,12 +12,14 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover
 import { format } from 'date-fns';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
+
 interface Decision {
   id?: string;
   title: string;
   description: string;
   deadline?: string;
 }
+
 interface DecisionFormProps {
   onSubmit: (decision: {
     title: string;
@@ -26,6 +28,7 @@ interface DecisionFormProps {
   }, generateOptions?: boolean) => void;
   initialDecision?: Decision;
 }
+
 export function DecisionForm({
   onSubmit,
   initialDecision
@@ -34,15 +37,18 @@ export function DecisionForm({
   const [deadline, setDeadline] = useState<Date | undefined>(initialDecision?.deadline ? new Date(initialDecision.deadline) : undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [useAI, setUseAI] = useState(true);
+
   const {
     user
   } = useAuth();
   const navigate = useNavigate();
+
   useEffect(() => {
     if (initialDecision) {
       console.log("DecisionForm received initialDecision:", initialDecision);
     }
   }, [initialDecision]);
+
   useEffect(() => {
     if (initialDecision && initialDecision.title) {
       console.log("Auto-submitting with initialDecision:", initialDecision);
@@ -53,6 +59,7 @@ export function DecisionForm({
       }, false);
     }
   }, [initialDecision, onSubmit]);
+
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
@@ -72,7 +79,6 @@ export function DecisionForm({
           user_id: user.id,
           title,
           description: "",
-          // Nous conservons le champ dans l'API mais l'envoyons vide
           deadline: deadline ? deadline.toISOString() : null
         });
         if (error) throw error;
@@ -84,7 +90,6 @@ export function DecisionForm({
           } = await supabase.from('decisions').update({
             title,
             description: "",
-            // Nous conservons le champ dans l'API mais l'envoyons vide
             deadline: deadline ? deadline.toISOString() : null
           }).eq('id', initialDecision.id);
           if (error) throw error;
@@ -93,7 +98,6 @@ export function DecisionForm({
       onSubmit({
         title,
         description: "",
-        // Nous conservons le champ dans l'API mais l'envoyons vide
         deadline: deadline ? deadline.toISOString() : undefined
       }, useAI);
       setIsSubmitting(false);
@@ -103,10 +107,11 @@ export function DecisionForm({
       setIsSubmitting(false);
     }
   }, [title, deadline, useAI, user, navigate, onSubmit, initialDecision]);
+
   const handleNewDecision = () => {
-    // Rechargement de la page pour commencer une nouvelle décision
     window.location.href = '/';
   };
+
   return <div className="w-full max-w-2xl mx-auto animate-fade-in pt-10 py-0">
       <Card className="transition-all duration-300 border border-gray-200">
         <CardHeader>
@@ -118,7 +123,7 @@ export function DecisionForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-2">
             <div className="space-y-2">
               <Input id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Choisir une nouvelle voiture" className="w-full" required />
             </div>
@@ -147,7 +152,7 @@ export function DecisionForm({
                 </p>
               </div>
             </div>
-            <Button type="submit" className="w-full transition-all" disabled={!title.trim() || isSubmitting}>
+            <Button type="submit" className="w-full transition-all mt-2" disabled={!title.trim() || isSubmitting}>
               {isSubmitting ? "Traitement..." : initialDecision ? "Continuer" : "Continuer"}
             </Button>
           </form>
