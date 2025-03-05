@@ -80,7 +80,7 @@ const Index = () => {
   }
   const renderWelcomeScreen = () => {
     if (step !== 'decision' || existingDecision) return null;
-    return <div className="max-w-4xl mx-auto mb-12">
+    return <div className="max-w-4xl mx-auto">
         <motion.div initial={{
         opacity: 0,
         y: 20
