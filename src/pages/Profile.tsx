@@ -21,7 +21,10 @@ import {
   Share2,
   Bell,
   Calendar,
-  Filter
+  Filter,
+  Moon,
+  Sun,
+  Monitor
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
@@ -47,6 +50,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useTheme } from "@/hooks/use-theme";
 
 export default function Profile() {
   const { user, loading } = useAuth();
@@ -56,6 +60,7 @@ export default function Profile() {
   const [sortBy, setSortBy] = useState("recent");
   const [viewMode, setViewMode] = useState("grid");
   const [showFavorites, setShowFavorites] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     if (!user && !loading) {
@@ -210,6 +215,38 @@ export default function Profile() {
                             </DialogDescription>
                           </DialogHeader>
                           <div className="space-y-4 py-4">
+                            <div className="flex justify-between items-center">
+                              <span>Thème</span>
+                              <div className="flex gap-2">
+                                <Button 
+                                  variant={theme === "light" ? "default" : "outline"} 
+                                  size="sm"
+                                  onClick={() => setTheme("light")}
+                                  className="gap-1"
+                                >
+                                  <Sun className="h-3.5 w-3.5" />
+                                  Clair
+                                </Button>
+                                <Button 
+                                  variant={theme === "dark" ? "default" : "outline"} 
+                                  size="sm"
+                                  onClick={() => setTheme("dark")}
+                                  className="gap-1"
+                                >
+                                  <Moon className="h-3.5 w-3.5" />
+                                  Sombre
+                                </Button>
+                                <Button 
+                                  variant={theme === "system" ? "default" : "outline"} 
+                                  size="sm"
+                                  onClick={() => setTheme("system")}
+                                  className="gap-1"
+                                >
+                                  <Monitor className="h-3.5 w-3.5" />
+                                  Système
+                                </Button>
+                              </div>
+                            </div>
                             <div className="flex justify-between items-center">
                               <span>Notifications par email</span>
                               <Button variant="outline" size="sm">Configurer</Button>
