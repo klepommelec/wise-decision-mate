@@ -67,13 +67,14 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
     console.log("handleSubmit called with options:", options);
     console.log("useAI setting:", useAI);
     
-    // Check if all options are empty (titles specifically)
-    const allEmptyTitles = options.every(o => !o.title.trim());
-    console.log("All option titles empty?", allEmptyTitles);
+    // Verify all options have titles (to avoid any empty options)
+    const hasEmptyOptions = options.some(o => !o.title.trim());
+    console.log("Has empty options?", hasEmptyOptions);
     
-    // Pass options and the generateWithAI flag to the onComplete function
-    // Generate with AI if all options are empty and AI is enabled
-    onComplete(options, allEmptyTitles && useAI);
+    // Pass options to the onComplete function
+    // If we have options with titles, use them
+    // If all options have empty titles and useAI is enabled, pass the generate flag
+    onComplete(options, hasEmptyOptions && useAI);
   };
   
   // Valid if we have at least 2 options with content OR AI is enabled
@@ -87,7 +88,9 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
             Quelles sont vos options?
           </CardTitle>
           <CardDescription>
-            Listez les différentes options pour votre décision concernant "{decisionTitle}"
+            {initialOptions && initialOptions.some(o => o.isAIGenerated) 
+              ? "Voici des options générées par l'IA pour votre décision. Vous pouvez les modifier ou en ajouter d'autres."
+              : `Listez les différentes options pour votre décision concernant "${decisionTitle}"`}
             <div className="text-xs mt-1">
               <span className="flex items-center gap-1">
                 <span className="inline-block w-3 h-3 rounded-full bg-primary/10"></span>

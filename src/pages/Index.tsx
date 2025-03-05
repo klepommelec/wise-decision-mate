@@ -168,76 +168,71 @@ const Index = () => {
     setStep('criteria');
   };
 
-  const handleCriteriaComplete = (criteriaData: Criterion[]) => {
+  const handleCriteriaComplete = async (criteriaData: Criterion[]) => {
     setCriteria(criteriaData);
     
-    // After criteria are complete, move to options step
-    // Initialize with empty options if none exist
-    if (options.length === 0) {
+    // Générer automatiquement des options avec l'IA après la définition des critères
+    try {
+      setIsGeneratingOptions(true);
+      toast.info("Génération des options en cours...");
+      
+      const aiOptions = await generateAIOptions(decision.title, decision.description);
+      console.log("AI options generated automatically after criteria:", aiOptions);
+      
+      if (aiOptions && aiOptions.length > 0) {
+        setOptions(aiOptions);
+        
+        // Préparer les évaluations par défaut avec les options IA
+        const defaultEvaluations = aiOptions.flatMap(option => 
+          criteriaData.map(criterion => ({
+            optionId: option.id,
+            criterionId: criterion.id,
+            score: 5
+          }))
+        );
+        
+        setEvaluations(defaultEvaluations);
+        setIsGeneratingOptions(false);
+        toast.success("Options générées avec succès!");
+      } else {
+        toast.error("Aucune option n'a pu être générée. Veuillez essayer à nouveau.");
+        // Initialiser avec des options vides en cas d'erreur
+        setOptions([
+          { id: '1', title: '', description: '', isAIGenerated: false },
+          { id: '2', title: '', description: '', isAIGenerated: false }
+        ]);
+      }
+    } catch (error) {
+      console.error("Error generating options:", error);
+      toast.error("Erreur lors de la génération des options");
+      // Initialiser avec des options vides en cas d'erreur
       setOptions([
         { id: '1', title: '', description: '', isAIGenerated: false },
         { id: '2', title: '', description: '', isAIGenerated: false }
       ]);
+    } finally {
+      setIsGeneratingOptions(false);
+      setStep('options');
     }
-    
-    setStep('options');
   };
 
   const handleOptionsComplete = async (optionsData: Option[], generateWithAI: boolean = false) => {
     console.log("handleOptionsComplete called with:", optionsData, generateWithAI);
-    console.log("Generate with AI flag:", generateWithAI);
     
-    if (generateWithAI) {
-      try {
-        setIsGeneratingOptions(true);
-        toast.info("Génération des options en cours...");
-        
-        const aiOptions = await generateAIOptions(decision.title, decision.description);
-        console.log("AI options generated:", aiOptions);
-        
-        if (aiOptions && aiOptions.length > 0) {
-          setOptions(aiOptions);
-          
-          // Préparer les évaluations par défaut avec les options IA
-          const defaultEvaluations = aiOptions.flatMap(option => 
-            criteria.map(criterion => ({
-              optionId: option.id,
-              criterionId: criterion.id,
-              score: 5
-            }))
-          );
-          
-          setEvaluations(defaultEvaluations);
-          toast.success("Options générées avec succès!");
-          
-          // Passer à l'analyse
-          setStep('analysis');
-        } else {
-          toast.error("Aucune option n'a pu être générée. Veuillez essayer à nouveau.");
-          setIsGeneratingOptions(false);
-        }
-      } catch (error) {
-        console.error("Error generating options:", error);
-        toast.error("Erreur lors de la génération des options");
-        setOptions(optionsData);
-        setIsGeneratingOptions(false);
-      }
-    } else {
-      // Use manual options
-      setOptions(optionsData);
-      
-      // Prépare les évaluations par défaut avec les options manuelles
-      const defaultEvaluations = optionsData.flatMap(option => 
-        criteria.map(criterion => ({
-          optionId: option.id,
-          criterionId: criterion.id,
-          score: 5
-        }))
-      );
-      
-      setEvaluations(defaultEvaluations);
-      setStep('analysis');
-    }
+    // Si l'utilisateur a modifié les options ou en a ajouté de nouvelles, utilisez celles-ci
+    setOptions(optionsData);
+    
+    // Préparer les évaluations par défaut avec les options manuelles ou modifiées
+    const defaultEvaluations = optionsData.flatMap(option => 
+      criteria.map(criterion => ({
+        optionId: option.id,
+        criterionId: criterion.id,
+        score: 5
+      }))
+    );
+    
+    setEvaluations(defaultEvaluations);
+    setStep('analysis');
   };
 
   const handleReset = () => {
