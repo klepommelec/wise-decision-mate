@@ -19,13 +19,19 @@ import { Header } from "./components/layout/Header";
 
 const queryClient = new QueryClient();
 
-// Component to scroll to top on route change
+// Cette composante est maintenant plus simple et ne gère que les navigations
+// Le scrollToTop dans Index.tsx s'occupe des rechargements de page complets
 const ScrollToTop = () => {
   const location = useLocation();
   
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location]);
+    if (location.hash) return; // Ne pas scroller si nous naviguons vers un ancre
+    
+    window.scrollTo({
+      top: 0,
+      behavior: 'instant'
+    });
+  }, [location.pathname, location.search]);
   
   return null;
 };
