@@ -13,12 +13,10 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useTheme } from "@/hooks/use-theme";
 import { Separator } from "@/components/ui/separator";
-
 export default function Profile() {
   const {
     user,
-    loading,
-    signOut
+    loading
   } = useAuth();
   const navigate = useNavigate();
   const [decisions, setDecisions] = useState<any[]>([]);
@@ -30,7 +28,6 @@ export default function Profile() {
     theme,
     setTheme
   } = useTheme();
-
   useEffect(() => {
     if (!user && !loading) {
       navigate("/auth");
@@ -38,7 +35,6 @@ export default function Profile() {
       fetchUserDecisions();
     }
   }, [user, loading, navigate, sortBy, showFavorites]);
-
   const fetchUserDecisions = async () => {
     try {
       setIsLoading(true);
@@ -72,7 +68,6 @@ export default function Profile() {
       setIsLoading(false);
     }
   };
-
   const handleDeleteDecision = async (decisionId: string) => {
     try {
       const {
@@ -86,17 +81,19 @@ export default function Profile() {
       toast.error("Erreur lors de la suppression");
     }
   };
-
   const handleSignOut = async () => {
     try {
-      await signOut();
+      const {
+        error
+      } = await supabase.auth.signOut();
+      if (error) throw error;
+      toast.success("Déconnexion réussie");
       navigate("/");
     } catch (error: any) {
       toast.error("Erreur lors de la déconnexion");
       console.error("Erreur de déconnexion:", error);
     }
   };
-
   const exportDecision = (decision: any) => {
     try {
       const dataStr = JSON.stringify(decision, null, 2);
@@ -112,7 +109,6 @@ export default function Profile() {
       toast.error("Erreur lors de l'exportation");
     }
   };
-
   if (loading || !user) {
     return <Container className="py-10">
         <div className="flex justify-center items-center min-h-[60vh]">
@@ -120,7 +116,6 @@ export default function Profile() {
         </div>
       </Container>;
   }
-
   const getThemeIcon = () => {
     switch (theme) {
       case 'light':
@@ -133,7 +128,6 @@ export default function Profile() {
         return <Sun className="h-4 w-4 mr-2" />;
     }
   };
-
   const getThemeLabel = () => {
     switch (theme) {
       case 'light':
@@ -146,7 +140,6 @@ export default function Profile() {
         return 'Clair';
     }
   };
-
   return <Container className="py-10">
       <div className="max-w-4xl mx-auto">
         <Button variant="ghost" className="mb-6" onClick={() => navigate("/")}>
@@ -439,7 +432,6 @@ export default function Profile() {
       </div>
     </Container>;
 }
-
 function GridIcon(props: React.SVGProps<SVGSVGElement>) {
   return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <rect width="7" height="7" x="3" y="3" rx="1" />
@@ -448,7 +440,6 @@ function GridIcon(props: React.SVGProps<SVGSVGElement>) {
       <rect width="7" height="7" x="3" y="14" rx="1" />
     </svg>;
 }
-
 function ListIcon(props: React.SVGProps<SVGSVGElement>) {
   return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <line x1="8" x2="21" y1="6" y2="6" />
@@ -459,7 +450,6 @@ function ListIcon(props: React.SVGProps<SVGSVGElement>) {
       <line x1="3" x2="3.01" y1="18" y2="18" />
     </svg>;
 }
-
 function InfoIcon(props: React.SVGProps<SVGSVGElement>) {
   return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <circle cx="12" cy="12" r="10" />
@@ -467,20 +457,17 @@ function InfoIcon(props: React.SVGProps<SVGSVGElement>) {
       <path d="M12 8h.01" />
     </svg>;
 }
-
 function Star(props: React.SVGProps<SVGSVGElement>) {
   return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>;
 }
-
 function CheckCircle(props: React.SVGProps<SVGSVGElement>) {
   return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
       <polyline points="22 4 12 14.01 9 11.01" />
     </svg>;
 }
-
 function Trash(props: React.SVGProps<SVGSVGElement>) {
   return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <path d="M3 6h18" />

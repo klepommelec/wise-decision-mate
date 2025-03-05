@@ -1,28 +1,15 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-
 export function Header() {
   const {
     user,
-    loading,
-    signOut
+    loading
   } = useAuth();
   const navigate = useNavigate();
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      navigate("/");
-    } catch (error) {
-      console.error("Erreur de déconnexion:", error);
-    }
-  };
-
   return <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
@@ -42,10 +29,6 @@ export function Header() {
               <Button variant="ghost" size="sm" onClick={() => navigate("/profile")}>
                 <User className="h-4 w-4 mr-2" />
                 Mon profil
-              </Button>
-              <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Déconnexion
               </Button>
             </div> : <Button size="sm" onClick={() => navigate("/auth")}>
               <User className="h-4 w-4 mr-2" />
