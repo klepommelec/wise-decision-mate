@@ -45,7 +45,14 @@ export function AnalysisResult({
   const [selectedCriterion, setSelectedCriterion] = useState<string | null>(null);
   const { user } = useAuth();
 
+  console.log("AnalysisResult rendered with:", { decisionTitle, options, criteria, evaluations });
+
   const finalScores = useMemo(() => {
+    if (!options.length || !criteria.length || !evaluations.length) {
+      console.log("Not enough data to calculate scores");
+      return [];
+    }
+    
     const scores: Record<string, any> = {};
     
     options.forEach(option => {
@@ -91,7 +98,7 @@ export function AnalysisResult({
   const criteriaChartData = useMemo(() => {
     const criterionToUse = selectedCriterion || (criteria.length > 0 ? criteria[0].id : null);
     
-    if (!criterionToUse) return [];
+    if (!criterionToUse || !options.length) return [];
     
     return options.map(option => {
       const evaluation = evaluations.find(e => 
@@ -140,6 +147,38 @@ export function AnalysisResult({
     name: item.title,
     score: item.score
   }));
+
+  // Si aucune donnée n'est disponible, afficher un message
+  if (!options.length || !criteria.length || !evaluations.length) {
+    return (
+      <div className="w-full max-w-4xl mx-auto animate-fade-in">
+        <Card className="mb-6 border border-gray-200">
+          <CardHeader>
+            <CardTitle className="text-2xl font-medium">Résumé de l'analyse</CardTitle>
+            <CardDescription>
+              Aucune donnée disponible pour l'analyse de la décision "{decisionTitle}"
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <p className="text-muted-foreground mb-6">
+              Aucune option ou critère n'a été trouvé pour cette décision. 
+              Veuillez revenir aux étapes précédentes pour compléter votre décision.
+            </p>
+            <div className="flex gap-4">
+              <Button variant="back" onClick={onBack} className="gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                Retour aux options
+              </Button>
+              <Button variant="default" onClick={onReset} className="gap-2">
+                Nouvelle décision
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
@@ -212,7 +251,7 @@ export function AnalysisResult({
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="score" fill="#8884d8">
+                <Bar dataKey="score" fill="#8884d8" name="Score">
                   {chartData.map((entry: any, index: number) => (
                     <Cell key={`cell-${index}`} fill={index === 0 ? '#4f46e5' : '#8884d8'} />
                   ))}
@@ -255,7 +294,7 @@ export function AnalysisResult({
                 <YAxis domain={[0, 5]} />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="score" fill="#82ca9d" />
+                <Bar dataKey="score" fill="#82ca9d" name="Score" />
               </BarChart>
             </ResponsiveContainer>
           </div>

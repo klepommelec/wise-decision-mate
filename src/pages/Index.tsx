@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
@@ -20,6 +21,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, List, Calendar, Clock, Star, CheckCircle } from 'lucide-react';
+import useDecisionData from '@/hooks/useDecisionData';
 
 type Step = 'decision' | 'criteria' | 'options' | 'analysis';
 
@@ -157,6 +159,39 @@ const Index = () => {
   const [isProcessingManualEntries, setIsProcessingManualEntries] = useState(false);
   const [userDecisions, setUserDecisions] = useState<Decision[]>([]);
   const [loadingDecisions, setLoadingDecisions] = useState(true);
+
+  // Utiliser notre nouveau hook pour charger les données de décision
+  const { 
+    options: fetchedOptions, 
+    criteria: fetchedCriteria, 
+    evaluations: fetchedEvaluations,
+    isLoading: isLoadingDecisionData 
+  } = useDecisionData({ 
+    decisionId: decision.id,
+    enabled: step === 'analysis' && !!decision.id
+  });
+
+  // Mettre à jour les états locaux lorsque les données sont chargées
+  useEffect(() => {
+    if (fetchedOptions.length > 0 && step === 'analysis') {
+      console.log("Setting options from useDecisionData:", fetchedOptions);
+      setOptions(fetchedOptions);
+    }
+  }, [fetchedOptions, step]);
+
+  useEffect(() => {
+    if (fetchedCriteria.length > 0 && step === 'analysis') {
+      console.log("Setting criteria from useDecisionData:", fetchedCriteria);
+      setCriteria(fetchedCriteria);
+    }
+  }, [fetchedCriteria, step]);
+
+  useEffect(() => {
+    if (fetchedEvaluations.length > 0 && step === 'analysis') {
+      console.log("Setting evaluations from useDecisionData:", fetchedEvaluations);
+      setEvaluations(fetchedEvaluations);
+    }
+  }, [fetchedEvaluations, step]);
 
   useEffect(() => {
     if (existingDecision) {
@@ -417,56 +452,8 @@ const Index = () => {
           deadline: selectedDecision.deadline
         });
         
-        // Fetch all data needed for the analysis screen
+        // On utilise notre hook pour charger les données
         console.log("Loading data for decision with favorite option:", selectedDecision.id);
-        
-        // Use type casting to handle the database tables
-        const { data: optionsData, error: optionsError } = await supabase
-          .from('options')
-          .select('*')
-          .eq('decision_id', selectedDecision.id);
-          
-        const { data: criteriaData, error: criteriaError } = await supabase
-          .from('criteria')
-          .select('*')
-          .eq('decision_id', selectedDecision.id);
-          
-        const { data: evaluationsData, error: evaluationsError } = await supabase
-          .from('evaluations')
-          .select('*')
-          .eq('decision_id', selectedDecision.id);
-        
-        if (optionsError) throw optionsError;
-        if (criteriaError) throw criteriaError;
-        if (evaluationsError) throw evaluationsError;
-        
-        // Map the database response to our application interfaces
-        const fetchedOptions: Option[] = (optionsData as DatabaseOption[]).map(item => ({
-          id: item.id,
-          title: item.title,
-          description: item.description || '',
-          decision_id: item.decision_id
-        }));
-        
-        const fetchedCriteria: Criterion[] = (criteriaData as DatabaseCriterion[]).map(item => ({
-          id: item.id,
-          name: item.name,
-          weight: item.weight,
-          decision_id: item.decision_id
-        }));
-        
-        const fetchedEvaluations: Evaluation[] = (evaluationsData as DatabaseEvaluation[]).map(item => ({
-          optionId: item.option_id,
-          criterionId: item.criterion_id,
-          score: item.score,
-          decision_id: item.decision_id
-        }));
-        
-        setOptions(fetchedOptions);
-        setCriteria(fetchedCriteria);
-        setEvaluations(fetchedEvaluations);
-        
-        // Go directly to analysis screen
         setStep('analysis');
       } catch (error) {
         console.error("Error loading decision data:", error);
@@ -554,14 +541,27 @@ const Index = () => {
               )}
               
               {step === 'analysis' && (
-                <AnalysisResult
-                  decisionTitle={decision.title}
-                  options={options}
-                  criteria={criteria}
-                  evaluations={evaluations}
-                  onBack={() => setStep('options')}
-                  onReset={handleReset}
-                />
+                <>
+                  {isLoadingDecisionData ? (
+                    <div className="w-full max-w-4xl mx-auto p-8 text-center">
+                      <div className="animate-pulse space-y-4">
+                        <div className="h-6 bg-gray-200 rounded w-3/4 mx-auto"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+                        <div className="h-64 bg-gray-200 rounded w-full mt-8"></div>
+                      </div>
+                      <p className="mt-4 text-muted-foreground">Chargement des données...</p>
+                    </div>
+                  ) : (
+                    <AnalysisResult
+                      decisionTitle={decision.title}
+                      options={options}
+                      criteria={criteria}
+                      evaluations={evaluations}
+                      onBack={() => setStep('options')}
+                      onReset={handleReset}
+                    />
+                  )}
+                </>
               )}
             </div>
           </Container>

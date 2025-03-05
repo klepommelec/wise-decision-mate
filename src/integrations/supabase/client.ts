@@ -56,3 +56,25 @@ export interface DatabaseEvaluation {
   decision_id: string;
   created_at?: string;
 }
+
+// Utility functions for data conversion
+export const mapOptionFromDB = (dbOption: DatabaseOption): Option => ({
+  id: dbOption.id,
+  title: dbOption.title,
+  description: dbOption.description || '',
+  decision_id: dbOption.decision_id
+});
+
+export const mapCriterionFromDB = (dbCriterion: DatabaseCriterion): Criterion => ({
+  id: dbCriterion.id,
+  name: dbCriterion.name,
+  weight: dbCriterion.weight,
+  decision_id: dbCriterion.decision_id
+});
+
+export const mapEvaluationFromDB = (dbEvaluation: DatabaseEvaluation): Evaluation => ({
+  optionId: dbEvaluation.option_id,
+  criterionId: dbEvaluation.criterion_id,
+  score: dbEvaluation.score,
+  decision_id: dbEvaluation.decision_id
+});
