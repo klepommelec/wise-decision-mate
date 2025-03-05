@@ -1,16 +1,13 @@
-
 import { useState, useRef } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { User, LogOut, Settings, Pencil, Upload } from "lucide-react";
-import * as LucideIcons from "lucide-react";
+import { User, LogOut, Settings, Pencil, Upload, Trash, Moon, Sun, Monitor, ChevronDown, Check } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
-import { Moon, Sun, Monitor, ChevronDown, Check } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -203,7 +200,7 @@ export function ProfileCard({ user, profile, decisions, updateProfilePicture, re
                         onClick={handleRemoveProfilePicture}
                         disabled={isUploadingImage}
                       >
-                        <LucideIcons.Trash className="h-4 w-4" />
+                        <Trash className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
