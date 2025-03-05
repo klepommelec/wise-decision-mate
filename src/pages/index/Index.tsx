@@ -8,7 +8,7 @@ import { AnalysisResult } from '@/components/decision/AnalysisResult';
 import { useAuth } from '@/context/AuthContext';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { StepNavigator } from './components/StepNavigator';
-import { DecisionsList } from './components/DecisionsList';
+import { DecisionsList } from './components/DecisionsList';  // Garder l'import de DecisionsList du bon répertoire
 import { useDecisionSteps, type Decision } from './hooks/useDecisionSteps';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
