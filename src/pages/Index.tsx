@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
@@ -104,7 +103,7 @@ const generateDescription = async (
 
     return response.data.description;
   } catch (error: any) {
-    console.error(`Erreur lors de la génération de description pour ${type}:`, error);
+    console.error(`Erreur lors de la gén��ration de description pour ${type}:`, error);
     
     if (type === 'option') {
       return `Option considérant ${title.toLowerCase()} comme solution potentielle à cette problématique.`;
@@ -546,14 +545,11 @@ const Index = () => {
                               <span className="line-clamp-1">{decision.favorite_option}</span>
                             </div>
                           ) : (
-                            <div className="space-y-2">
+                            <div>
                               <div className="flex items-center gap-1.5 text-yellow-700 dark:text-yellow-500 text-sm text-muted-foreground">
                                 <Star className="h-3.5 w-3.5" />
                                 <span>Recommandation IA: Singapour</span>
                               </div>
-                              <p className="text-sm text-muted-foreground italic">
-                                Pas encore de décision finale
-                              </p>
                             </div>
                           )}
                         </CardContent>
