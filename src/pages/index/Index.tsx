@@ -86,12 +86,12 @@ const Index = () => {
     if (step !== 'decision' || existingDecision) return null;
     
     return (
-      <div className="max-w-4xl mx-auto mb-6 pt-16">
+      <div className="max-w-4xl mx-auto mb-3 pt-16">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-6"
+          className="text-center mb-3"
         >
           <h1 className="text-4xl font-bold tracking-tight mb-3">Prenez des décisions éclairées</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
