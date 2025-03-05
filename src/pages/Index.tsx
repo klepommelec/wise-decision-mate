@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
@@ -13,7 +12,6 @@ import { supabase } from '@/integrations/supabase/client';
 
 type Step = 'decision' | 'options' | 'criteria' | 'analysis';
 
-// Fonction pour générer des options avec Claude AI
 const generateAIOptions = async (decisionTitle: string, decisionDescription: string): Promise<Option[]> => {
   try {
     console.log('Appelant generateAIOptions avec:', { decisionTitle, decisionDescription });
@@ -39,7 +37,6 @@ const generateAIOptions = async (decisionTitle: string, decisionDescription: str
     console.error('Erreur lors de la génération des options:', error);
     toast.error('Erreur lors de la génération des options avec l\'IA');
     
-    // Options par défaut en cas d'erreur
     return [
       { 
         id: '1', 
@@ -93,26 +90,21 @@ const Index = () => {
   const [isGeneratingOptions, setIsGeneratingOptions] = useState(false);
   const { user, loading } = useAuth();
 
-  // If we have a decision from state, skip to options step
   useEffect(() => {
     if (decisionFromState && decisionFromState.decisionTitle) {
       console.log('Initializing from decision state:', decisionFromState);
-      // Check if we need to initialize with empty options
       setOptions([
         { id: '1', title: '', description: '', isAIGenerated: false },
         { id: '2', title: '', description: '', isAIGenerated: false }
       ]);
       setStep('options');
-
-      // Clear location state after using it
       window.history.replaceState({}, document.title);
     }
   }, [decisionFromState]);
 
   const handleDecisionSubmit = async (decisionData: { title: string; description: string }, generateOptions: boolean = false) => {
-    // Important: Mettre à jour la décision en conservant l'ID existant
     setDecision({ 
-      ...decision, 
+      id: decision.id,
       title: decisionData.title, 
       description: decisionData.description 
     });
@@ -132,7 +124,6 @@ const Index = () => {
       } catch (error) {
         console.error("Error generating options:", error);
         toast.error("Erreur lors de la génération des options");
-        // Set default empty options
         setOptions([
           { id: '1', title: '', description: '', isAIGenerated: false },
           { id: '2', title: '', description: '', isAIGenerated: false }
@@ -141,7 +132,6 @@ const Index = () => {
         setIsGeneratingOptions(false);
       }
     } else {
-      // Set default empty options if not generating
       setOptions([
         { id: '1', title: '', description: '', isAIGenerated: false },
         { id: '2', title: '', description: '', isAIGenerated: false }
@@ -170,7 +160,6 @@ const Index = () => {
     setEvaluations([]);
   };
 
-  // Rediriger vers la page d'authentification si l'utilisateur n'est pas connecté
   if (!loading && !user) {
     return <Navigate to="/auth" />;
   }
