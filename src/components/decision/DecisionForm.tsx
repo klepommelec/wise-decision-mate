@@ -118,7 +118,7 @@ export function DecisionForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="">
             <div className="space-y-2">
               <Input id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Choisir une nouvelle voiture" className="w-full" required />
             </div>
