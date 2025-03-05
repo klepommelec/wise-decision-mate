@@ -34,11 +34,7 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
           <button onClick={handleLogoClick} className="flex items-center gap-2">
-            <img 
-              src="/lovable-uploads/186b0d3f-32c0-4a2b-ab1b-8cb8cd49bf79.png" 
-              alt="Wise Logo" 
-              className="h-8" /* Set to 32px (h-8 in Tailwind) */
-            />
+            <span className="text-xl font-bold">Wise</span>
           </button>
         </div>
         <nav className="flex items-center gap-4">
