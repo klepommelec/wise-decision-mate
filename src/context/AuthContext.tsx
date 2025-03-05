@@ -69,6 +69,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (uploadError) {
         console.error("Error uploading image:", uploadError);
+        toast.error("Erreur lors du téléchargement de l'image");
         return { error: uploadError, url: null };
       }
 
@@ -89,10 +90,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (updateError) {
         console.error("Error updating profile:", updateError);
+        toast.error("Erreur lors de la mise à jour du profil");
         return { error: updateError, url: null };
       }
 
       console.log("Profile updated successfully");
+      toast.success("Photo de profil mise à jour");
 
       // Update local state
       setProfile((prev: any) => ({ ...prev, avatar_url: urlData.publicUrl }));
@@ -100,6 +103,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return { error: null, url: urlData.publicUrl };
     } catch (error) {
       console.error("Error in updateProfilePicture:", error);
+      toast.error("Une erreur est survenue");
       return { error, url: null };
     }
   };
@@ -125,6 +129,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (deleteError) {
           console.error("Error deleting image:", deleteError);
+          toast.error("Erreur lors de la suppression de l'image");
         } else {
           console.log("File deleted successfully");
         }
@@ -138,10 +143,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (updateError) {
         console.error("Error updating profile:", updateError);
+        toast.error("Erreur lors de la mise à jour du profil");
         return { error: updateError };
       }
 
       console.log("Profile updated successfully, avatar_url set to null");
+      toast.success("Photo de profil supprimée");
 
       // Update local state
       setProfile((prev: any) => ({ ...prev, avatar_url: null }));
@@ -149,6 +156,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return { error: null };
     } catch (error) {
       console.error("Error in removeProfilePicture:", error);
+      toast.error("Une erreur est survenue");
       return { error };
     }
   };
