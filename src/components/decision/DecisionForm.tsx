@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -112,7 +113,7 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
   
   return (
     <div className="w-full max-w-2xl mx-auto animate-fade-in pt-10">
-      <Card className="glass-card transition-all duration-300">
+      <Card className="glass-card transition-all duration-300 border border-gray-200">
         <CardHeader>
           <CardTitle className="text-2xl font-medium">
             {initialDecision?.id ? "Modifier votre décision" : "Quelle décision devez-vous prendre?"}
