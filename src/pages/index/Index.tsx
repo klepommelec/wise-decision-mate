@@ -98,22 +98,6 @@ const Index = () => {
             Notre outil vous aide à structurer votre réflexion et à analyser objectivement les options qui s'offrent à vous.
           </p>
         </motion.div>
-        
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-          className="flex justify-center"
-        >
-          <Button
-            size="lg"
-            className="text-lg px-8 py-6"
-            onClick={() => document.getElementById('decision-form')?.scrollIntoView({ behavior: 'smooth' })}
-          >
-            Commencer une nouvelle décision
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
-        </motion.div>
       </div>
     );
   };
