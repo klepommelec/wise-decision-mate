@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,17 +12,36 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
-interface DecisionFormProps {
-  onSubmit: (decision: { title: string; description: string }, generateOptions?: boolean) => void;
+interface Decision {
+  id?: string;
+  title: string;
+  description: string;
 }
 
-export function DecisionForm({ onSubmit }: DecisionFormProps) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+interface DecisionFormProps {
+  onSubmit: (decision: { title: string; description: string }, generateOptions?: boolean) => void;
+  initialDecision?: Decision;
+}
+
+export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
+  const [title, setTitle] = useState(initialDecision?.title || '');
+  const [description, setDescription] = useState(initialDecision?.description || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [useAI, setUseAI] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // Auto-submit if initialDecision is provided
+  useEffect(() => {
+    if (initialDecision && initialDecision.title) {
+      // We need to simulate a submit but without actually calling handleSubmit
+      // to avoid saving it again to the database
+      onSubmit({ 
+        title: initialDecision.title, 
+        description: initialDecision.description 
+      }, false);
+    }
+  }, [initialDecision, onSubmit]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,16 +59,19 @@ export function DecisionForm({ onSubmit }: DecisionFormProps) {
     }
 
     try {
-      // Enregistrer la décision dans Supabase
-      const { error } = await supabase
-        .from('decisions')
-        .insert({
-          user_id: user.id,
-          title,
-          description
-        });
+      // If we don't have an initialDecision, it's a new decision
+      if (!initialDecision) {
+        // Enregistrer la décision dans Supabase
+        const { error } = await supabase
+          .from('decisions')
+          .insert({
+            user_id: user.id,
+            title,
+            description
+          });
 
-      if (error) throw error;
+        if (error) throw error;
+      }
       
       // Continuer avec le processus normal
       onSubmit({ title, description }, useAI);
@@ -60,15 +82,20 @@ export function DecisionForm({ onSubmit }: DecisionFormProps) {
       toast.error(error.message || "Une erreur est survenue");
       setIsSubmitting(false);
     }
-  }, [title, description, useAI, user, navigate, onSubmit]);
+  }, [title, description, useAI, user, navigate, onSubmit, initialDecision]);
   
   return (
     <div className="w-full max-w-2xl mx-auto animate-fade-in">
       <Card className="glass-card transition-all duration-300">
         <CardHeader>
-          <CardTitle className="text-2xl font-medium">Quelle décision devez-vous prendre?</CardTitle>
+          <CardTitle className="text-2xl font-medium">
+            {initialDecision ? "Modifier votre décision" : "Quelle décision devez-vous prendre?"}
+          </CardTitle>
           <CardDescription>
-            Décrivez la décision que vous devez prendre. Soyez aussi précis que possible.
+            {initialDecision 
+              ? "Vous pouvez modifier les détails de votre décision."
+              : "Décrivez la décision que vous devez prendre. Soyez aussi précis que possible."
+            }
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -118,7 +145,7 @@ export function DecisionForm({ onSubmit }: DecisionFormProps) {
               className="w-full transition-all" 
               disabled={!title.trim() || isSubmitting}
             >
-              {isSubmitting ? "Traitement..." : "Continuer"}
+              {isSubmitting ? "Traitement..." : (initialDecision ? "Continuer" : "Continuer")}
             </Button>
           </form>
         </CardContent>

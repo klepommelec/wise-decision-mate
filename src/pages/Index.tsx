@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -8,10 +7,18 @@ import { CriteriaEvaluation, Criterion, Evaluation } from '@/components/decision
 import { AnalysisResult } from '@/components/decision/AnalysisResult';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
 type Step = 'decision' | 'options' | 'criteria' | 'analysis';
+
+interface LocationState {
+  existingDecision?: {
+    id: string;
+    title: string;
+    description: string;
+  };
+}
 
 // Fonction pour générer des options avec Claude AI
 const generateAIOptions = async (decisionTitle: string, decisionDescription: string): Promise<Option[]> => {
@@ -40,16 +47,43 @@ const generateAIOptions = async (decisionTitle: string, decisionDescription: str
 };
 
 const Index = () => {
+  const location = useLocation();
+  const locationState = location.state as LocationState | null;
+  const existingDecision = locationState?.existingDecision;
+
   const [step, setStep] = useState<Step>('decision');
-  const [decision, setDecision] = useState({ title: '', description: '' });
+  const [decision, setDecision] = useState<{ id: string; title: string; description: string }>({
+    id: existingDecision?.id || '',
+    title: existingDecision?.title || '',
+    description: existingDecision?.description || ''
+  });
   const [options, setOptions] = useState<Option[]>([]);
   const [criteria, setCriteria] = useState<Criterion[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [isGeneratingOptions, setIsGeneratingOptions] = useState(false);
   const { user, loading } = useAuth();
 
+  useEffect(() => {
+    // If we have an existing decision, skip to the options step
+    if (existingDecision && step === 'decision') {
+      console.log("Loading existing decision:", existingDecision);
+      setStep('options');
+      
+      // Set default empty options for the existing decision
+      setOptions([
+        { id: '1', title: '', description: '' },
+        { id: '2', title: '', description: '' }
+      ]);
+    }
+  }, [existingDecision, step]);
+
   const handleDecisionSubmit = async (decisionData: { title: string; description: string }, generateOptions: boolean = false) => {
-    setDecision(decisionData);
+    // Keep the existing ID if we're working with an existing decision
+    setDecision({
+      id: decision.id,
+      title: decisionData.title,
+      description: decisionData.description
+    });
     
     if (generateOptions) {
       try {
@@ -95,7 +129,7 @@ const Index = () => {
 
   const handleReset = () => {
     setStep('decision');
-    setDecision({ title: '', description: '' });
+    setDecision({ id: '', title: '', description: '' });
     setOptions([]);
     setCriteria([]);
     setEvaluations([]);
@@ -112,7 +146,10 @@ const Index = () => {
       <Container>
         <div className="min-h-[80vh] flex flex-col justify-center items-center py-12">
           {step === 'decision' && (
-            <DecisionForm onSubmit={handleDecisionSubmit} />
+            <DecisionForm 
+              onSubmit={handleDecisionSubmit} 
+              initialDecision={existingDecision}
+            />
           )}
           
           {step === 'options' && (
