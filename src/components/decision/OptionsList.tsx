@@ -64,12 +64,17 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
   };
   
   const handleSubmit = () => {
+    console.log("handleSubmit called with options:", options);
+    console.log("useAI setting:", useAI);
+    
     // Si toutes les options sont vides et que useAI est true, demander à l'IA de générer des options
     const allEmpty = options.every(o => !o.title.trim());
+    
+    // Passer correctement le paramètre generateWithAI à la fonction onComplete
     onComplete(options, allEmpty && useAI);
   };
   
-  const isValid = options.length >= 2 && options.some(o => o.title.trim() !== '');
+  const isValid = options.length >= 2 || useAI;
   
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
@@ -182,7 +187,7 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
         <CardFooter className="justify-end pt-2">
           <Button 
             onClick={handleSubmit} 
-            disabled={!isValid && !useAI}
+            disabled={!isValid || isLoading}
             className="gap-2"
           >
             {isLoading ? "Chargement..." : "Continuer"}

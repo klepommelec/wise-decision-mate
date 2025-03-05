@@ -32,8 +32,9 @@ const generateAIOptions = async (decisionTitle: string, decisionDescription: str
       throw new Error(response.error.message);
     }
 
-    return response.data.options.map(option => ({
+    return response.data.options.map((option, index) => ({
       ...option,
+      id: (index + 1).toString(),
       isAIGenerated: true
     }));
   } catch (error: any) {
@@ -168,27 +169,35 @@ const Index = () => {
     setCriteria(criteriaData);
     
     // After criteria are complete, move to options step
-    if (options.length === 0) {
-      // Set default empty options if we don't have any yet
-      setOptions([
-        { id: '1', title: '', description: '', isAIGenerated: false },
-        { id: '2', title: '', description: '', isAIGenerated: false }
-      ]);
-    }
-    
     setStep('options');
   };
 
   const handleOptionsComplete = async (optionsData: Option[], generateWithAI: boolean = false) => {
-    if (generateWithAI && optionsData.every(option => !option.title)) {
+    console.log("handleOptionsComplete called with:", optionsData, generateWithAI);
+    
+    if (generateWithAI && (optionsData.length === 0 || optionsData.every(option => !option.title.trim()))) {
       try {
         setIsGeneratingOptions(true);
         toast.info("Génération des options en cours...");
         
         const aiOptions = await generateAIOptions(decision.title, decision.description);
+        console.log("AI options generated:", aiOptions);
         setOptions(aiOptions);
         
+        // Prépare les évaluations par défaut avec les options IA
+        const defaultEvaluations = aiOptions.flatMap(option => 
+          criteria.map(criterion => ({
+            optionId: option.id,
+            criterionId: criterion.id,
+            score: 5
+          }))
+        );
+        
+        setEvaluations(defaultEvaluations);
         toast.success("Options générées avec succès!");
+        
+        // Passer directement à l'analyse
+        setStep('analysis');
       } catch (error) {
         console.error("Error generating options:", error);
         toast.error("Erreur lors de la génération des options");
@@ -198,19 +207,19 @@ const Index = () => {
       }
     } else {
       setOptions(optionsData);
+      
+      // Prépare les évaluations par défaut avec les options manuelles
+      const defaultEvaluations = optionsData.flatMap(option => 
+        criteria.map(criterion => ({
+          optionId: option.id,
+          criterionId: criterion.id,
+          score: 5
+        }))
+      );
+      
+      setEvaluations(defaultEvaluations);
+      setStep('analysis');
     }
-    
-    // Prépare les évaluations par défaut
-    const defaultEvaluations = optionsData.flatMap(option => 
-      criteria.map(criterion => ({
-        optionId: option.id,
-        criterionId: criterion.id,
-        score: 5
-      }))
-    );
-    
-    setEvaluations(defaultEvaluations);
-    setStep('analysis');
   };
 
   const handleReset = () => {
