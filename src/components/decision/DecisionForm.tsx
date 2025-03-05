@@ -117,7 +117,7 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
   };
   
   return (
-    <div className="w-full max-w-2xl mx-auto animate-fade-in pt-6">
+    <div className="w-full max-w-2xl mx-auto animate-fade-in pt-10">
       <Card className="transition-all duration-300 border border-gray-200">
         <CardHeader>
           <CardTitle className="text-2xl font-medium">

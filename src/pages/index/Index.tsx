@@ -86,14 +86,14 @@ const Index = () => {
     if (step !== 'decision' || existingDecision) return null;
     
     return (
-      <div className="max-w-4xl mx-auto mb-0">
+      <div className="max-w-4xl mx-auto mb-0 pt-8">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="text-center mb-0"
         >
-          <h1 className="text-4xl font-bold tracking-tight mb-3">Prenez des décisions éclairées</h1>
+          <h1 className="text-4xl font-bold tracking-tight mb-2">Prenez des décisions éclairées</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Notre outil vous aide à structurer votre réflexion et à analyser objectivement les options qui s'offrent à vous.
           </p>
@@ -108,7 +108,7 @@ const Index = () => {
         {step === 'decision' && (
           <>
             {renderWelcomeScreen()}
-            <div className="flex-1 flex items-start justify-center py-2" id="decision-form">
+            <div className="flex-1 flex items-center justify-center py-12" id="decision-form">
               <Container className="flex justify-center items-center w-full">
                 <motion.div 
                   className="w-full max-w-2xl mx-auto"
