@@ -12,6 +12,7 @@ import { useDecisionSteps, type Decision } from './hooks/useDecisionSteps';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+
 interface LocationState {
   existingDecision?: {
     id: string;
@@ -20,6 +21,7 @@ interface LocationState {
     deadline?: string;
   };
 }
+
 const Index = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -46,7 +48,6 @@ const Index = () => {
     handleReset
   } = useDecisionSteps(existingDecision);
 
-  // Cette fonction garantit que la page se positionne correctement lors du chargement
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -55,12 +56,10 @@ const Index = () => {
     });
   };
 
-  // Assure que la page se repositionne correctement lors du chargement initial et des changements de route
   useEffect(() => {
     scrollToTop();
   }, []);
 
-  // Pour gérer le positionnement lors des navigations
   useEffect(() => {
     scrollToTop();
   }, [location.pathname]);
@@ -70,7 +69,6 @@ const Index = () => {
     }
   }, [existingDecision]);
   useEffect(() => {
-    // Scroll to top when step changes
     if (contentRef.current) {
       contentRef.current.scrollIntoView({
         behavior: 'smooth',
@@ -94,9 +92,11 @@ const Index = () => {
       }
     });
   };
+
   if (!loading && !user) {
     return <Navigate to="/auth" />;
   }
+
   const renderWelcomeScreen = () => {
     if (step !== 'decision' || existingDecision) return null;
     return <div className="max-w-4xl mx-auto mb-1 pt-16 py-0">
@@ -108,7 +108,7 @@ const Index = () => {
         y: 0
       }} transition={{
         duration: 0.5
-      }} className="text-center mb-1 py-[24px]">
+      }} className="text-center mb-1 pt-8 pb-2">
           <h1 className="text-4xl font-bold tracking-tight mb-3">Prenez des décisions éclairées</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Notre outil vous aide à structurer votre réflexion et à analyser objectivement les options qui s'offrent à vous.
@@ -116,6 +116,7 @@ const Index = () => {
         </motion.div>
       </div>;
   };
+
   return <div className="flex flex-col min-h-screen" ref={contentRef}>
       <div className="flex-1 flex flex-col">
         {step === 'decision' && <>
@@ -186,4 +187,5 @@ const Index = () => {
       </div>
     </div>;
 };
+
 export default Index;
