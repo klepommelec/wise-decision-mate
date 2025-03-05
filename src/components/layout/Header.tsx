@@ -1,11 +1,11 @@
 
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, List } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 export function Header() {
   const { user, loading } = useAuth();
@@ -13,8 +13,8 @@ export function Header() {
 
   const handleSignOut = async () => {
     try {
-      // Utiliser le contexte d'authentification supabase importé via useAuth
-      const { error } = await user?.auth.signOut();
+      // Utiliser le contexte d'authentification
+      const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
       toast.success("Déconnexion réussie");
@@ -38,6 +38,15 @@ export function Header() {
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
           ) : user ? (
             <div className="flex items-center gap-4">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigate("/my-decisions")}
+                className="flex items-center gap-2"
+              >
+                <List className="h-4 w-4" />
+                Mes décisions
+              </Button>
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4" />
                 <span className="text-sm">{user.email}</span>
