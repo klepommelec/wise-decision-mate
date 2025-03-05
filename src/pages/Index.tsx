@@ -9,6 +9,9 @@ import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { Navigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, List, Calendar, Clock } from 'lucide-react';
 
 type Step = 'decision' | 'criteria' | 'options' | 'analysis';
 
@@ -17,7 +20,17 @@ interface LocationState {
     id: string;
     title: string;
     description: string;
+    deadline?: string;
   };
+}
+
+interface Decision {
+  id: string;
+  title: string;
+  description: string | null;
+  created_at: string;
+  deadline?: string | null;
+  favorite_option?: string | null;
 }
 
 // Fonction pour générer des options avec Claude AI
@@ -128,6 +141,23 @@ const Index = () => {
   const location = useLocation();
   const locationState = location.state as LocationState | null;
   const existingDecision = locationState?.existingDecision;
+  const { user, loading } = useAuth();
+  
+  const [step, setStep] = useState<Step>('decision');
+  const [decision, setDecision] = useState<{ id: string; title: string; description: string; deadline?: string }>({
+    id: existingDecision?.id || '',
+    title: existingDecision?.title || '',
+    description: existingDecision?.description || '',
+    deadline: existingDecision?.deadline || undefined
+  });
+  const [options, setOptions] = useState<Option[]>([]);
+  const [criteria, setCriteria] = useState<Criterion[]>([]);
+  const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
+  const [isGeneratingOptions, setIsGeneratingOptions] = useState(false);
+  const [isGeneratingCriteria, setIsGeneratingCriteria] = useState(false);
+  const [isProcessingManualEntries, setIsProcessingManualEntries] = useState(false);
+  const [userDecisions, setUserDecisions] = useState<Decision[]>([]);
+  const [loadingDecisions, setLoadingDecisions] = useState(true);
 
   // Log the existing decision for debugging
   useEffect(() => {
@@ -136,19 +166,31 @@ const Index = () => {
     }
   }, [existingDecision]);
 
-  const [step, setStep] = useState<Step>('decision');
-  const [decision, setDecision] = useState<{ id: string; title: string; description: string }>({
-    id: existingDecision?.id || '',
-    title: existingDecision?.title || '',
-    description: existingDecision?.description || ''
-  });
-  const [options, setOptions] = useState<Option[]>([]);
-  const [criteria, setCriteria] = useState<Criterion[]>([]);
-  const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
-  const [isGeneratingOptions, setIsGeneratingOptions] = useState(false);
-  const [isGeneratingCriteria, setIsGeneratingCriteria] = useState(false);
-  const [isProcessingManualEntries, setIsProcessingManualEntries] = useState(false);
-  const { user, loading } = useAuth();
+  // Fetch user's decisions
+  useEffect(() => {
+    const fetchUserDecisions = async () => {
+      if (!user) return;
+
+      try {
+        setLoadingDecisions(true);
+        const { data, error } = await supabase
+          .from("decisions")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        setUserDecisions(data || []);
+      } catch (error: any) {
+        console.error("Erreur lors de la récupération des décisions:", error);
+        toast.error("Impossible de charger vos décisions");
+      } finally {
+        setLoadingDecisions(false);
+      }
+    };
+
+    fetchUserDecisions();
+  }, [user]);
 
   useEffect(() => {
     // Update decision state when existingDecision changes
@@ -156,7 +198,8 @@ const Index = () => {
       setDecision({
         id: existingDecision.id,
         title: existingDecision.title,
-        description: existingDecision.description
+        description: existingDecision.description,
+        deadline: existingDecision.deadline
       });
       
       // If we have an existing decision and we're on the decision step, skip to the criteria step
@@ -200,12 +243,13 @@ const Index = () => {
     }
   };
 
-  const handleDecisionSubmit = async (decisionData: { title: string; description: string }, generateWithAI: boolean = false) => {
+  const handleDecisionSubmit = async (decisionData: { title: string; description: string; deadline?: string }, generateWithAI: boolean = false) => {
     // Important: Preserve the existing ID when updating decision
     setDecision({
       id: decision.id,
       title: decisionData.title,
-      description: decisionData.description
+      description: decisionData.description,
+      deadline: decisionData.deadline
     });
     
     // Generate criteria first
@@ -389,6 +433,31 @@ const Index = () => {
     setEvaluations([]);
   };
 
+  const handleDecisionClick = (selectedDecision: Decision) => {
+    console.log("Opening decision:", selectedDecision.id, selectedDecision.title);
+    setStep('decision');
+    navigate("/", { 
+      state: { 
+        existingDecision: {
+          id: selectedDecision.id,
+          title: selectedDecision.title,
+          description: selectedDecision.description || "",
+          deadline: selectedDecision.deadline
+        }
+      }
+    });
+  };
+
+  const formatDate = (dateString: string | undefined | null) => {
+    if (!dateString) return "Pas de deadline";
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(date);
+  };
+
   // Rediriger vers la page d'authentification si l'utilisateur n'est pas connecté
   if (!loading && !user) {
     return <Navigate to="/auth" />;
@@ -398,42 +467,126 @@ const Index = () => {
     <>
       <Header />
       <Container>
-        <div className="min-h-[80vh] flex flex-col justify-center items-center py-12">
-          {step === 'decision' && (
-            <DecisionForm 
-              onSubmit={handleDecisionSubmit} 
-              initialDecision={decision.id ? decision : undefined}
-            />
-          )}
-          
-          {step === 'criteria' && (
-            <CriteriaEvaluation 
-              criteria={criteria}
-              isLoading={isGeneratingCriteria || isProcessingManualEntries}
-              onComplete={handleCriteriaComplete}
-              decisionTitle={decision.title}
-            />
-          )}
-          
-          {step === 'options' && (
-            <OptionsList 
-              decisionTitle={decision.title} 
-              onComplete={handleOptionsComplete}
-              onBack={handleBackToCriteria}
-              isLoading={isGeneratingOptions || isProcessingManualEntries}
-              initialOptions={options}
-            />
-          )}
-          
-          {step === 'analysis' && (
-            <AnalysisResult
-              decisionTitle={decision.title}
-              options={options}
-              criteria={criteria}
-              evaluations={evaluations}
-              onBack={() => setStep('options')}
-              onReset={handleReset}
-            />
+        <div className="min-h-[80vh] flex flex-col py-12">
+          <div className="w-full max-w-2xl mx-auto mb-12">
+            {step === 'decision' && (
+              <DecisionForm 
+                onSubmit={handleDecisionSubmit} 
+                initialDecision={decision.id ? decision : undefined}
+              />
+            )}
+            
+            {step === 'criteria' && (
+              <CriteriaEvaluation 
+                criteria={criteria}
+                isLoading={isGeneratingCriteria || isProcessingManualEntries}
+                onComplete={handleCriteriaComplete}
+                decisionTitle={decision.title}
+              />
+            )}
+            
+            {step === 'options' && (
+              <OptionsList 
+                decisionTitle={decision.title} 
+                onComplete={handleOptionsComplete}
+                onBack={handleBackToCriteria}
+                isLoading={isGeneratingOptions || isProcessingManualEntries}
+                initialOptions={options}
+              />
+            )}
+            
+            {step === 'analysis' && (
+              <AnalysisResult
+                decisionTitle={decision.title}
+                options={options}
+                criteria={criteria}
+                evaluations={evaluations}
+                onBack={() => setStep('options')}
+                onReset={handleReset}
+              />
+            )}
+          </div>
+
+          {/* User's Decisions Section */}
+          {user && step === 'decision' && (
+            <div className="w-full max-w-5xl mx-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">Mes Décisions</h2>
+                <Button onClick={() => handleReset()} className="gap-2">
+                  Nouvelle décision
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {loadingDecisions ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3].map((i) => (
+                    <Card key={i} className="h-[180px] animate-pulse">
+                      <CardHeader>
+                        <div className="h-5 bg-muted rounded w-3/4 mb-2"></div>
+                        <div className="h-4 bg-muted rounded w-1/2"></div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="h-4 bg-muted rounded w-full mb-2"></div>
+                        <div className="h-4 bg-muted rounded w-2/3"></div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : userDecisions.length === 0 ? (
+                <Card className="p-8 text-center">
+                  <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                    <List className="text-primary h-6 w-6" />
+                  </div>
+                  <CardTitle className="mb-2">Aucune décision</CardTitle>
+                  <CardDescription className="mb-6">
+                    Vous n'avez pas encore enregistré de décisions
+                  </CardDescription>
+                  <Button onClick={() => handleReset()}>
+                    Créer votre première décision
+                  </Button>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {userDecisions.map((decision) => (
+                    <Card 
+                      key={decision.id}
+                      className="hover:shadow-md transition-shadow cursor-pointer"
+                      onClick={() => handleDecisionClick(decision)}
+                    >
+                      <CardHeader>
+                        <div className="flex justify-between items-start mb-2">
+                          <CardTitle className="line-clamp-1">{decision.title}</CardTitle>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <CardDescription className="flex items-center gap-1 text-xs">
+                            <Clock className="h-3 w-3" />
+                            {formatDate(decision.deadline)}
+                          </CardDescription>
+                          
+                          {decision.favorite_option && (
+                            <div className="text-xs bg-green-100 dark:bg-green-950 text-green-800 dark:text-green-300 px-2 py-0.5 rounded-md">
+                              ★ {decision.favorite_option}
+                            </div>
+                          )}
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        {decision.description ? (
+                          <p className="text-sm text-muted-foreground line-clamp-3">
+                            {decision.description}
+                          </p>
+                        ) : (
+                          <p className="text-sm text-muted-foreground italic">
+                            Pas de description
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
           )}
         </div>
       </Container>

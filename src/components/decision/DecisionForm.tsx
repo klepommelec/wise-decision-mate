@@ -6,26 +6,34 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Calendar } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
 
 interface Decision {
   id?: string;
   title: string;
   description: string;
+  deadline?: string;
 }
 
 interface DecisionFormProps {
-  onSubmit: (decision: { title: string; description: string }, generateOptions?: boolean) => void;
+  onSubmit: (decision: { title: string; description: string; deadline?: string }, generateOptions?: boolean) => void;
   initialDecision?: Decision;
 }
 
 export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
   const [title, setTitle] = useState(initialDecision?.title || '');
   const [description, setDescription] = useState(initialDecision?.description || '');
+  const [deadline, setDeadline] = useState<Date | undefined>(
+    initialDecision?.deadline ? new Date(initialDecision.deadline) : undefined
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [useAI, setUseAI] = useState(true);
   const { user } = useAuth();
@@ -46,7 +54,8 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
       // to avoid saving it again to the database
       onSubmit({ 
         title: initialDecision.title, 
-        description: initialDecision.description 
+        description: initialDecision.description,
+        deadline: initialDecision.deadline
       }, false);
     }
   }, [initialDecision, onSubmit]);
@@ -76,16 +85,35 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
           .insert({
             user_id: user.id,
             title,
-            description
+            description,
+            deadline: deadline ? deadline.toISOString() : null
           });
 
         if (error) throw error;
       } else {
         console.log("Using existing decision:", initialDecision.id);
+        
+        // Update the decision with the new deadline if needed
+        if (initialDecision.deadline !== (deadline ? deadline.toISOString() : null)) {
+          const { error } = await supabase
+            .from('decisions')
+            .update({
+              title,
+              description,
+              deadline: deadline ? deadline.toISOString() : null
+            })
+            .eq('id', initialDecision.id);
+            
+          if (error) throw error;
+        }
       }
       
       // Continuer avec le processus normal
-      onSubmit({ title, description }, useAI);
+      onSubmit({ 
+        title, 
+        description, 
+        deadline: deadline ? deadline.toISOString() : undefined 
+      }, useAI);
       setIsSubmitting(false);
       
     } catch (error: any) {
@@ -93,7 +121,7 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
       toast.error(error.message || "Une erreur est survenue");
       setIsSubmitting(false);
     }
-  }, [title, description, useAI, user, navigate, onSubmit, initialDecision]);
+  }, [title, description, deadline, useAI, user, navigate, onSubmit, initialDecision]);
   
   return (
     <div className="w-full max-w-2xl mx-auto animate-fade-in">
@@ -131,6 +159,33 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
                 placeholder="Plus de détails sur la décision à prendre..."
                 className="min-h-[100px]"
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="deadline">Date limite (optionnel)</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    id="deadline"
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !deadline && "text-muted-foreground"
+                    )}
+                  >
+                    <Calendar className="mr-2 h-4 w-4" />
+                    {deadline ? format(deadline, "dd MMMM yyyy") : "Sélectionner une date limite"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <CalendarComponent
+                    mode="single"
+                    selected={deadline}
+                    onSelect={setDeadline}
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="flex items-center space-x-2 pt-2">
               <Switch

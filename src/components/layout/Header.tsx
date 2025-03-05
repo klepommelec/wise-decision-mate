@@ -29,7 +29,10 @@ export function Header() {
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2" onClick={(e) => {
+            e.preventDefault();
+            navigate("/");
+          }}>
             <span className="text-xl font-bold">Décido</span>
           </Link>
         </div>
@@ -38,15 +41,6 @@ export function Header() {
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
           ) : user ? (
             <div className="flex items-center gap-4">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => navigate("/my-decisions")}
-                className="flex items-center gap-2"
-              >
-                <List className="h-4 w-4" />
-                Mes décisions
-              </Button>
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4" />
                 <span className="text-sm">{user.email}</span>
