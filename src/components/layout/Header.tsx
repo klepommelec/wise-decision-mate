@@ -1,5 +1,5 @@
 
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { LogOut, User, Plus } from "lucide-react";
@@ -10,7 +10,6 @@ import { supabase } from "@/integrations/supabase/client";
 export function Header() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleSignOut = async () => {
     try {
@@ -25,37 +24,21 @@ export function Header() {
     }
   };
 
-  const handleNewDecision = () => {
-    if (location.pathname === '/') {
-      // Si déjà sur la page d'accueil, recharger la page
-      window.location.reload();
-    } else {
-      // Sinon, naviguer vers la page d'accueil
-      navigate('/');
-    }
-  };
-
-  const handleLogoClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    // Recharger l'application et retourner à la page d'accueil
-    window.location.href = '/';
-  };
-
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
-          <a href="/" onClick={handleLogoClick} className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <img 
               src="/lovable-uploads/6101851f-2549-45ba-a231-ed9bfb465e2b.png" 
               alt="Wise Logo" 
               className="h-8 max-h-[32px] w-auto" 
             />
-          </a>
+          </Link>
         </div>
         <nav className="flex items-center gap-4">
           {user && (
-            <Button variant="default" size="sm" onClick={handleNewDecision} className="mr-2">
+            <Button variant="default" size="sm" onClick={() => navigate("/")} className="mr-2">
               <Plus className="h-4 w-4 mr-2" />
               Nouvelle décision
             </Button>
