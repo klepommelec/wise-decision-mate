@@ -1,7 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, PlusCircle } from "lucide-react";
+import { LogOut, User, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -39,8 +39,8 @@ export function Header() {
                 size="sm" 
                 onClick={() => navigate("/new-decision")}
               >
-                <PlusCircle className="h-4 w-4 mr-2" />
                 Nouvelle décision
+                <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
               <Button 
                 variant="ghost" 
