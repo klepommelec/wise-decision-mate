@@ -11,7 +11,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { supabase, Option, Criterion, Evaluation } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, List, Calendar, Clock } from 'lucide-react';
+import { ArrowRight, List, Calendar, Clock, Star, CheckCircle } from 'lucide-react';
 
 type Step = 'decision' | 'criteria' | 'options' | 'analysis';
 
@@ -524,7 +524,7 @@ const Index = () => {
                     {userDecisions.map((decision) => (
                       <Card 
                         key={decision.id}
-                        className="hover:shadow-md transition-shadow cursor-pointer"
+                        className="hover:shadow-md transition-shadow cursor-pointer border border-gray-200"
                         onClick={() => handleDecisionClick(decision)}
                       >
                         <CardHeader>
@@ -536,22 +536,24 @@ const Index = () => {
                               <Clock className="h-3 w-3" />
                               {formatDate(decision.deadline)}
                             </CardDescription>
-                            
-                            {decision.favorite_option && (
-                              <div className="text-xs bg-green-100 dark:bg-green-950 text-green-800 dark:text-green-300 px-2 py-0.5 rounded-md">
-                                ★ {decision.favorite_option}
-                              </div>
-                            )}
                           </div>
                         </CardHeader>
                         <CardContent>
-                          {decision.description ? (
-                            <p className="text-sm text-muted-foreground line-clamp-3">
-                              {decision.description}
-                            </p>
+                          {decision.favorite_option ? (
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-1.5 text-green-700 dark:text-green-500 text-sm font-medium">
+                                <CheckCircle className="h-4 w-4" />
+                                <span className="line-clamp-1">{decision.favorite_option}</span>
+                              </div>
+                              
+                              <div className="flex items-center gap-1.5 text-yellow-700 dark:text-yellow-500 text-xs text-muted-foreground">
+                                <Star className="h-3.5 w-3.5" />
+                                <span>Recommandation IA: Singapour</span>
+                              </div>
+                            </div>
                           ) : (
                             <p className="text-sm text-muted-foreground italic">
-                              Pas de description
+                              Pas encore de décision finale
                             </p>
                           )}
                         </CardContent>
