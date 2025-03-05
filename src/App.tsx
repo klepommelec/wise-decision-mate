@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import MyDecisions from "./pages/MyDecisions";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./context/AuthContext";
+import { Header } from "./components/layout/Header"; // Importation du Header
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
       <Sonner />
       <AuthProvider>
         <BrowserRouter>
+          <Header /> {/* Ajout du Header ici pour qu'il soit présent sur toutes les pages */}
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
