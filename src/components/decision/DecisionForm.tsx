@@ -1,9 +1,8 @@
+
 import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Sparkles, Calendar } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -29,7 +28,6 @@ interface DecisionFormProps {
 
 export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
   const [title, setTitle] = useState(initialDecision?.title || '');
-  const [description, setDescription] = useState(initialDecision?.description || '');
   const [deadline, setDeadline] = useState<Date | undefined>(
     initialDecision?.deadline ? new Date(initialDecision.deadline) : undefined
   );
@@ -77,7 +75,7 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
           .insert({
             user_id: user.id,
             title,
-            description,
+            description: "", // Nous conservons le champ dans l'API mais l'envoyons vide
             deadline: deadline ? deadline.toISOString() : null
           });
 
@@ -90,7 +88,7 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
             .from('decisions')
             .update({
               title,
-              description,
+              description: "", // Nous conservons le champ dans l'API mais l'envoyons vide
               deadline: deadline ? deadline.toISOString() : null
             })
             .eq('id', initialDecision.id);
@@ -101,7 +99,7 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
       
       onSubmit({ 
         title, 
-        description, 
+        description: "", // Nous conservons le champ dans l'API mais l'envoyons vide
         deadline: deadline ? deadline.toISOString() : undefined 
       }, useAI);
       setIsSubmitting(false);
@@ -111,7 +109,7 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
       toast.error(error.message || "Une erreur est survenue");
       setIsSubmitting(false);
     }
-  }, [title, description, deadline, useAI, user, navigate, onSubmit, initialDecision]);
+  }, [title, deadline, useAI, user, navigate, onSubmit, initialDecision]);
   
   return (
     <div className="w-full max-w-2xl mx-auto animate-fade-in">
@@ -130,7 +128,6 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="title">Titre de la décision</Label>
               <Input
                 id="title"
                 value={title}
@@ -141,17 +138,6 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="description">Description (optionnel)</Label>
-              <Textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Plus de détails sur la décision à prendre..."
-                className="min-h-[100px]"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="deadline">Date limite (optionnel)</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -184,13 +170,10 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
                 onCheckedChange={setUseAI}
               />
               <div className="grid gap-1.5">
-                <Label
-                  htmlFor="ai-options"
-                  className="text-sm font-medium leading-none flex items-center gap-1.5"
-                >
+                <div className="text-sm font-medium leading-none flex items-center gap-1.5">
                   <Sparkles className="h-3.5 w-3.5" />
                   Générer automatiquement des options avec l'IA
-                </Label>
+                </div>
                 <p className="text-sm text-muted-foreground">
                   L'IA vous suggérera des options pertinentes en fonction de votre décision
                 </p>

@@ -430,48 +430,50 @@ const Index = () => {
     <>
       <Header />
       <Container>
-        <div className="min-h-[80vh] flex flex-col py-12">
-          <div className="w-full max-w-2xl mx-auto mb-12">
-            {step === 'decision' && (
-              <DecisionForm 
-                onSubmit={handleDecisionSubmit} 
-                initialDecision={decision.id ? decision : undefined}
-              />
-            )}
-            
-            {step === 'criteria' && (
-              <CriteriaEvaluation 
-                criteria={criteria}
-                isLoading={isGeneratingCriteria || isProcessingManualEntries}
-                onComplete={handleCriteriaComplete}
-                decisionTitle={decision.title}
-              />
-            )}
-            
-            {step === 'options' && (
-              <OptionsList 
-                decisionTitle={decision.title} 
-                onComplete={handleOptionsComplete}
-                onBack={handleBackToCriteria}
-                isLoading={isGeneratingOptions || isProcessingManualEntries}
-                initialOptions={options}
-              />
-            )}
-            
-            {step === 'analysis' && (
-              <AnalysisResult
-                decisionTitle={decision.title}
-                options={options}
-                criteria={criteria}
-                evaluations={evaluations}
-                onBack={() => setStep('options')}
-                onReset={handleReset}
-              />
-            )}
+        <div className="min-h-[100vh] flex flex-col">
+          <div className="flex-1 flex items-center justify-center min-h-screen w-full">
+            <div className="w-full max-w-2xl mx-auto">
+              {step === 'decision' && (
+                <DecisionForm 
+                  onSubmit={handleDecisionSubmit} 
+                  initialDecision={decision.id ? decision : undefined}
+                />
+              )}
+              
+              {step === 'criteria' && (
+                <CriteriaEvaluation 
+                  criteria={criteria}
+                  isLoading={isGeneratingCriteria || isProcessingManualEntries}
+                  onComplete={handleCriteriaComplete}
+                  decisionTitle={decision.title}
+                />
+              )}
+              
+              {step === 'options' && (
+                <OptionsList 
+                  decisionTitle={decision.title} 
+                  onComplete={handleOptionsComplete}
+                  onBack={handleBackToCriteria}
+                  isLoading={isGeneratingOptions || isProcessingManualEntries}
+                  initialOptions={options}
+                />
+              )}
+              
+              {step === 'analysis' && (
+                <AnalysisResult
+                  decisionTitle={decision.title}
+                  options={options}
+                  criteria={criteria}
+                  evaluations={evaluations}
+                  onBack={() => setStep('options')}
+                  onReset={handleReset}
+                />
+              )}
+            </div>
           </div>
 
           {user && step === 'decision' && (
-            <div className="w-full max-w-5xl mx-auto">
+            <div className="w-full max-w-5xl mx-auto py-12">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">Mes Décisions</h2>
                 <Button onClick={() => handleReset()} className="gap-2">
