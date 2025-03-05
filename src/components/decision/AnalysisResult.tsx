@@ -136,18 +136,13 @@ export function AnalysisResult({
               <div className="flex items-center gap-2 mb-3">
                 <Star className="h-5 w-5 text-yellow-500" />
                 <h3 className="text-lg font-medium">Option suggérée</h3>
-              </div>
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-xl font-semibold">{bestOption.title}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{bestOption.description}</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold">{bestOption.score}/5</div>
+                
+                <div className="ml-auto flex items-center gap-2">
+                  <div className="text-xl font-bold">{bestOption.score}/5</div>
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="mt-2 flex items-center gap-1"
+                    className="flex items-center gap-1"
                     onClick={handleSaveFavoriteOption}
                     disabled={isSaving}
                   >
@@ -156,11 +151,16 @@ export function AnalysisResult({
                     ) : (
                       <>
                         <Check className="h-4 w-4" />
-                        Enregistrer comme choix
+                        Enregistrer
                       </>
                     )}
                   </Button>
                 </div>
+              </div>
+              
+              <div>
+                <p className="text-xl font-semibold">{bestOption.title}</p>
+                <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{bestOption.description}</p>
               </div>
             </div>
           )}
