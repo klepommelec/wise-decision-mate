@@ -88,7 +88,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           
           // Récupérer le profil complet
           const profileData = await fetchProfile(data.session.user.id);
-          setProfile(profileData);
+          if (profileData) {
+            setProfile(profileData as Profile);
+          }
         }
       } catch (error) {
         console.error("Erreur lors de la récupération de la session:", error);
@@ -110,7 +112,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           
           // Récupérer le profil complet
           const profileData = await fetchProfile(session.user.id);
-          setProfile(profileData);
+          if (profileData) {
+            setProfile(profileData as Profile);
+          }
         } else {
           setUser(null);
           setProfile(null);
