@@ -5,17 +5,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Plus, Trash2, ArrowRight, Sparkles, Upload, Image as ImageIcon } from 'lucide-react';
+import { Plus, Trash2, ArrowRight, Sparkles } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Badge } from '@/components/ui/badge';
 
 export interface Option {
   id: string;
   title: string;
   description: string;
-  imageUrl?: string;
-  isAIGenerated?: boolean;
 }
 
 interface OptionsListProps {
@@ -27,18 +23,13 @@ interface OptionsListProps {
 
 export function OptionsList({ decisionTitle, onComplete, isLoading = false, initialOptions }: OptionsListProps) {
   const [options, setOptions] = useState<Option[]>([
-    { id: '1', title: '', description: '', isAIGenerated: false },
-    { id: '2', title: '', description: '', isAIGenerated: false }
+    { id: '1', title: '', description: '' },
+    { id: '2', title: '', description: '' }
   ]);
   
   useEffect(() => {
     if (initialOptions && initialOptions.length >= 2) {
-      // Marquer les options initiales comme générées par l'IA si elles ne sont pas déjà marquées
-      const markedOptions = initialOptions.map(option => ({
-        ...option,
-        isAIGenerated: option.isAIGenerated !== false
-      }));
-      setOptions(markedOptions);
+      setOptions(initialOptions);
     }
   }, [initialOptions]);
   
@@ -46,8 +37,7 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
     setOptions([...options, { 
       id: Math.random().toString(36).substr(2, 9), 
       title: '', 
-      description: '',
-      isAIGenerated: false
+      description: '' 
     }]);
   };
   
@@ -56,7 +46,7 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
     setOptions(options.filter(option => option.id !== id));
   };
   
-  const updateOption = (id: string, field: 'title' | 'description' | 'imageUrl', value: string) => {
+  const updateOption = (id: string, field: 'title' | 'description', value: string) => {
     setOptions(options.map(option => 
       option.id === id ? { ...option, [field]: value } : option
     ));
@@ -68,18 +58,6 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
       onComplete(validOptions);
     }
   };
-
-  const handleImageUpload = (id: string, event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const imageUrl = e.target?.result as string;
-      updateOption(id, 'imageUrl', imageUrl);
-    };
-    reader.readAsDataURL(file);
-  };
   
   const isValid = options.filter(option => option.title.trim() !== '').length >= 2;
   
@@ -87,7 +65,7 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
     return (
       <div className="w-full max-w-3xl mx-auto animate-fade-in">
         <Card className="glass-card transition-all duration-300">
-          <CardHeader className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
+          <CardHeader>
             <CardTitle className="text-2xl font-medium">Génération des options</CardTitle>
             <CardDescription>
               Pour la décision: <span className="font-medium">{decisionTitle}</span>
@@ -108,7 +86,6 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
                     <Skeleton className="h-6 w-24" />
                   </div>
                   <div className="space-y-4">
-                    <Skeleton className="h-32 w-full" />
                     <div className="space-y-2">
                       <Skeleton className="h-10 w-full" />
                     </div>
@@ -128,7 +105,7 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
   return (
     <div className="w-full max-w-3xl mx-auto animate-fade-in">
       <Card className="glass-card transition-all duration-300">
-        <CardHeader className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
+        <CardHeader>
           <CardTitle className="text-2xl font-medium">Quelles sont vos options?</CardTitle>
           <CardDescription>
             Pour la décision: <span className="font-medium">{decisionTitle}</span>
@@ -146,23 +123,11 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
             {options.map((option, index) => (
               <div 
                 key={option.id} 
-                className={`p-4 border rounded-lg transition-all duration-300 animate-slide-in ${
-                  option.isAIGenerated 
-                    ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800/40' 
-                    : 'bg-white/50 dark:bg-gray-800/50'
-                }`}
+                className="p-4 border rounded-lg bg-white/50 dark:bg-gray-800/50 animate-slide-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-medium">Option {index + 1}</h3>
-                    {option.isAIGenerated && (
-                      <Badge variant="outline" className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 border-purple-300 dark:border-purple-700 flex items-center gap-1">
-                        <Sparkles className="h-3 w-3" />
-                        IA
-                      </Badge>
-                    )}
-                  </div>
+                  <h3 className="font-medium">Option {index + 1}</h3>
                   {options.length > 2 && (
                     <Button 
                       variant="ghost" 
@@ -174,69 +139,7 @@ export function OptionsList({ decisionTitle, onComplete, isLoading = false, init
                     </Button>
                   )}
                 </div>
-
                 <div className="space-y-4">
-                  {/* Zone d'image */}
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <Label htmlFor={`image-${option.id}`}>Image (optionnel)</Label>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-8 px-2 text-xs"
-                              onClick={() => document.getElementById(`file-${option.id}`)?.click()}
-                            >
-                              <Upload className="h-3 w-3 mr-1" />
-                              Ajouter une image
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Ajouter une image à cette option</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                    
-                    <input 
-                      type="file" 
-                      id={`file-${option.id}`} 
-                      accept="image/*" 
-                      onChange={(e) => handleImageUpload(option.id, e)} 
-                      className="hidden" 
-                    />
-                    
-                    {option.imageUrl ? (
-                      <div className="relative border rounded-lg overflow-hidden h-40 group">
-                        <img 
-                          src={option.imageUrl} 
-                          alt={option.title || `Option ${index + 1}`} 
-                          className="w-full h-full object-cover" 
-                        />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="text-white bg-black/50 hover:bg-black/70"
-                            onClick={() => updateOption(option.id, 'imageUrl', '')}
-                          >
-                            Supprimer
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div 
-                        className="border border-dashed rounded-lg h-40 flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 transition-colors"
-                        onClick={() => document.getElementById(`file-${option.id}`)?.click()}
-                      >
-                        <ImageIcon className="h-10 w-10 text-muted-foreground mb-2" />
-                        <p className="text-sm text-muted-foreground">Cliquez pour ajouter une image</p>
-                      </div>
-                    )}
-                  </div>
-                  
                   <div className="space-y-2">
                     <Label htmlFor={`title-${option.id}`}>Titre</Label>
                     <Input

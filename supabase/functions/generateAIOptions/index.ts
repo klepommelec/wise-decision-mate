@@ -10,14 +10,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Generic option images for different categories
-const optionImages = [
-  "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80", // tech
-  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80", // business
-  "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=800&q=80", // productivity
-  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80", // finance
-]
-
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -35,11 +27,6 @@ serve(async (req) => {
     }
 
     console.log(`Générant des options pour la décision: ${title}`)
-
-    if (!CLAUDE_API_KEY) {
-      console.error('CLAUDE_API_KEY non configurée')
-      throw new Error('Configuration API manquante')
-    }
 
     // Prepare the prompt for Claude
     const prompt = `
@@ -61,14 +48,12 @@ Format de réponse souhaité :
 ]
 Réponds uniquement avec ce JSON, sans autre texte.`
 
-    console.log('Envoi de la requête à Claude')
-
     // Call Claude API
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': CLAUDE_API_KEY,
+        'x-api-key': CLAUDE_API_KEY!,
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
@@ -80,17 +65,11 @@ Réponds uniquement avec ce JSON, sans autre texte.`
       })
     })
 
-    const responseStatus = response.status
-    console.log(`Réponse Claude - status: ${responseStatus}`)
-
     if (!response.ok) {
       const errorData = await response.text()
       console.error('Erreur API Claude:', errorData)
       return new Response(
-        JSON.stringify({ 
-          error: 'Erreur lors de la génération des options',
-          details: errorData
-        }),
+        JSON.stringify({ error: 'Erreur lors de la génération des options' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
@@ -103,37 +82,22 @@ Réponds uniquement avec ce JSON, sans autre texte.`
     try {
       // Extract JSON from Claude's text response
       const contentText = data.content[0].text
-      console.log('Contenu de la réponse:', contentText)
-      
       // Try to extract the JSON part
       const jsonMatch = contentText.match(/\[\s*\{.*\}\s*\]/s)
       if (jsonMatch) {
-        const parsedOptions = JSON.parse(jsonMatch[0])
-        console.log('Options analysées:', parsedOptions)
-        
-        // Add imageUrl and isAIGenerated properties to each option
-        options = parsedOptions.map((option, index) => ({
-          ...option,
-          id: crypto.randomUUID(),
-          imageUrl: optionImages[index % optionImages.length],
-          isAIGenerated: true
-        }))
-        
-        console.log('Options finales:', options)
+        options = JSON.parse(jsonMatch[0])
       } else {
-        console.error('Format JSON non trouvé dans la réponse')
+        // Fallback if the response is not in the expected format
         throw new Error('Format de réponse invalide')
       }
     } catch (e) {
       console.error('Erreur lors du parsing de la réponse:', e)
-      console.error('Contenu de la réponse:', data.content)
-      
       // Provide fallback options in case of parsing error
       options = [
-        { id: crypto.randomUUID(), title: "Option A", description: "Première option par défaut suite à une erreur de traitement.", imageUrl: optionImages[0], isAIGenerated: true },
-        { id: crypto.randomUUID(), title: "Option B", description: "Deuxième option par défaut suite à une erreur de traitement.", imageUrl: optionImages[1], isAIGenerated: true },
-        { id: crypto.randomUUID(), title: "Option C", description: "Troisième option par défaut suite à une erreur de traitement.", imageUrl: optionImages[2], isAIGenerated: true },
-        { id: crypto.randomUUID(), title: "Option D", description: "Quatrième option par défaut suite à une erreur de traitement.", imageUrl: optionImages[3], isAIGenerated: true }
+        { title: "Option A", description: "Première option par défaut suite à une erreur de traitement." },
+        { title: "Option B", description: "Deuxième option par défaut suite à une erreur de traitement." },
+        { title: "Option C", description: "Troisième option par défaut suite à une erreur de traitement." },
+        { title: "Option D", description: "Quatrième option par défaut suite à une erreur de traitement." }
       ]
     }
 
@@ -144,10 +108,7 @@ Réponds uniquement avec ce JSON, sans autre texte.`
   } catch (error) {
     console.error('Erreur dans la fonction Edge:', error)
     return new Response(
-      JSON.stringify({ 
-        error: error.message || 'Erreur inconnue',
-        errorObject: JSON.stringify(error)
-      }),
+      JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
