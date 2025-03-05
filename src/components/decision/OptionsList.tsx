@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -182,7 +183,6 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
                 </div>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor={`title-${option.id}`}>Titre de l'option</Label>
                     <Input
                       id={`title-${option.id}`}
                       value={option.title}

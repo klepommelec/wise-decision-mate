@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -156,7 +157,6 @@ export function CriteriaEvaluation({ criteria: initialCriteria, isLoading = fals
                           </div>
                           <div className="space-y-4">
                             <div className="space-y-2">
-                              <Label htmlFor={`name-${criterion.id}`}>Nom du critère</Label>
                               <Input
                                 id={`name-${criterion.id}`}
                                 value={criterion.name}
@@ -167,7 +167,7 @@ export function CriteriaEvaluation({ criteria: initialCriteria, isLoading = fals
                             </div>
                             <div className="space-y-2">
                               <div className="flex justify-between">
-                                <Label htmlFor={`weight-${criterion.id}`}>Importance (1-5)</Label>
+                                <span className="text-sm font-medium">Importance (1-5)</span>
                                 <span className="text-sm font-medium">{criterion.weight}</span>
                               </div>
                               <Slider
