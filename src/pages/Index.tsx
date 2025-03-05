@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
@@ -540,21 +541,20 @@ const Index = () => {
                         </CardHeader>
                         <CardContent>
                           {decision.favorite_option ? (
+                            <div className="flex items-center gap-1.5 text-green-700 dark:text-green-500 text-sm font-medium">
+                              <CheckCircle className="h-4 w-4" />
+                              <span className="line-clamp-1">{decision.favorite_option}</span>
+                            </div>
+                          ) : (
                             <div className="space-y-2">
-                              <div className="flex items-center gap-1.5 text-green-700 dark:text-green-500 text-sm font-medium">
-                                <CheckCircle className="h-4 w-4" />
-                                <span className="line-clamp-1">{decision.favorite_option}</span>
-                              </div>
-                              
-                              <div className="flex items-center gap-1.5 text-yellow-700 dark:text-yellow-500 text-xs text-muted-foreground">
+                              <div className="flex items-center gap-1.5 text-yellow-700 dark:text-yellow-500 text-sm text-muted-foreground">
                                 <Star className="h-3.5 w-3.5" />
                                 <span>Recommandation IA: Singapour</span>
                               </div>
+                              <p className="text-sm text-muted-foreground italic">
+                                Pas encore de décision finale
+                              </p>
                             </div>
-                          ) : (
-                            <p className="text-sm text-muted-foreground italic">
-                              Pas encore de décision finale
-                            </p>
                           )}
                         </CardContent>
                       </Card>
