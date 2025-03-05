@@ -397,19 +397,61 @@ const Index = () => {
     setEvaluations([]);
   };
 
-  const handleDecisionClick = (selectedDecision: Decision) => {
+  const handleDecisionClick = async (selectedDecision: Decision) => {
     console.log("Opening decision:", selectedDecision.id, selectedDecision.title);
-    setStep('decision');
-    navigate("/", { 
-      state: { 
-        existingDecision: {
+    
+    if (selectedDecision.favorite_option) {
+      try {
+        setDecision({
           id: selectedDecision.id,
           title: selectedDecision.title,
           description: selectedDecision.description || "",
           deadline: selectedDecision.deadline
-        }
+        });
+        
+        const [optionsResult, criteriaResult, evaluationsResult] = await Promise.all([
+          supabase.from("options").select("*").eq("decision_id", selectedDecision.id),
+          supabase.from("criteria").select("*").eq("decision_id", selectedDecision.id),
+          supabase.from("evaluations").select("*").eq("decision_id", selectedDecision.id)
+        ]);
+        
+        if (optionsResult.error) throw optionsResult.error;
+        if (criteriaResult.error) throw criteriaResult.error;
+        if (evaluationsResult.error) throw evaluationsResult.error;
+        
+        setOptions(optionsResult.data || []);
+        setCriteria(criteriaResult.data || []);
+        setEvaluations(evaluationsResult.data || []);
+        
+        setStep('analysis');
+      } catch (error) {
+        console.error("Error loading decision data:", error);
+        toast.error("Erreur lors du chargement des données de la décision");
+        
+        navigate("/", { 
+          state: { 
+            existingDecision: {
+              id: selectedDecision.id,
+              title: selectedDecision.title,
+              description: selectedDecision.description || "",
+              deadline: selectedDecision.deadline
+            }
+          }
+        });
       }
-    });
+    } else {
+      setStep('decision');
+      navigate("/", { 
+        state: { 
+          existingDecision: {
+            id: selectedDecision.id,
+            title: selectedDecision.title,
+            description: selectedDecision.description || "",
+            deadline: selectedDecision.deadline
+          }
+        }
+      });
+    }
   };
 
   const formatDate = (dateString: string | undefined | null) => {
