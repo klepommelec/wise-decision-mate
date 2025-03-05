@@ -120,7 +120,7 @@ const Index = () => {
       <div className="flex-1 flex flex-col">
         {step === 'decision' && <>
             {renderWelcomeScreen()}
-            <div id="decision-form" className="flex-1 flex items-center justify-center py-8">
+            <div id="decision-form" className="flex-1 flex items-center justify-center py-0">
               <Container className="flex justify-center items-center w-full">
                 <motion.div className="w-full max-w-2xl mx-auto" initial={{
               opacity: 0,
