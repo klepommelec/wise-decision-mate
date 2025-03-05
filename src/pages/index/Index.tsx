@@ -49,10 +49,14 @@ const Index = () => {
     handleReset
   } = useDecisionSteps(existingDecision);
 
-  // Set initial scroll position on page load
+  // Set initial scroll position on page load and whenever route changes
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant'
+    });
+  }, [location.pathname]);
 
   useEffect(() => {
     if (existingDecision) {
