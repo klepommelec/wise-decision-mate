@@ -108,7 +108,7 @@ const Index = () => {
         y: 0
       }} transition={{
         duration: 0.5
-      }} className="text-center mb-1 py-[64px]">
+      }} className="text-center mb-1 py-[40px]">
           <h1 className="text-4xl font-bold tracking-tight mb-3">Prenez des décisions éclairées</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Notre outil vous aide à structurer votre réflexion et à analyser objectivement les options qui s'offrent à vous.
