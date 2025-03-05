@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -92,6 +93,13 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    /* Ajout du dégradé subtil ressemblant à celui de l'image */
+    background: linear-gradient(145deg, #FFFFFF 0%, #F7F9FC 35%, #EDF2FA 100%);
+  }
+
+  .dark body {
+    /* Version sombre du dégradé */
+    background: linear-gradient(145deg, #111827 0%, #0F172A 35%, #0D1425 100%);
   }
 
   html, body {
