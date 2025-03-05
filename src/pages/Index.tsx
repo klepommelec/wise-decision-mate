@@ -16,12 +16,22 @@ type Step = 'decision' | 'options' | 'criteria' | 'analysis';
 // Fonction pour générer des options avec Claude AI
 const generateAIOptions = async (decisionTitle: string, decisionDescription: string): Promise<Option[]> => {
   try {
+    console.log('Appelant generateAIOptions avec:', { decisionTitle, decisionDescription });
+    
     const response = await supabase.functions.invoke('generateAIOptions', {
       body: { title: decisionTitle, description: decisionDescription }
     });
 
     if (response.error) {
+      console.error('Erreur supabase function:', response.error);
       throw new Error(response.error.message);
+    }
+
+    console.log('Réponse reçue de la fonction:', response.data);
+    
+    if (!response.data?.options || !Array.isArray(response.data.options)) {
+      console.error('Format de réponse invalide:', response.data);
+      throw new Error('Format de réponse invalide');
     }
 
     return response.data.options;
@@ -85,7 +95,8 @@ const Index = () => {
 
   // If we have a decision from state, skip to options step
   useEffect(() => {
-    if (decisionFromState && decision.title) {
+    if (decisionFromState && decisionFromState.decisionTitle) {
+      console.log('Initializing from decision state:', decisionFromState);
       // Check if we need to initialize with empty options
       setOptions([
         { id: '1', title: '', description: '', isAIGenerated: false },
@@ -99,11 +110,14 @@ const Index = () => {
   }, [decisionFromState]);
 
   const handleDecisionSubmit = async (decisionData: { title: string; description: string }, generateOptions: boolean = false) => {
+    // Important: Mettre à jour la décision en conservant l'ID existant
     setDecision({ 
       ...decision, 
       title: decisionData.title, 
       description: decisionData.description 
     });
+    
+    console.log('Decision submitted:', { ...decisionData, id: decision.id, generateOptions });
     
     if (generateOptions) {
       try {
@@ -111,6 +125,7 @@ const Index = () => {
         toast.info("Génération des options en cours...");
         
         const aiOptions = await generateAIOptions(decisionData.title, decisionData.description);
+        console.log('AI options generated:', aiOptions);
         setOptions(aiOptions);
         
         toast.success("Options générées avec succès!");
