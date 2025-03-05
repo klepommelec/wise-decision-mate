@@ -1,99 +1,79 @@
 
-import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { LogOut, User } from "lucide-react";
+import { toast } from "sonner";
 
 export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const location = useLocation();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+    // Vérifie si l'utilisateur est déjà connecté
+    const getUser = async () => {
+      const { data } = await supabase.auth.getSession();
+      setUser(data?.session?.user || null);
+      setLoading(false);
     };
-    
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    getUser();
+
+    // Écoute les changements d'état d'authentification
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user || null);
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
-  const navigation = [
-    { name: "Accueil", href: "/" },
-    { name: "À propos", href: "/about" },
-  ];
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success("Déconnexion réussie");
+      navigate("/");
+    } catch (error) {
+      toast.error("Erreur lors de la déconnexion");
+    }
+  };
 
   return (
-    <header 
-      className={cn(
-        "fixed w-full z-50 transition-all duration-300 ease-in-out py-4 px-4 sm:px-6",
-        isScrolled ? "backdrop-blur-md bg-white/70 dark:bg-gray-900/70 shadow-sm" : "bg-transparent"
-      )}
-    >
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
+      <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-xl font-semibold tracking-tight transition-colors"
-          >
-            <span className="text-primary whitespace-nowrap">DecisionMate</span>
+          <Link to="/" className="flex items-center gap-2">
+            <span className="text-xl font-bold">Décido</span>
           </Link>
         </div>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              to={item.href}
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                location.pathname === item.href
-                  ? "text-primary"
-                  : "text-muted-foreground"
-              )}
-            >
-              {item.name}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden flex items-center justify-center"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {isMobileMenuOpen ? (
-            <X className="h-6 w-6" />
+        <nav className="flex items-center gap-4">
+          {loading ? (
+            <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
+          ) : user ? (
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                <span className="text-sm">{user.email}</span>
+              </div>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Déconnexion
+              </Button>
+            </div>
           ) : (
-            <Menu className="h-6 w-6" />
+            <Button size="sm" onClick={() => navigate("/auth")}>
+              <User className="h-4 w-4 mr-2" />
+              Connexion
+            </Button>
           )}
-        </button>
+        </nav>
       </div>
-
-      {/* Mobile Navigation */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-16 z-40 bg-background/95 backdrop-blur-sm animate-fade-in">
-          <nav className="flex flex-col items-center justify-center h-full gap-8">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={cn(
-                  "text-lg font-medium transition-colors hover:text-primary",
-                  location.pathname === item.href
-                    ? "text-primary"
-                    : "text-muted-foreground"
-                )}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      )}
     </header>
   );
 }

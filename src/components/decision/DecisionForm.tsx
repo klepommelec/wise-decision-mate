@@ -7,6 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Sparkles } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 interface DecisionFormProps {
   onSubmit: (decision: { title: string; description: string }, generateOptions?: boolean) => void;
@@ -17,19 +21,45 @@ export function DecisionForm({ onSubmit }: DecisionFormProps) {
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [useAI, setUseAI] = useState(true);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!title.trim()) return;
     
     setIsSubmitting(true);
     
-    // Simulate loading
-    setTimeout(() => {
-      onSubmit({ title, description }, useAI);
+    // Vérifier si l'utilisateur est connecté
+    if (!user) {
+      toast.error("Vous devez être connecté pour créer une décision");
+      navigate("/auth");
       setIsSubmitting(false);
-    }, 600);
+      return;
+    }
+
+    try {
+      // Enregistrer la décision dans Supabase
+      const { error } = await supabase.from('decisions').insert({
+        user_id: user.id,
+        title,
+        description
+      });
+
+      if (error) throw error;
+      
+      // Continuer avec le processus normal
+      setTimeout(() => {
+        onSubmit({ title, description }, useAI);
+        setIsSubmitting(false);
+      }, 600);
+      
+    } catch (error: any) {
+      console.error("Erreur lors de l'enregistrement de la décision:", error);
+      toast.error(error.message || "Une erreur est survenue");
+      setIsSubmitting(false);
+    }
   };
   
   return (
