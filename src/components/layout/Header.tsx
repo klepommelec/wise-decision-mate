@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,6 +37,12 @@ export function Header() {
           </Link>
         </div>
         <nav className="flex items-center gap-4">
+          {user && (
+            <Button variant="default" size="sm" onClick={() => navigate("/")} className="mr-2">
+              <Plus className="h-4 w-4 mr-2" />
+              Nouvelle décision
+            </Button>
+          )}
           {loading ? (
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
           ) : user ? (
