@@ -41,11 +41,13 @@ export function DecisionForm({ onSubmit }: DecisionFormProps) {
 
     try {
       // Enregistrer la décision dans Supabase
-      const { error } = await supabase.from('decisions').insert({
-        user_id: user.id,
-        title,
-        description
-      });
+      const { error } = await supabase
+        .from('decisions')
+        .insert({
+          user_id: user.id,
+          title,
+          description
+        });
 
       if (error) throw error;
       
