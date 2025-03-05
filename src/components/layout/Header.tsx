@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -5,7 +6,6 @@ import { LogOut, User, List } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Logo } from "./Logo";
 
 export function Header() {
   const { user, loading } = useAuth();
@@ -13,6 +13,7 @@ export function Header() {
 
   const handleSignOut = async () => {
     try {
+      // Utiliser le contexte d'authentification
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
@@ -28,7 +29,12 @@ export function Header() {
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
-          <Logo />
+          <Link to="/" className="flex items-center gap-2" onClick={(e) => {
+            e.preventDefault();
+            navigate("/");
+          }}>
+            <span className="text-xl font-bold">Décido</span>
+          </Link>
         </div>
         <nav className="flex items-center gap-4">
           {loading ? (
