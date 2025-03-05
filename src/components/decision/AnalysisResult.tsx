@@ -12,6 +12,7 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 
 interface AnalysisResultProps {
+  decisionId: string;
   decisionTitle: string;
   options: Option[];
   criteria: Criterion[];
@@ -33,6 +34,7 @@ interface OptionScore {
 }
 
 export function AnalysisResult({ 
+  decisionId,
   decisionTitle, 
   options, 
   criteria, 
@@ -115,15 +117,18 @@ export function AnalysisResult({
     }
   };
 
-  const handleSaveFavoriteOption = async () => {
-    if (!user || !bestOption) return;
+  const handleSaveFavoriteOption = async (optionTitle: string) => {
+    if (!user || !decisionId) {
+      toast.error("Impossible d'enregistrer votre choix. Veuillez vous reconnecter.");
+      return;
+    }
     
     setIsSaving(true);
     try {
       const { error } = await supabase
         .from('decisions')
-        .update({ favorite_option: bestOption.title })
-        .eq('title', decisionTitle);
+        .update({ favorite_option: optionTitle })
+        .eq('id', decisionId);
         
       if (error) throw error;
       
@@ -162,7 +167,7 @@ export function AnalysisResult({
                   variant="outline" 
                   size="sm" 
                   className="flex items-center gap-1"
-                  onClick={handleSaveFavoriteOption}
+                  onClick={() => handleSaveFavoriteOption(bestOption.title)}
                   disabled={isSaving}
                 >
                   {isSaving ? (
@@ -277,8 +282,19 @@ export function AnalysisResult({
                           {option.title}
                         </CardTitle>
                       </div>
-                      <div className="text-lg font-bold">
-                        Score: {option.score}
+                      <div className="flex items-center gap-2">
+                        <div className="text-lg font-bold">
+                          Score: {option.score}
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleSaveFavoriteOption(option.title)}
+                          disabled={isSaving}
+                        >
+                          <Check className="h-4 w-4 mr-1" />
+                          Choisir
+                        </Button>
                       </div>
                     </div>
                   </CardHeader>
@@ -343,7 +359,7 @@ export function AnalysisResult({
           </div>
         </CardContent>
         <CardFooter className="justify-between pt-4">
-          <Button variant="back" onClick={onBack} className="gap-2">
+          <Button variant="outline" onClick={onBack} className="gap-2">
             <ArrowLeft className="h-4 w-4" />
             Retour aux options
           </Button>

@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { supabase, Option, Criterion, Evaluation, findRecommendedOption } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, List, Calendar, Clock, Star, CheckCircle } from 'lucide-react';
 
@@ -21,6 +21,7 @@ interface LocationState {
     title: string;
     description: string;
     deadline?: string;
+    directToAnalysis?: boolean;
   };
 }
 
@@ -151,12 +152,76 @@ const Index = () => {
   const [userDecisions, setUserDecisions] = useState<Decision[]>([]);
   const [loadingDecisions, setLoadingDecisions] = useState(true);
   const [recommendationsMap, setRecommendationsMap] = useState<Record<string, string>>({});
+  const [loadingExistingData, setLoadingExistingData] = useState(false);
 
   useEffect(() => {
     if (existingDecision) {
       console.log("Loading existing decision:", existingDecision);
+      loadDecisionData(existingDecision.id, !!existingDecision.directToAnalysis);
     }
   }, [existingDecision]);
+
+  const loadDecisionData = async (decisionId: string, goToAnalysis = false) => {
+    if (!user) return;
+    
+    setLoadingExistingData(true);
+    try {
+      const { data: criteriaData, error: criteriaError } = await supabase
+        .from('criteria')
+        .select('*')
+        .eq('decision_id', decisionId);
+        
+      if (criteriaError) throw criteriaError;
+      
+      const { data: optionsData, error: optionsError } = await supabase
+        .from('options')
+        .select('*')
+        .eq('decision_id', decisionId);
+        
+      if (optionsError) throw optionsError;
+      
+      const { data: evaluationsData, error: evaluationsError } = await supabase
+        .from('evaluations')
+        .select('*')
+        .eq('decision_id', decisionId);
+        
+      if (evaluationsError) throw evaluationsError;
+      
+      const transformedCriteria: Criterion[] = criteriaData.map(c => ({
+        id: c.id,
+        name: c.name,
+        weight: c.weight
+      }));
+      
+      const transformedOptions: Option[] = optionsData.map(o => ({
+        id: o.id,
+        title: o.title,
+        description: o.description || ''
+      }));
+      
+      const transformedEvaluations: Evaluation[] = evaluationsData.map(e => ({
+        optionId: e.option_id,
+        criterionId: e.criterion_id,
+        score: e.score
+      }));
+      
+      setCriteria(transformedCriteria);
+      setOptions(transformedOptions);
+      setEvaluations(transformedEvaluations);
+      
+      if (goToAnalysis) {
+        setStep('analysis');
+      } else if (criteriaData.length > 0) {
+        setStep('criteria');
+      }
+      
+    } catch (error) {
+      console.error("Error loading decision data:", error);
+      toast.error("Erreur lors du chargement des données de la décision");
+    } finally {
+      setLoadingExistingData(false);
+    }
+  };
 
   useEffect(() => {
     const fetchUserDecisions = async () => {
@@ -166,7 +231,7 @@ const Index = () => {
         setLoadingDecisions(true);
         const { data, error } = await supabase
           .from("decisions")
-          .select("*")
+          .select("id, title, description, created_at, deadline, favorite_option, ai_recommendation")
           .eq("user_id", user.id)
           .order("created_at", { ascending: false });
 
@@ -184,48 +249,38 @@ const Index = () => {
   }, [user]);
 
   useEffect(() => {
-    if (existingDecision) {
-      setDecision({
-        id: existingDecision.id,
-        title: existingDecision.title,
-        description: existingDecision.description,
-        deadline: existingDecision.deadline
+    fetchDecisionsWithRecommendations();
+  }, [user]);
+
+  const fetchDecisionsWithRecommendations = async () => {
+    if (!user) return;
+
+    try {
+      setLoadingDecisions(true);
+      const { data, error } = await supabase
+        .from("decisions")
+        .select("id, title, description, created_at, deadline, favorite_option, ai_recommendation")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      
+      setUserDecisions(data || []);
+      
+      const recMap: Record<string, string> = {};
+      data?.forEach(decision => {
+        if (decision.ai_recommendation) {
+          recMap[decision.id] = decision.ai_recommendation;
+        }
       });
       
-      if (step === 'decision') {
-        console.log("Loading existing decision, moving to criteria step:", existingDecision.id);
-        setStep('criteria');
-        
-        generateCriteria(existingDecision.title, existingDecision.description, true);
-      }
-    }
-  }, [existingDecision, step]);
-
-  const generateCriteria = async (title: string, description: string, autoGenerate: boolean = true) => {
-    if (autoGenerate) {
-      try {
-        setIsGeneratingCriteria(true);
-        toast.info("Génération des critères en cours...");
-        
-        const aiCriteria = await generateAICriteria(title, description);
-        setCriteria(aiCriteria);
-        
-        toast.success("Critères générés avec succès!");
-      } catch (error) {
-        console.error("Error generating criteria:", error);
-        toast.error("Erreur lors de la génération des critères");
-        setCriteria([
-          { id: '1', name: 'Coût', weight: 3, isAIGenerated: false },
-          { id: '2', name: 'Qualité', weight: 4, isAIGenerated: false }
-        ]);
-      } finally {
-        setIsGeneratingCriteria(false);
-      }
-    } else {
-      setCriteria([
-        { id: '1', name: 'Coût', weight: 3, isAIGenerated: false },
-        { id: '2', name: 'Qualité', weight: 4, isAIGenerated: false }
-      ]);
+      setRecommendationsMap(recMap);
+      
+    } catch (error: any) {
+      console.error("Erreur lors de la récupération des décisions:", error);
+      toast.error("Impossible de charger vos décisions");
+    } finally {
+      setLoadingDecisions(false);
     }
   };
 
@@ -383,12 +438,10 @@ const Index = () => {
     console.log("Generated deterministic evaluations for options:", deterministicEvaluations);
     setEvaluations(deterministicEvaluations);
     
-    // Calculate the recommended option based on evaluations
     const recommendedOption = findRecommendedOption(processedOptions, criteria, deterministicEvaluations);
     
     if (recommendedOption && decision.id) {
       try {
-        // Update the recommended option in the database
         const { error } = await supabase
           .from('decisions')
           .update({ 
@@ -400,7 +453,6 @@ const Index = () => {
           console.error("Error updating AI recommendation:", error);
         } else {
           console.log("Updated AI recommendation:", recommendedOption);
-          // Update the local recommendations map
           setRecommendationsMap(prev => ({
             ...prev,
             [decision.id]: recommendedOption
@@ -430,55 +482,19 @@ const Index = () => {
 
   const handleDecisionClick = (selectedDecision: Decision) => {
     console.log("Opening decision:", selectedDecision.id, selectedDecision.title);
-    setStep('decision');
+    
     navigate("/", { 
       state: { 
         existingDecision: {
           id: selectedDecision.id,
           title: selectedDecision.title,
           description: selectedDecision.description || "",
-          deadline: selectedDecision.deadline
+          deadline: selectedDecision.deadline,
+          directToAnalysis: true
         }
       }
     });
   };
-
-  const fetchDecisionsWithRecommendations = async () => {
-    if (!user) return;
-
-    try {
-      setLoadingDecisions(true);
-      const { data, error } = await supabase
-        .from("decisions")
-        .select("id, title, description, created_at, deadline, favorite_option, ai_recommendation")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      
-      setUserDecisions(data || []);
-      
-      // Create a map of decision ids to recommendations
-      const recMap: Record<string, string> = {};
-      data?.forEach(decision => {
-        if (decision.ai_recommendation) {
-          recMap[decision.id] = decision.ai_recommendation;
-        }
-      });
-      
-      setRecommendationsMap(recMap);
-      
-    } catch (error: any) {
-      console.error("Erreur lors de la récupération des décisions:", error);
-      toast.error("Impossible de charger vos décisions");
-    } finally {
-      setLoadingDecisions(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchDecisionsWithRecommendations();
-  }, [user]);
 
   const formatDate = (dateString: string | undefined | null) => {
     if (!dateString) return "Pas de deadline";
@@ -492,6 +508,20 @@ const Index = () => {
 
   if (!loading && !user) {
     return <Navigate to="/auth" />;
+  }
+
+  if (loadingExistingData) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="h-8 w-8 rounded-full border-4 border-primary/30 border-t-primary animate-spin mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Chargement des données de la décision...</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -535,6 +565,7 @@ const Index = () => {
               
               {step === 'analysis' && (
                 <AnalysisResult
+                  decisionId={decision.id}
                   decisionTitle={decision.title}
                   options={options}
                   criteria={criteria}
@@ -628,6 +659,11 @@ const Index = () => {
                             </div>
                           )}
                         </CardContent>
+                        <CardFooter className="pt-0">
+                          <Button variant="outline" size="sm" className="w-full">
+                            Voir l'analyse
+                          </Button>
+                        </CardFooter>
                       </Card>
                     ))}
                   </div>
