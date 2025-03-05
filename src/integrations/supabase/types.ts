@@ -12,7 +12,9 @@ export type Database = {
       decisions: {
         Row: {
           created_at: string
+          deadline: string | null
           description: string | null
+          favorite_option: string | null
           id: string
           title: string
           updated_at: string
@@ -20,7 +22,9 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          deadline?: string | null
           description?: string | null
+          favorite_option?: string | null
           id?: string
           title: string
           updated_at?: string
@@ -28,7 +32,9 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          deadline?: string | null
           description?: string | null
+          favorite_option?: string | null
           id?: string
           title?: string
           updated_at?: string

@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,19 +38,15 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
   
-  // Log the initial decision for debugging
   useEffect(() => {
     if (initialDecision) {
       console.log("DecisionForm received initialDecision:", initialDecision);
     }
   }, [initialDecision]);
 
-  // Auto-submit if initialDecision is provided
   useEffect(() => {
     if (initialDecision && initialDecision.title) {
       console.log("Auto-submitting with initialDecision:", initialDecision);
-      // We need to simulate a submit but without actually calling handleSubmit
-      // to avoid saving it again to the database
       onSubmit({ 
         title: initialDecision.title, 
         description: initialDecision.description,
@@ -67,7 +62,6 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
     
     setIsSubmitting(true);
     
-    // Vérifier si l'utilisateur est connecté
     if (!user) {
       toast.error("Vous devez être connecté pour créer une décision");
       navigate("/auth");
@@ -76,10 +70,8 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
     }
 
     try {
-      // If we don't have an initialDecision or initialDecision doesn't have an id, it's a new decision
       if (!initialDecision?.id) {
         console.log("Creating new decision:", title);
-        // Enregistrer la décision dans Supabase
         const { error } = await supabase
           .from('decisions')
           .insert({
@@ -93,7 +85,6 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
       } else {
         console.log("Using existing decision:", initialDecision.id);
         
-        // Update the decision with the new deadline if needed
         if (initialDecision.deadline !== (deadline ? deadline.toISOString() : null)) {
           const { error } = await supabase
             .from('decisions')
@@ -108,7 +99,6 @@ export function DecisionForm({ onSubmit, initialDecision }: DecisionFormProps) {
         }
       }
       
-      // Continuer avec le processus normal
       onSubmit({ 
         title, 
         description, 

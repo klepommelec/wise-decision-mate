@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
 import { DecisionForm } from '@/components/decision/DecisionForm';
-import { OptionsList, Option } from '@/components/decision/OptionsList';
-import { CriteriaEvaluation, Criterion, Evaluation } from '@/components/decision/CriteriaEvaluation';
+import { OptionsList } from '@/components/decision/OptionsList';
+import { CriteriaEvaluation } from '@/components/decision/CriteriaEvaluation';
 import { AnalysisResult } from '@/components/decision/AnalysisResult';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
-import { Navigate, useLocation } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { supabase, Option, Criterion, Evaluation } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, List, Calendar, Clock } from 'lucide-react';
@@ -33,7 +33,6 @@ interface Decision {
   favorite_option?: string | null;
 }
 
-// Fonction pour générer des options avec Claude AI
 const generateAIOptions = async (decisionTitle: string, decisionDescription: string): Promise<Option[]> => {
   try {
     console.log("Attempting to generate AI options for:", decisionTitle);
@@ -47,7 +46,6 @@ const generateAIOptions = async (decisionTitle: string, decisionDescription: str
 
     console.log("AI options response:", response.data);
     
-    // Ensure each option has a valid ID
     return response.data.options.map((option, index) => ({
       ...option,
       id: `ai-${index + 1}`,
@@ -57,7 +55,6 @@ const generateAIOptions = async (decisionTitle: string, decisionDescription: str
     console.error('Erreur lors de la génération des options:', error);
     toast.error('Erreur lors de la génération des options avec l\'IA');
     
-    // Options par défaut en cas d'erreur
     return [
       { id: 'ai-1', title: 'Option A', description: 'Première solution envisageable pour répondre à cette problématique.', isAIGenerated: true },
       { id: 'ai-2', title: 'Option B', description: 'Alternative qui présente des avantages différents.', isAIGenerated: true },
@@ -67,7 +64,6 @@ const generateAIOptions = async (decisionTitle: string, decisionDescription: str
   }
 };
 
-// Fonction pour générer des critères avec Claude AI
 const generateAICriteria = async (decisionTitle: string, decisionDescription: string): Promise<Criterion[]> => {
   try {
     const response = await supabase.functions.invoke('generateAICriteria', {
@@ -83,7 +79,6 @@ const generateAICriteria = async (decisionTitle: string, decisionDescription: st
     console.error('Erreur lors de la génération des critères:', error);
     toast.error('Erreur lors de la génération des critères avec l\'IA');
     
-    // Critères par défaut en cas d'erreur
     return [
       { id: '1', name: 'Coût', weight: 3, isAIGenerated: true },
       { id: '2', name: 'Qualité', weight: 4, isAIGenerated: true },
@@ -92,7 +87,6 @@ const generateAICriteria = async (decisionTitle: string, decisionDescription: st
   }
 };
 
-// Fonction pour générer une description pour une option ou un critère ajouté manuellement
 const generateDescription = async (
   title: string, 
   context: string, 
@@ -111,7 +105,6 @@ const generateDescription = async (
   } catch (error: any) {
     console.error(`Erreur lors de la génération de description pour ${type}:`, error);
     
-    // Descriptions par défaut en cas d'erreur
     if (type === 'option') {
       return `Option considérant ${title.toLowerCase()} comme solution potentielle à cette problématique.`;
     } else {
@@ -120,25 +113,23 @@ const generateDescription = async (
   }
 };
 
-// Fonction pour générer un score déterministe basé sur le titre de l'option et le nom du critère
 const generateDeterministicScore = (optionTitle: string, criterionName: string): number => {
-  // Utiliser une fonction de hachage simple basée sur les caractères des chaînes
   const hash = (str: string) => {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       hash = ((hash << 5) - hash) + str.charCodeAt(i);
-      hash = hash & hash; // Conversion en 32bit integer
+      hash = hash & hash;
     }
     return Math.abs(hash);
   };
   
-  // Générer un nombre entre 3 et 10 basé sur le hachage combiné de l'option et du critère
   const combinedHash = hash(optionTitle + criterionName);
   return 3 + (combinedHash % 8);
 };
 
 const Index = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const locationState = location.state as LocationState | null;
   const existingDecision = locationState?.existingDecision;
   const { user, loading } = useAuth();
@@ -159,14 +150,12 @@ const Index = () => {
   const [userDecisions, setUserDecisions] = useState<Decision[]>([]);
   const [loadingDecisions, setLoadingDecisions] = useState(true);
 
-  // Log the existing decision for debugging
   useEffect(() => {
     if (existingDecision) {
       console.log("Loading existing decision:", existingDecision);
     }
   }, [existingDecision]);
 
-  // Fetch user's decisions
   useEffect(() => {
     const fetchUserDecisions = async () => {
       if (!user) return;
@@ -193,7 +182,6 @@ const Index = () => {
   }, [user]);
 
   useEffect(() => {
-    // Update decision state when existingDecision changes
     if (existingDecision) {
       setDecision({
         id: existingDecision.id,
@@ -202,12 +190,10 @@ const Index = () => {
         deadline: existingDecision.deadline
       });
       
-      // If we have an existing decision and we're on the decision step, skip to the criteria step
       if (step === 'decision') {
         console.log("Loading existing decision, moving to criteria step:", existingDecision.id);
         setStep('criteria');
         
-        // Generate AI criteria for the existing decision
         generateCriteria(existingDecision.title, existingDecision.description, true);
       }
     }
@@ -226,7 +212,6 @@ const Index = () => {
       } catch (error) {
         console.error("Error generating criteria:", error);
         toast.error("Erreur lors de la génération des critères");
-        // Set default criteria
         setCriteria([
           { id: '1', name: 'Coût', weight: 3, isAIGenerated: false },
           { id: '2', name: 'Qualité', weight: 4, isAIGenerated: false }
@@ -235,7 +220,6 @@ const Index = () => {
         setIsGeneratingCriteria(false);
       }
     } else {
-      // Set default empty criteria if not generating
       setCriteria([
         { id: '1', name: 'Coût', weight: 3, isAIGenerated: false },
         { id: '2', name: 'Qualité', weight: 4, isAIGenerated: false }
@@ -244,7 +228,6 @@ const Index = () => {
   };
 
   const handleDecisionSubmit = async (decisionData: { title: string; description: string; deadline?: string }, generateWithAI: boolean = false) => {
-    // Important: Preserve the existing ID when updating decision
     setDecision({
       id: decision.id,
       title: decisionData.title,
@@ -252,7 +235,6 @@ const Index = () => {
       deadline: decisionData.deadline
     });
     
-    // Generate criteria first
     await generateCriteria(decisionData.title, decisionData.description, generateWithAI);
     
     setStep('criteria');
@@ -261,25 +243,19 @@ const Index = () => {
   const handleCriteriaComplete = async (criteriaData: Criterion[]) => {
     setIsProcessingManualEntries(true);
     
-    // Traiter chaque critère pour s'assurer qu'il a une description complète
     const processedCriteria = [...criteriaData];
     const criteriaToProcess = processedCriteria.filter(criterion => 
       !criterion.isAIGenerated
     );
     
-    // Gérer les critères ajoutés manuellement (on ne modifie pas leurs poids)
     if (criteriaToProcess.length > 0) {
       for (const criterion of criteriaToProcess) {
-        // Nous ne modifions que les critères sans description
-        // Comme le modèle ne stocke pas de descriptions pour les critères, 
-        // cette partie est préparée pour de futures extensions
         console.log(`Criterion ${criterion.name} processed`);
       }
     }
     
     setCriteria(processedCriteria);
     
-    // Générer automatiquement des options avec l'IA après la définition des critères
     try {
       setIsGeneratingOptions(true);
       toast.info("Génération des options en cours...");
@@ -290,13 +266,11 @@ const Index = () => {
       if (aiOptions && aiOptions.length > 0) {
         setOptions(aiOptions);
         
-        // Traiter chaque option pour s'assurer qu'elle a une description
         const processedOptions = [...options];
         const optionsToProcess = processedOptions.filter(option => 
           !option.isAIGenerated && (!option.description || option.description.trim() === '')
         );
         
-        // Générer des descriptions pour les options ajoutées manuellement
         if (optionsToProcess.length > 0) {
           toast.info("Traitement des options ajoutées manuellement...");
           
@@ -310,7 +284,6 @@ const Index = () => {
                   'option'
                 );
                 
-                // Mettre à jour l'option avec la description générée
                 const index = processedOptions.findIndex(o => o.id === option.id);
                 if (index !== -1) {
                   processedOptions[index] = {
@@ -325,7 +298,6 @@ const Index = () => {
           }
         }
         
-        // Préparer les évaluations avec des scores déterministes pour les options IA
         const deterministicEvaluations = aiOptions.flatMap(option => 
           processedCriteria.map(criterion => ({
             optionId: option.id,
@@ -340,7 +312,6 @@ const Index = () => {
         toast.success("Options générées avec succès!");
       } else {
         toast.error("Aucune option n'a pu être générée. Veuillez essayer à nouveau.");
-        // Initialiser avec des options vides en cas d'erreur
         setOptions([
           { id: '1', title: '', description: '', isAIGenerated: false },
           { id: '2', title: '', description: '', isAIGenerated: false }
@@ -349,7 +320,6 @@ const Index = () => {
     } catch (error) {
       console.error("Error generating options:", error);
       toast.error("Erreur lors de la génération des options");
-      // Initialiser avec des options vides en cas d'erreur
       setOptions([
         { id: '1', title: '', description: '', isAIGenerated: false },
         { id: '2', title: '', description: '', isAIGenerated: false }
@@ -366,13 +336,11 @@ const Index = () => {
     
     setIsProcessingManualEntries(true);
     
-    // Traiter chaque option pour s'assurer qu'elle a une description
     const processedOptions = [...optionsData];
     const optionsToProcess = processedOptions.filter(option => 
       !option.isAIGenerated && (!option.description || option.description.trim() === '')
     );
     
-    // Générer des descriptions pour les options ajoutées manuellement
     if (optionsToProcess.length > 0) {
       toast.info("Traitement des options ajoutées manuellement...");
       
@@ -386,7 +354,6 @@ const Index = () => {
               'option'
             );
             
-            // Mettre à jour l'option avec la description générée
             const index = processedOptions.findIndex(o => o.id === option.id);
             if (index !== -1) {
               processedOptions[index] = {
@@ -401,10 +368,8 @@ const Index = () => {
       }
     }
     
-    // Si l'utilisateur a modifié les options ou en a ajouté de nouvelles, utilisez celles-ci
     setOptions(processedOptions);
     
-    // Préparer les évaluations avec des scores déterministes
     const deterministicEvaluations = processedOptions.flatMap(option => 
       criteria.map(criterion => ({
         optionId: option.id,
@@ -420,7 +385,6 @@ const Index = () => {
   };
 
   const handleBackToCriteria = () => {
-    // Save the current options before going back
     console.log("Navigating back to criteria screen");
     setStep('criteria');
   };
@@ -458,7 +422,6 @@ const Index = () => {
     }).format(date);
   };
 
-  // Rediriger vers la page d'authentification si l'utilisateur n'est pas connecté
   if (!loading && !user) {
     return <Navigate to="/auth" />;
   }
@@ -507,7 +470,6 @@ const Index = () => {
             )}
           </div>
 
-          {/* User's Decisions Section */}
           {user && step === 'decision' && (
             <div className="w-full max-w-5xl mx-auto">
               <div className="flex justify-between items-center mb-6">

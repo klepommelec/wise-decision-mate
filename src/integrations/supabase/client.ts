@@ -6,3 +6,24 @@ const SUPABASE_URL = "https://dghezzwmzzfaqmoqdvdl.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnaGV6endtenpmYXFtb3FkdmRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA2NjQ5MDksImV4cCI6MjA1NjI0MDkwOX0.GvM5C1Qlm9Gquk4eoQ-qWAOeTXb7vDX7hWUrRJVDInI";
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+// Add interfaces for our app's data structure
+export interface Option {
+  id: string;
+  title: string;
+  description: string;
+  isAIGenerated?: boolean;
+}
+
+export interface Criterion {
+  id: string;
+  name: string;
+  weight: number;
+  isAIGenerated?: boolean;
+}
+
+export interface Evaluation {
+  optionId: string;
+  criterionId: string;
+  score: number;
+}
