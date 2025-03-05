@@ -9,38 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      criteria: {
-        Row: {
-          created_at: string
-          decision_id: string
-          id: string
-          name: string
-          weight: number
-        }
-        Insert: {
-          created_at?: string
-          decision_id: string
-          id?: string
-          name: string
-          weight?: number
-        }
-        Update: {
-          created_at?: string
-          decision_id?: string
-          id?: string
-          name?: string
-          weight?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "criteria_decision_id_fkey"
-            columns: ["decision_id"]
-            isOneToOne: false
-            referencedRelation: "decisions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       decisions: {
         Row: {
           created_at: string
@@ -73,87 +41,6 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
-      }
-      evaluations: {
-        Row: {
-          created_at: string
-          criterion_id: string
-          decision_id: string
-          id: string
-          option_id: string
-          score: number
-        }
-        Insert: {
-          created_at?: string
-          criterion_id: string
-          decision_id: string
-          id?: string
-          option_id: string
-          score: number
-        }
-        Update: {
-          created_at?: string
-          criterion_id?: string
-          decision_id?: string
-          id?: string
-          option_id?: string
-          score?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "evaluations_criterion_id_fkey"
-            columns: ["criterion_id"]
-            isOneToOne: false
-            referencedRelation: "criteria"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "evaluations_decision_id_fkey"
-            columns: ["decision_id"]
-            isOneToOne: false
-            referencedRelation: "decisions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "evaluations_option_id_fkey"
-            columns: ["option_id"]
-            isOneToOne: false
-            referencedRelation: "options"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      options: {
-        Row: {
-          created_at: string
-          decision_id: string
-          description: string | null
-          id: string
-          title: string
-        }
-        Insert: {
-          created_at?: string
-          decision_id: string
-          description?: string | null
-          id?: string
-          title: string
-        }
-        Update: {
-          created_at?: string
-          decision_id?: string
-          description?: string | null
-          id?: string
-          title?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "options_decision_id_fkey"
-            columns: ["decision_id"]
-            isOneToOne: false
-            referencedRelation: "decisions"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       profiles: {
         Row: {

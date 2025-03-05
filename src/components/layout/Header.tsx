@@ -1,7 +1,8 @@
 
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, List } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +13,7 @@ export function Header() {
 
   const handleSignOut = async () => {
     try {
+      // Utiliser le contexte d'authentification
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
@@ -23,24 +25,16 @@ export function Header() {
     }
   };
 
-  // Force navigate to home page, completely resetting the application state
-  const handleLogoClick = () => {
-    console.log("Logo clicked, forcing navigation to home page");
-    // Use window.location.href for a complete page refresh
-    window.location.href = "/";
-  };
-
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
-          <Button 
-            variant="ghost" 
-            className="p-0 hover:bg-transparent"
-            onClick={handleLogoClick}
-          >
+          <Link to="/" className="flex items-center gap-2" onClick={(e) => {
+            e.preventDefault();
+            navigate("/");
+          }}>
             <span className="text-xl font-bold">Wise</span>
-          </Button>
+          </Link>
         </div>
         <nav className="flex items-center gap-4">
           {loading ? (

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
@@ -9,19 +8,10 @@ import { AnalysisResult } from '@/components/decision/AnalysisResult';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  supabase, 
-  Option, 
-  Criterion, 
-  Evaluation, 
-  DatabaseOption, 
-  DatabaseCriterion, 
-  DatabaseEvaluation 
-} from '@/integrations/supabase/client';
+import { supabase, Option, Criterion, Evaluation } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, List, Calendar, Clock, Star, CheckCircle } from 'lucide-react';
-import useDecisionData from '@/hooks/useDecisionData';
 
 type Step = 'decision' | 'criteria' | 'options' | 'analysis';
 
@@ -159,39 +149,6 @@ const Index = () => {
   const [isProcessingManualEntries, setIsProcessingManualEntries] = useState(false);
   const [userDecisions, setUserDecisions] = useState<Decision[]>([]);
   const [loadingDecisions, setLoadingDecisions] = useState(true);
-
-  // Utiliser notre nouveau hook pour charger les données de décision
-  const { 
-    options: fetchedOptions, 
-    criteria: fetchedCriteria, 
-    evaluations: fetchedEvaluations,
-    isLoading: isLoadingDecisionData 
-  } = useDecisionData({ 
-    decisionId: decision.id,
-    enabled: step === 'analysis' && !!decision.id
-  });
-
-  // Mettre à jour les états locaux lorsque les données sont chargées
-  useEffect(() => {
-    if (fetchedOptions.length > 0 && step === 'analysis') {
-      console.log("Setting options from useDecisionData:", fetchedOptions);
-      setOptions(fetchedOptions);
-    }
-  }, [fetchedOptions, step]);
-
-  useEffect(() => {
-    if (fetchedCriteria.length > 0 && step === 'analysis') {
-      console.log("Setting criteria from useDecisionData:", fetchedCriteria);
-      setCriteria(fetchedCriteria);
-    }
-  }, [fetchedCriteria, step]);
-
-  useEffect(() => {
-    if (fetchedEvaluations.length > 0 && step === 'analysis') {
-      console.log("Setting evaluations from useDecisionData:", fetchedEvaluations);
-      setEvaluations(fetchedEvaluations);
-    }
-  }, [fetchedEvaluations, step]);
 
   useEffect(() => {
     if (existingDecision) {
@@ -440,51 +397,19 @@ const Index = () => {
     setEvaluations([]);
   };
 
-  const handleDecisionClick = async (selectedDecision: Decision) => {
+  const handleDecisionClick = (selectedDecision: Decision) => {
     console.log("Opening decision:", selectedDecision.id, selectedDecision.title);
-    
-    if (selectedDecision.favorite_option) {
-      try {
-        setDecision({
+    setStep('decision');
+    navigate("/", { 
+      state: { 
+        existingDecision: {
           id: selectedDecision.id,
           title: selectedDecision.title,
           description: selectedDecision.description || "",
           deadline: selectedDecision.deadline
-        });
-        
-        // On utilise notre hook pour charger les données
-        console.log("Loading data for decision with favorite option:", selectedDecision.id);
-        setStep('analysis');
-      } catch (error) {
-        console.error("Error loading decision data:", error);
-        toast.error("Erreur lors du chargement des données de la décision");
-        
-        // Fallback to regular navigation if there's an error
-        navigate("/", { 
-          state: { 
-            existingDecision: {
-              id: selectedDecision.id,
-              title: selectedDecision.title,
-              description: selectedDecision.description || "",
-              deadline: selectedDecision.deadline
-            }
-          }
-        });
-      }
-    } else {
-      // For decisions without a favorite option, go to decision step
-      setStep('decision');
-      navigate("/", { 
-        state: { 
-          existingDecision: {
-            id: selectedDecision.id,
-            title: selectedDecision.title,
-            description: selectedDecision.description || "",
-            deadline: selectedDecision.deadline
-          }
         }
-      });
-    }
+      }
+    });
   };
 
   const formatDate = (dateString: string | undefined | null) => {
@@ -541,27 +466,14 @@ const Index = () => {
               )}
               
               {step === 'analysis' && (
-                <>
-                  {isLoadingDecisionData ? (
-                    <div className="w-full max-w-4xl mx-auto p-8 text-center">
-                      <div className="animate-pulse space-y-4">
-                        <div className="h-6 bg-gray-200 rounded w-3/4 mx-auto"></div>
-                        <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
-                        <div className="h-64 bg-gray-200 rounded w-full mt-8"></div>
-                      </div>
-                      <p className="mt-4 text-muted-foreground">Chargement des données...</p>
-                    </div>
-                  ) : (
-                    <AnalysisResult
-                      decisionTitle={decision.title}
-                      options={options}
-                      criteria={criteria}
-                      evaluations={evaluations}
-                      onBack={() => setStep('options')}
-                      onReset={handleReset}
-                    />
-                  )}
-                </>
+                <AnalysisResult
+                  decisionTitle={decision.title}
+                  options={options}
+                  criteria={criteria}
+                  evaluations={evaluations}
+                  onBack={() => setStep('options')}
+                  onReset={handleReset}
+                />
               )}
             </div>
           </Container>
