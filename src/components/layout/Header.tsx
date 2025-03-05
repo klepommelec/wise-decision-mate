@@ -1,46 +1,27 @@
 
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { LogOut, User } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 export function Header() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Vérifie si l'utilisateur est déjà connecté
-    const getUser = async () => {
-      const { data } = await supabase.auth.getSession();
-      setUser(data?.session?.user || null);
-      setLoading(false);
-    };
-
-    getUser();
-
-    // Écoute les changements d'état d'authentification
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setUser(session?.user || null);
-      }
-    );
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, []);
 
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut();
+      // Utiliser le contexte d'authentification supabase importé via useAuth
+      const { error } = await user?.auth.signOut();
+      if (error) throw error;
+      
       toast.success("Déconnexion réussie");
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Erreur lors de la déconnexion");
+      console.error("Erreur de déconnexion:", error);
     }
   };
 

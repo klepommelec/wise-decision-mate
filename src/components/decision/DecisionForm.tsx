@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -24,7 +24,7 @@ export function DecisionForm({ onSubmit }: DecisionFormProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!title.trim()) return;
@@ -52,17 +52,15 @@ export function DecisionForm({ onSubmit }: DecisionFormProps) {
       if (error) throw error;
       
       // Continuer avec le processus normal
-      setTimeout(() => {
-        onSubmit({ title, description }, useAI);
-        setIsSubmitting(false);
-      }, 600);
+      onSubmit({ title, description }, useAI);
+      setIsSubmitting(false);
       
     } catch (error: any) {
       console.error("Erreur lors de l'enregistrement de la décision:", error);
       toast.error(error.message || "Une erreur est survenue");
       setIsSubmitting(false);
     }
-  };
+  }, [title, description, useAI, user, navigate, onSubmit]);
   
   return (
     <div className="w-full max-w-2xl mx-auto animate-fade-in">

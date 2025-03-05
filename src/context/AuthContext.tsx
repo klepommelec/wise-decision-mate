@@ -23,14 +23,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
+    // Récupération de la session initiale
     const getInitialSession = async () => {
       try {
         const { data } = await supabase.auth.getSession();
         setSession(data.session);
         setUser(data.session?.user ?? null);
       } catch (error) {
-        console.error("Error retrieving session:", error);
+        console.error("Erreur lors de la récupération de la session:", error);
       } finally {
         setLoading(false);
       }
@@ -38,15 +38,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     getInitialSession();
 
-    // Listen for auth changes
+    // Écouter les changements d'authentification avec un nettoyage approprié
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
+        console.log("État d'authentification changé:", _event);
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
       }
     );
 
+    // Important: nettoyer l'écouteur à la destruction du composant
     return () => {
       authListener.subscription.unsubscribe();
     };
