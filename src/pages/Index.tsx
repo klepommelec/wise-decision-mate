@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
@@ -8,7 +9,7 @@ import { AnalysisResult } from '@/components/decision/AnalysisResult';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { supabase, Option, Criterion, Evaluation } from '@/integrations/supabase/client';
+import { supabase, Option, Criterion, Evaluation, DatabaseOption, DatabaseCriterion, DatabaseEvaluation } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, List, Calendar, Clock, Star, CheckCircle } from 'lucide-react';
@@ -412,20 +413,30 @@ const Index = () => {
         // Fetch all data needed for the analysis screen
         console.log("Loading data for decision with favorite option:", selectedDecision.id);
         
+        // Use type casting to handle the database tables
         const optionsResponse = await supabase
           .from('options')
           .select('*')
-          .eq('decision_id', selectedDecision.id);
+          .eq('decision_id', selectedDecision.id) as unknown as { 
+            data: DatabaseOption[], 
+            error: any 
+          };
           
         const criteriaResponse = await supabase
           .from('criteria')
           .select('*')
-          .eq('decision_id', selectedDecision.id);
+          .eq('decision_id', selectedDecision.id) as unknown as { 
+            data: DatabaseCriterion[], 
+            error: any 
+          };
           
         const evaluationsResponse = await supabase
           .from('evaluations')
           .select('*')
-          .eq('decision_id', selectedDecision.id);
+          .eq('decision_id', selectedDecision.id) as unknown as { 
+            data: DatabaseEvaluation[], 
+            error: any 
+          };
         
         if (optionsResponse.error) throw optionsResponse.error;
         if (criteriaResponse.error) throw criteriaResponse.error;
