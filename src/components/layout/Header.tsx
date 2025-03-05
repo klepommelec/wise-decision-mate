@@ -25,7 +25,8 @@ export function Header() {
 
   // Force navigate to home page, completely resetting the application state
   const handleLogoClick = () => {
-    console.log("Logo clicked, navigating to home page");
+    console.log("Logo clicked, forcing navigation to home page");
+    // Use window.location.href for a complete page refresh
     window.location.href = "/";
   };
 

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
@@ -433,25 +432,25 @@ const Index = () => {
         if (evaluationsResponse.error) throw evaluationsResponse.error;
         
         // Map the database response to our application interfaces
-        const fetchedOptions: Option[] = optionsResponse.data.map(opt => ({
-          id: opt.id,
-          title: opt.title,
-          description: opt.description || '',
-          decision_id: opt.decision_id
+        const fetchedOptions: Option[] = optionsResponse.data.map(item => ({
+          id: item.id,
+          title: item.title,
+          description: item.description || '',
+          decision_id: item.decision_id
         }));
         
-        const fetchedCriteria: Criterion[] = criteriaResponse.data.map(crit => ({
-          id: crit.id,
-          name: crit.name,
-          weight: crit.weight,
-          decision_id: crit.decision_id
+        const fetchedCriteria: Criterion[] = criteriaResponse.data.map(item => ({
+          id: item.id,
+          name: item.name,
+          weight: item.weight,
+          decision_id: item.decision_id
         }));
         
-        const fetchedEvaluations: Evaluation[] = evaluationsResponse.data.map(eval => ({
-          optionId: eval.option_id,
-          criterionId: eval.criterion_id,
-          score: eval.score,
-          decision_id: eval.decision_id
+        const fetchedEvaluations: Evaluation[] = evaluationsResponse.data.map(item => ({
+          optionId: item.option_id,
+          criterionId: item.criterion_id,
+          score: item.score,
+          decision_id: item.decision_id
         }));
         
         setOptions(fetchedOptions);

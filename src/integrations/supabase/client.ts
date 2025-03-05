@@ -31,3 +31,28 @@ export interface Evaluation {
   decision_id?: string;
 }
 
+// Add interfaces for the database tables
+export interface DatabaseOption {
+  id: string;
+  title: string;
+  description: string | null;
+  decision_id: string;
+  created_at?: string;
+}
+
+export interface DatabaseCriterion {
+  id: string;
+  name: string;
+  weight: number;
+  decision_id: string;
+  created_at?: string;
+}
+
+export interface DatabaseEvaluation {
+  id: string;
+  option_id: string;
+  criterion_id: string;
+  score: number;
+  decision_id: string;
+  created_at?: string;
+}
