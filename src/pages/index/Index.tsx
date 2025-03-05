@@ -93,7 +93,7 @@ const Index = () => {
       </motion.div>;
   };
   return <div className="flex flex-col min-h-screen" ref={contentRef}>
-      <div className="flex-1 flex flex-col py-[16px]">
+      <div className="flex-1 flex flex-col py-[80px]">
         {step === 'decision' && <div className="flex-1 flex flex-col items-center justify-center py-0">
             <Container className="flex flex-col justify-center items-center w-full max-w-4xl mx-auto">
               {renderWelcomeScreen()}
