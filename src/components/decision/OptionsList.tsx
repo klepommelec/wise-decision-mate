@@ -1,11 +1,12 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Plus, Trash2, ArrowRight } from 'lucide-react';
+import { Plus, Trash2, ArrowRight, Sparkles } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export interface Option {
   id: string;
@@ -16,13 +17,21 @@ export interface Option {
 interface OptionsListProps {
   decisionTitle: string;
   onComplete: (options: Option[]) => void;
+  isLoading?: boolean;
+  initialOptions?: Option[];
 }
 
-export function OptionsList({ decisionTitle, onComplete }: OptionsListProps) {
+export function OptionsList({ decisionTitle, onComplete, isLoading = false, initialOptions }: OptionsListProps) {
   const [options, setOptions] = useState<Option[]>([
     { id: '1', title: '', description: '' },
     { id: '2', title: '', description: '' }
   ]);
+  
+  useEffect(() => {
+    if (initialOptions && initialOptions.length >= 2) {
+      setOptions(initialOptions);
+    }
+  }, [initialOptions]);
   
   const addOption = () => {
     setOptions([...options, { 
@@ -52,6 +61,47 @@ export function OptionsList({ decisionTitle, onComplete }: OptionsListProps) {
   
   const isValid = options.filter(option => option.title.trim() !== '').length >= 2;
   
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-3xl mx-auto animate-fade-in">
+        <Card className="glass-card transition-all duration-300">
+          <CardHeader>
+            <CardTitle className="text-2xl font-medium">Génération des options</CardTitle>
+            <CardDescription>
+              Pour la décision: <span className="font-medium">{decisionTitle}</span>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-6 w-6 animate-spin">
+                  <Sparkles className="h-6 w-6 text-primary" />
+                </div>
+                <p>L'IA est en train de générer des options pertinentes...</p>
+              </div>
+              
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="p-4 border rounded-lg bg-white/50 dark:bg-gray-800/50">
+                  <div className="flex items-center justify-between mb-2">
+                    <Skeleton className="h-6 w-24" />
+                  </div>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Skeleton className="h-10 w-full" />
+                    </div>
+                    <div className="space-y-2">
+                      <Skeleton className="h-20 w-full" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+  
   return (
     <div className="w-full max-w-3xl mx-auto animate-fade-in">
       <Card className="glass-card transition-all duration-300">
@@ -63,6 +113,13 @@ export function OptionsList({ decisionTitle, onComplete }: OptionsListProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
+            {initialOptions && initialOptions.length > 0 && (
+              <div className="flex items-center gap-2 text-sm text-primary bg-primary/10 p-2 rounded">
+                <Sparkles className="h-4 w-4" />
+                <p>Options générées par IA. Vous pouvez les modifier ou en ajouter d'autres.</p>
+              </div>
+            )}
+            
             {options.map((option, index) => (
               <div 
                 key={option.id} 

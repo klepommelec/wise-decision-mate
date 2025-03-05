@@ -3,17 +3,20 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Sparkles } from 'lucide-react';
 
 interface DecisionFormProps {
-  onSubmit: (decision: { title: string; description: string }) => void;
+  onSubmit: (decision: { title: string; description: string }, generateOptions?: boolean) => void;
 }
 
 export function DecisionForm({ onSubmit }: DecisionFormProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [useAI, setUseAI] = useState(true);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +27,7 @@ export function DecisionForm({ onSubmit }: DecisionFormProps) {
     
     // Simulate loading
     setTimeout(() => {
-      onSubmit({ title, description });
+      onSubmit({ title, description }, useAI);
       setIsSubmitting(false);
     }, 600);
   };
@@ -60,6 +63,25 @@ export function DecisionForm({ onSubmit }: DecisionFormProps) {
                 placeholder="Plus de détails sur la décision à prendre..."
                 className="min-h-[100px]"
               />
+            </div>
+            <div className="flex items-center space-x-2 pt-2">
+              <Switch
+                id="ai-options"
+                checked={useAI}
+                onCheckedChange={setUseAI}
+              />
+              <div className="grid gap-1.5">
+                <Label
+                  htmlFor="ai-options"
+                  className="text-sm font-medium leading-none flex items-center gap-1.5"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Générer automatiquement des options avec l'IA
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  L'IA vous suggérera des options pertinentes en fonction de votre décision
+                </p>
+              </div>
             </div>
             <Button 
               type="submit" 
