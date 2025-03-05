@@ -31,6 +31,7 @@ interface Decision {
   created_at: string;
   deadline?: string | null;
   favorite_option?: string | null;
+  ai_recommendation?: string | null;
 }
 
 const generateAIOptions = async (decisionTitle: string, decisionDescription: string): Promise<Option[]> => {

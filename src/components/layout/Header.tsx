@@ -33,9 +33,9 @@ export function Header() {
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center gap-2" onClick={handleLogoClick}>
+          <button onClick={handleLogoClick} className="flex items-center gap-2">
             <span className="text-xl font-bold">Wise</span>
-          </Link>
+          </button>
         </div>
         <nav className="flex items-center gap-4">
           {loading ? (

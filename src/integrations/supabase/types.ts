@@ -43,6 +43,7 @@ export type Database = {
       }
       decisions: {
         Row: {
+          ai_recommendation: string | null
           created_at: string
           deadline: string | null
           description: string | null
@@ -53,6 +54,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          ai_recommendation?: string | null
           created_at?: string
           deadline?: string | null
           description?: string | null
@@ -63,6 +65,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          ai_recommendation?: string | null
           created_at?: string
           deadline?: string | null
           description?: string | null
