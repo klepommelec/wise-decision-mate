@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -22,7 +21,7 @@ export interface Option {
 interface OptionsListProps {
   decisionTitle: string;
   onComplete: (options: Option[], generateWithAI?: boolean) => void;
-  onBack?: () => void; // Add this line to include the onBack prop
+  onBack?: () => void;
   isLoading?: boolean;
   initialOptions?: Option[];
 }
@@ -39,7 +38,6 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
   
   const [useAI, setUseAI] = useState(true);
   
-  // Update options when initialOptions changes
   useEffect(() => {
     if (initialOptions && initialOptions.length > 0) {
       setOptions(initialOptions.map(option => ({
@@ -71,17 +69,14 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
     ));
   };
 
-  // Function to generate description for an option
   const generateDescription = async (option: Option) => {
     if (!option.title.trim() || option.isAIGenerated || option.isLoading) return;
     
     try {
-      // Set loading state for this specific option
       setOptions(prevOptions => prevOptions.map(o => 
         o.id === option.id ? { ...o, isLoading: true } : o
       ));
       
-      // Call the generateDescription edge function
       const response = await supabase.functions.invoke('generateDescription', {
         body: { 
           title: option.title, 
@@ -94,7 +89,6 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
         throw new Error(response.error.message);
       }
       
-      // Update the option with the generated description
       setOptions(prevOptions => prevOptions.map(o => 
         o.id === option.id 
           ? { 
@@ -107,16 +101,13 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
     } catch (error) {
       console.error('Erreur lors de la génération de description:', error);
       
-      // Reset loading state on error
       setOptions(prevOptions => prevOptions.map(o => 
         o.id === option.id ? { ...o, isLoading: false } : o
       ));
     }
   };
   
-  // Function to handle blur event on title input
   const handleTitleBlur = (option: Option) => {
-    // Generate description if title has content and option doesn't already have a description
     if (option.title.trim() && (!option.description || option.description.trim() === '')) {
       generateDescription(option);
     }
@@ -126,22 +117,17 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
     console.log("handleSubmit called with options:", options);
     console.log("useAI setting:", useAI);
     
-    // Verify all options have titles (to avoid any empty options)
     const hasEmptyOptions = options.some(o => !o.title.trim());
     console.log("Has empty options?", hasEmptyOptions);
     
-    // Pass options to the onComplete function
-    // If we have options with titles, use them
-    // If all options have empty titles and useAI is enabled, pass the generate flag
     onComplete(options, hasEmptyOptions && useAI);
   };
   
-  // Valid if we have at least 2 options with content OR AI is enabled
   const isValid = (options.length >= 2 && options.some(o => o.title.trim() !== '')) || useAI;
   
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
-      <Card className="glass-card transition-all duration-300">
+      <Card className="transition-all duration-300 border border-gray-200">
         <CardHeader>
           <CardTitle className="text-2xl font-medium">
             Quelles sont vos options?

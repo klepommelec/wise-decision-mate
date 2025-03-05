@@ -143,7 +143,7 @@ export function AnalysisResult({
 
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
-      <Card className="glass-card mb-6">
+      <Card className="mb-6 border border-gray-200">
         <CardHeader>
           <CardTitle className="text-2xl font-medium">Résumé de l'analyse</CardTitle>
           <CardDescription>
@@ -188,7 +188,7 @@ export function AnalysisResult({
         </CardContent>
       </Card>
 
-      <Card className="glass-card">
+      <Card className="border border-gray-200">
         <CardHeader>
           <div className="flex justify-between items-start">
             <div>

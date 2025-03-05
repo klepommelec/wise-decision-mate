@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -33,7 +32,6 @@ interface CriteriaEvaluationProps {
 export function CriteriaEvaluation({ criteria: initialCriteria, isLoading = false, onComplete, decisionTitle }: CriteriaEvaluationProps) {
   const [criteria, setCriteria] = useState<Criterion[]>(initialCriteria || []);
   
-  // Mettre à jour les critères quand les props changent
   useEffect(() => {
     if (initialCriteria && initialCriteria.length > 0) {
       setCriteria(initialCriteria);
@@ -69,9 +67,7 @@ export function CriteriaEvaluation({ criteria: initialCriteria, isLoading = fals
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     
-    // Ajuster les poids en fonction de l'ordre
     const updatedItems = items.map((item, index) => {
-      // Plus l'index est petit, plus le poids est élevé (5 - plus important, 1 - moins important)
       const newWeight = Math.max(1, Math.min(5, 5 - Math.floor(index * 5 / items.length)));
       return { ...item, weight: newWeight };
     });
@@ -83,7 +79,7 @@ export function CriteriaEvaluation({ criteria: initialCriteria, isLoading = fals
   
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
-      <Card className="glass-card transition-all duration-300">
+      <Card className="transition-all duration-300 border border-gray-200">
         <CardHeader>
           <CardTitle className="text-2xl font-medium">
             Définissez vos critères d'évaluation
