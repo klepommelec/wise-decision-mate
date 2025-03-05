@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -108,7 +109,7 @@ const Index = () => {
         y: 0
       }} transition={{
         duration: 0.5
-      }} className="text-center mb-1 pt-8 pb-2">
+      }} className="text-center mb-1 pt-6 pb-0">
           <h1 className="text-4xl font-bold tracking-tight mb-3">Prenez des décisions éclairées</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Notre outil vous aide à structurer votre réflexion et à analyser objectivement les options qui s'offrent à vous.
