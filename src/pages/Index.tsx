@@ -8,7 +8,7 @@ import { AnalysisResult } from '@/components/decision/AnalysisResult';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { supabase, Option, Criterion, Evaluation } from '@/integrations/supabase/client';
+import { supabase, Option, Criterion, Evaluation, findRecommendedOption } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, List, Calendar, Clock, Star, CheckCircle } from 'lucide-react';
@@ -149,6 +149,7 @@ const Index = () => {
   const [isProcessingManualEntries, setIsProcessingManualEntries] = useState(false);
   const [userDecisions, setUserDecisions] = useState<Decision[]>([]);
   const [loadingDecisions, setLoadingDecisions] = useState(true);
+  const [recommendationsMap, setRecommendationsMap] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (existingDecision) {
@@ -380,6 +381,35 @@ const Index = () => {
     
     console.log("Generated deterministic evaluations for options:", deterministicEvaluations);
     setEvaluations(deterministicEvaluations);
+    
+    // Calculate the recommended option based on evaluations
+    const recommendedOption = findRecommendedOption(processedOptions, criteria, deterministicEvaluations);
+    
+    if (recommendedOption && decision.id) {
+      try {
+        // Update the recommended option in the database
+        const { error } = await supabase
+          .from('decisions')
+          .update({ 
+            ai_recommendation: recommendedOption 
+          })
+          .eq('id', decision.id);
+          
+        if (error) {
+          console.error("Error updating AI recommendation:", error);
+        } else {
+          console.log("Updated AI recommendation:", recommendedOption);
+          // Update the local recommendations map
+          setRecommendationsMap(prev => ({
+            ...prev,
+            [decision.id]: recommendedOption
+          }));
+        }
+      } catch (error) {
+        console.error("Error saving recommendation:", error);
+      }
+    }
+    
     setIsProcessingManualEntries(false);
     setStep('analysis');
   };
@@ -411,6 +441,43 @@ const Index = () => {
       }
     });
   };
+
+  const fetchDecisionsWithRecommendations = async () => {
+    if (!user) return;
+
+    try {
+      setLoadingDecisions(true);
+      const { data, error } = await supabase
+        .from("decisions")
+        .select("id, title, description, created_at, deadline, favorite_option, ai_recommendation")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      
+      setUserDecisions(data || []);
+      
+      // Create a map of decision ids to recommendations
+      const recMap: Record<string, string> = {};
+      data?.forEach(decision => {
+        if (decision.ai_recommendation) {
+          recMap[decision.id] = decision.ai_recommendation;
+        }
+      });
+      
+      setRecommendationsMap(recMap);
+      
+    } catch (error: any) {
+      console.error("Erreur lors de la récupération des décisions:", error);
+      toast.error("Impossible de charger vos décisions");
+    } finally {
+      setLoadingDecisions(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDecisionsWithRecommendations();
+  }, [user]);
 
   const formatDate = (dateString: string | undefined | null) => {
     if (!dateString) return "Pas de deadline";
@@ -546,10 +613,17 @@ const Index = () => {
                             </div>
                           ) : (
                             <div>
-                              <div className="flex items-center gap-1.5 text-yellow-700 dark:text-yellow-500 text-sm text-muted-foreground">
-                                <Star className="h-3.5 w-3.5" />
-                                <span>Recommandation IA: Singapour</span>
-                              </div>
+                              {recommendationsMap[decision.id] ? (
+                                <div className="flex items-center gap-1.5 text-yellow-700 dark:text-yellow-500 text-sm text-muted-foreground">
+                                  <Star className="h-3.5 w-3.5" />
+                                  <span>Recommandation IA: {recommendationsMap[decision.id]}</span>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
+                                  <Star className="h-3.5 w-3.5" />
+                                  <span>Pas encore de recommandation</span>
+                                </div>
+                              )}
                             </div>
                           )}
                         </CardContent>

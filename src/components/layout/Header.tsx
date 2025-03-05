@@ -24,10 +24,8 @@ export function Header() {
     }
   };
 
-  const handleLogoClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    // Naviguer vers la page d'accueil et forcer un rechargement de l'état
-    navigate("/", { replace: true });
+  const handleLogoClick = () => {
+    // Force navigation to root and reload the page to reset all states
     window.location.href = "/";
   };
 

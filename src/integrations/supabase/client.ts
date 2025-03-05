@@ -27,3 +27,46 @@ export interface Evaluation {
   criterionId: string;
   score: number;
 }
+
+// Add a function to find the recommended option based on evaluations
+export const findRecommendedOption = (
+  options: Option[],
+  criteria: Criterion[],
+  evaluations: Evaluation[]
+): string | null => {
+  if (!options.length || !criteria.length || !evaluations.length) {
+    return null;
+  }
+
+  // Calculate weighted scores for each option
+  const optionScores = options.map(option => {
+    let totalScore = 0;
+    let totalWeight = 0;
+
+    criteria.forEach(criterion => {
+      const evaluation = evaluations.find(
+        e => e.optionId === option.id && e.criterionId === criterion.id
+      );
+      
+      if (evaluation) {
+        totalScore += evaluation.score * criterion.weight;
+        totalWeight += criterion.weight;
+      }
+    });
+
+    // Calculate the weighted average
+    const weightedAverage = totalWeight > 0 ? totalScore / totalWeight : 0;
+    
+    return {
+      optionId: option.id,
+      title: option.title,
+      score: weightedAverage
+    };
+  });
+
+  // Sort options by score (highest first)
+  optionScores.sort((a, b) => b.score - a.score);
+  
+  // Return the title of the highest-scoring option
+  return optionScores.length > 0 ? optionScores[0].title : null;
+}
