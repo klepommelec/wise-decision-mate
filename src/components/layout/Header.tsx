@@ -24,22 +24,17 @@ export function Header() {
     }
   };
 
-  const handleLogoClick = () => {
-    // Force navigation to root and reload the page to reset all states
-    window.location.href = "/";
-  };
-
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
-          <button onClick={handleLogoClick} className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <img 
               src="/lovable-uploads/6101851f-2549-45ba-a231-ed9bfb465e2b.png" 
               alt="Wise Logo" 
               className="h-8 max-h-[32px] w-auto" 
             />
-          </button>
+          </Link>
         </div>
         <nav className="flex items-center gap-4">
           {loading ? (
