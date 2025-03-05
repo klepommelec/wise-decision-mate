@@ -1,5 +1,4 @@
 
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { LogOut, User } from "lucide-react";
@@ -24,15 +23,20 @@ export function Header() {
     }
   };
 
+  // Force navigate to home page, completely resetting the application state
+  const handleLogoClick = () => {
+    console.log("Logo clicked, navigating to home page");
+    window.location.href = "/";
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
-          {/* Updated to always navigate to home page directly */}
           <Button 
             variant="ghost" 
             className="p-0 hover:bg-transparent"
-            onClick={() => navigate("/")}
+            onClick={handleLogoClick}
           >
             <span className="text-xl font-bold">Wise</span>
           </Button>

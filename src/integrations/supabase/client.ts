@@ -13,6 +13,7 @@ export interface Option {
   title: string;
   description: string;
   isAIGenerated?: boolean;
+  decision_id?: string;
 }
 
 export interface Criterion {
@@ -20,10 +21,13 @@ export interface Criterion {
   name: string;
   weight: number;
   isAIGenerated?: boolean;
+  decision_id?: string;
 }
 
 export interface Evaluation {
   optionId: string;
   criterionId: string;
   score: number;
+  decision_id?: string;
 }
+

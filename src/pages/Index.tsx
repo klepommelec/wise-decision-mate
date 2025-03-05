@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Header } from '@/components/layout/Header';
@@ -409,25 +410,61 @@ const Index = () => {
           deadline: selectedDecision.deadline
         });
         
-        const [optionsResult, criteriaResult, evaluationsResult] = await Promise.all([
-          supabase.from("options").select("*").eq("decision_id", selectedDecision.id),
-          supabase.from("criteria").select("*").eq("decision_id", selectedDecision.id),
-          supabase.from("evaluations").select("*").eq("decision_id", selectedDecision.id)
-        ]);
+        // Fetch all data needed for the analysis screen
+        console.log("Loading data for decision with favorite option:", selectedDecision.id);
         
-        if (optionsResult.error) throw optionsResult.error;
-        if (criteriaResult.error) throw criteriaResult.error;
-        if (evaluationsResult.error) throw evaluationsResult.error;
+        const optionsResponse = await supabase
+          .from('options')
+          .select('*')
+          .eq('decision_id', selectedDecision.id);
+          
+        const criteriaResponse = await supabase
+          .from('criteria')
+          .select('*')
+          .eq('decision_id', selectedDecision.id);
+          
+        const evaluationsResponse = await supabase
+          .from('evaluations')
+          .select('*')
+          .eq('decision_id', selectedDecision.id);
         
-        setOptions(optionsResult.data || []);
-        setCriteria(criteriaResult.data || []);
-        setEvaluations(evaluationsResult.data || []);
+        if (optionsResponse.error) throw optionsResponse.error;
+        if (criteriaResponse.error) throw criteriaResponse.error;
+        if (evaluationsResponse.error) throw evaluationsResponse.error;
         
+        // Map the database response to our application interfaces
+        const fetchedOptions: Option[] = optionsResponse.data.map(opt => ({
+          id: opt.id,
+          title: opt.title,
+          description: opt.description || '',
+          decision_id: opt.decision_id
+        }));
+        
+        const fetchedCriteria: Criterion[] = criteriaResponse.data.map(crit => ({
+          id: crit.id,
+          name: crit.name,
+          weight: crit.weight,
+          decision_id: crit.decision_id
+        }));
+        
+        const fetchedEvaluations: Evaluation[] = evaluationsResponse.data.map(eval => ({
+          optionId: eval.option_id,
+          criterionId: eval.criterion_id,
+          score: eval.score,
+          decision_id: eval.decision_id
+        }));
+        
+        setOptions(fetchedOptions);
+        setCriteria(fetchedCriteria);
+        setEvaluations(fetchedEvaluations);
+        
+        // Go directly to analysis screen
         setStep('analysis');
       } catch (error) {
         console.error("Error loading decision data:", error);
         toast.error("Erreur lors du chargement des données de la décision");
         
+        // Fallback to regular navigation if there's an error
         navigate("/", { 
           state: { 
             existingDecision: {
@@ -440,6 +477,7 @@ const Index = () => {
         });
       }
     } else {
+      // For decisions without a favorite option, go to decision step
       setStep('decision');
       navigate("/", { 
         state: { 
