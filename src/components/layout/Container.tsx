@@ -12,7 +12,7 @@ export function Container({ children, className, fullWidth = false }: ContainerP
   return (
     <main 
       className={cn(
-        "w-full mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex-1",
+        "w-full mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-10 flex-1",
         fullWidth ? "max-w-full" : "max-w-7xl",
         className
       )}
