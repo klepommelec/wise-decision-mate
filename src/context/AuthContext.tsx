@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Session, User } from "@supabase/supabase-js";
+import { toast } from "sonner";
 
 interface AuthContextType {
   session: Session | null;
@@ -60,7 +61,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const fileName = `${user.id}-${Date.now()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
+      console.log("Uploading file to storage:", filePath);
+
+      const { error: uploadError, data } = await supabase.storage
         .from('avatars')
         .upload(filePath, file, { upsert: true });
 
@@ -69,10 +72,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return { error: uploadError, url: null };
       }
 
+      console.log("File uploaded successfully, getting public URL");
+
       // Get public URL
       const { data: urlData } = supabase.storage
         .from('avatars')
         .getPublicUrl(filePath);
+
+      console.log("Public URL:", urlData.publicUrl);
 
       // Update profile
       const { error: updateError } = await supabase
@@ -84,6 +91,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.error("Error updating profile:", updateError);
         return { error: updateError, url: null };
       }
+
+      console.log("Profile updated successfully");
 
       // Update local state
       setProfile((prev: any) => ({ ...prev, avatar_url: urlData.publicUrl }));
@@ -100,9 +109,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!user || !profile?.avatar_url) return { error: new Error("No profile picture to remove") };
 
     try {
+      console.log("Removing profile picture:", profile.avatar_url);
+      
       // Extract file name from URL
       const urlParts = profile.avatar_url.split('/');
       const fileName = urlParts[urlParts.length - 1];
+
+      console.log("Extracted file name:", fileName);
 
       // Delete file from storage if it exists
       if (fileName) {
@@ -112,6 +125,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (deleteError) {
           console.error("Error deleting image:", deleteError);
+        } else {
+          console.log("File deleted successfully");
         }
       }
 
@@ -125,6 +140,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.error("Error updating profile:", updateError);
         return { error: updateError };
       }
+
+      console.log("Profile updated successfully, avatar_url set to null");
 
       // Update local state
       setProfile((prev: any) => ({ ...prev, avatar_url: null }));
