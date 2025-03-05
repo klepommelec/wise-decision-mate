@@ -284,6 +284,50 @@ const Index = () => {
     }
   };
 
+  const generateCriteria = async (title: string, description: string, useAI: boolean = true) => {
+    try {
+      setIsGeneratingCriteria(true);
+      
+      if (useAI) {
+        toast.info("Génération des critères en cours...");
+        const aiCriteria = await generateAICriteria(title, description);
+        if (aiCriteria && aiCriteria.length > 0) {
+          setCriteria(aiCriteria);
+          toast.success("Critères générés avec succès!");
+          return aiCriteria;
+        } else {
+          toast.error("Aucun critère n'a pu être généré. Veuillez essayer à nouveau.");
+          setCriteria([
+            { id: '1', name: 'Coût', weight: 3, isAIGenerated: true },
+            { id: '2', name: 'Qualité', weight: 4, isAIGenerated: true },
+            { id: '3', name: 'Durabilité', weight: 5, isAIGenerated: true }
+          ]);
+          return [];
+        }
+      } else {
+        const defaultCriteria = [
+          { id: '1', name: 'Coût', weight: 3, isAIGenerated: false },
+          { id: '2', name: 'Qualité', weight: 4, isAIGenerated: false },
+          { id: '3', name: 'Durabilité', weight: 5, isAIGenerated: false }
+        ];
+        setCriteria(defaultCriteria);
+        return defaultCriteria;
+      }
+    } catch (error) {
+      console.error("Error generating criteria:", error);
+      toast.error("Erreur lors de la génération des critères");
+      const fallbackCriteria = [
+        { id: '1', name: 'Coût', weight: 3, isAIGenerated: false },
+        { id: '2', name: 'Qualité', weight: 4, isAIGenerated: false },
+        { id: '3', name: 'Durabilité', weight: 5, isAIGenerated: false }
+      ];
+      setCriteria(fallbackCriteria);
+      return fallbackCriteria;
+    } finally {
+      setIsGeneratingCriteria(false);
+    }
+  };
+
   const handleDecisionSubmit = async (decisionData: { title: string; description: string; deadline?: string }, generateWithAI: boolean = false) => {
     setDecision({
       id: decision.id,
