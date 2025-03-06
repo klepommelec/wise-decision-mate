@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, PlusCircle } from "lucide-react";
@@ -7,6 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
 export function Header() {
+  // Commenting out auth temporarily
+  // const { user, loading } = useAuth();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
@@ -29,34 +30,19 @@ export function Header() {
             />
           </a>
         </div>
+        
         <nav className="flex items-center gap-4">
-          {loading ? (
-            <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
-          ) : user ? (
-            <div className="flex items-center gap-4">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => navigate("/new-decision")}
-              >
-                <PlusCircle className="h-4 w-4 mr-2" />
-                Nouvelle décision
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => navigate("/profile")}
-              >
-                <User className="h-4 w-4 mr-2" />
-                Mon profil
-              </Button>
-            </div>
-          ) : (
-            <Button size="sm" onClick={() => navigate("/auth")}>
-              <User className="h-4 w-4 mr-2" />
-              Connexion
+          {/* Commenting out auth UI temporarily */}
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => navigate("/new-decision")}
+            >
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Nouvelle décision
             </Button>
-          )}
+          </div>
         </nav>
       </div>
     </header>
