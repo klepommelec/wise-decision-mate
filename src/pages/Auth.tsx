@@ -58,7 +58,7 @@ export default function Auth() {
   return (
     <Container>
       <div className="min-h-[80vh] flex flex-col justify-center items-center py-12">
-        <Card className="w-full max-w-md glass-card transition-all duration-300 border-[#C8C8C9]">
+        <Card className="w-full max-w-md glass-card transition-all duration-300 border-[#e5e5e6]">
           <CardHeader>
             <CardTitle className="text-2xl font-medium">
               {mode === "login" ? "Connexion" : "Inscription"}
