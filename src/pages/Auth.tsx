@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -58,7 +57,7 @@ export default function Auth() {
   return (
     <Container>
       <div className="min-h-[80vh] flex flex-col justify-center items-center py-12">
-        <Card className="w-full max-w-md glass-card transition-all duration-300">
+        <Card className="w-full max-w-md glass-card transition-all duration-300 border-[#8E9196]">
           <CardHeader>
             <CardTitle className="text-2xl font-medium">
               {mode === "login" ? "Connexion" : "Inscription"}
