@@ -78,6 +78,11 @@ export function CriteriaEvaluation({ criteria: initialCriteria, isLoading = fals
   
   const isCriteriaValid = criteria.every(c => c.name.trim() !== '');
   
+  const handleComplete = () => {
+    // Make sure we're passing the current local state of criteria
+    onComplete(criteria);
+  };
+  
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
       <Card className="transition-all duration-300 border border-gray-200">
@@ -206,7 +211,7 @@ export function CriteriaEvaluation({ criteria: initialCriteria, isLoading = fals
         </CardContent>
         <CardFooter className="justify-end pt-2">
           <Button 
-            onClick={() => onComplete(criteria)} 
+            onClick={handleComplete} 
             disabled={!isCriteriaValid || isLoading}
             className="gap-2"
           >

@@ -86,6 +86,13 @@ Réponds uniquement avec ce JSON, sans autre texte.`
       const jsonMatch = contentText.match(/\[\s*\{.*\}\s*\]/s)
       if (jsonMatch) {
         options = JSON.parse(jsonMatch[0])
+        
+        // Add unique IDs and isAIGenerated flag
+        options = options.map((option, index) => ({
+          ...option,
+          id: (index + 1).toString(),
+          isAIGenerated: true
+        }))
       } else {
         // Fallback if the response is not in the expected format
         throw new Error('Format de réponse invalide')
@@ -94,10 +101,10 @@ Réponds uniquement avec ce JSON, sans autre texte.`
       console.error('Erreur lors du parsing de la réponse:', e)
       // Provide fallback options in case of parsing error
       options = [
-        { title: "Option A", description: "Première option par défaut suite à une erreur de traitement." },
-        { title: "Option B", description: "Deuxième option par défaut suite à une erreur de traitement." },
-        { title: "Option C", description: "Troisième option par défaut suite à une erreur de traitement." },
-        { title: "Option D", description: "Quatrième option par défaut suite à une erreur de traitement." }
+        { id: "1", title: "Option personnalisée 1", description: "Première option par défaut suite à une erreur de traitement.", isAIGenerated: true },
+        { id: "2", title: "Option personnalisée 2", description: "Deuxième option par défaut suite à une erreur de traitement.", isAIGenerated: true },
+        { id: "3", title: "Option personnalisée 3", description: "Troisième option par défaut suite à une erreur de traitement.", isAIGenerated: true },
+        { id: "4", title: "Option personnalisée 4", description: "Quatrième option par défaut suite à une erreur de traitement.", isAIGenerated: true }
       ]
     }
 
