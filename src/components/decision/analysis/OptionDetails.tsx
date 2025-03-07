@@ -38,6 +38,21 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
   
   // Reference to the newly added option card
   const newOptionRef = useRef<HTMLDivElement>(null);
+  
+  // Track when new option is added
+  const [newOptionAdded, setNewOptionAdded] = useState(false);
+  
+  // Effect to scroll to new option when it's added
+  useEffect(() => {
+    if (newOptionAdded && newOptionRef.current) {
+      console.log("Attempting to scroll to new option");
+      newOptionRef.current.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center'
+      });
+      setNewOptionAdded(false);
+    }
+  }, [newOptionAdded, finalScores]);
 
   const toggleExpandOption = (optionId: string) => {
     if (expandedOption === optionId) {
@@ -62,16 +77,11 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
       
       setTimeout(() => {
         setIsGeneratingDescription(false);
-        setNewOptionId(null);
         
-        // After the description is generated, scroll to the new option
+        // Set flag to trigger scroll once the option is added to finalScores
         setTimeout(() => {
-          if (newOptionRef.current) {
-            newOptionRef.current.scrollIntoView({ 
-              behavior: 'smooth',
-              block: 'center'
-            });
-          }
+          setNewOptionAdded(true);
+          console.log("Setting newOptionAdded to true");
         }, 100);
       }, 3000);
     }
@@ -80,9 +90,14 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
   // Find the index of the newly added option to reference it
   const newOptionIndex = finalScores.length > 0 ? finalScores.findIndex(
     option => option.title === loadingOptionTitle && 
-    isGeneratingDescription === false && 
-    Date.now() - (parseInt(newOptionId?.split('-')[1] || '0')) < 5000
+    !isGeneratingDescription && 
+    Date.now() - (parseInt(newOptionId?.split('-')[1] || '0')) < 10000
   ) : -1;
+  
+  console.log("New option index:", newOptionIndex, "Title:", loadingOptionTitle);
+  if (newOptionIndex !== -1) {
+    console.log("Found new option:", finalScores[newOptionIndex].title);
+  }
 
   return (
     <div className="mt-8">
