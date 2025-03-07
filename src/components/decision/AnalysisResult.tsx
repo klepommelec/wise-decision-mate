@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -51,6 +50,7 @@ export function AnalysisResult({
   const [selectedCriterion, setSelectedCriterion] = useState<string | null>(null);
   const [isAddOptionOpen, setIsAddOptionOpen] = useState(false);
   const [newOptionTitle, setNewOptionTitle] = useState('');
+
   const { user } = useAuth();
 
   const finalScores = useMemo(() => {
@@ -423,8 +423,8 @@ export function AnalysisResult({
             Retour aux options
           </Button>
           <Button variant="default" onClick={onReset} className="gap-2">
-            Nouvelle décision
-            <ArrowRight className="h-4 w-4" />
+            <Download className="h-4 w-4" />
+            Download
           </Button>
         </CardFooter>
       </Card>
