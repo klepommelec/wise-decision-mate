@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { Option } from '@/integrations/supabase/client';
 
 interface OptionScore {
@@ -31,6 +32,8 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
   const [expandedOption, setExpandedOption] = useState<string | null>(null);
   const [newOptionTitle, setNewOptionTitle] = useState('');
   const [isAddingOption, setIsAddingOption] = useState(false);
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
+  const [newOptionId, setNewOptionId] = useState<string | null>(null);
 
   const toggleExpandOption = (optionId: string) => {
     if (expandedOption === optionId) {
@@ -42,9 +45,26 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
 
   const handleAddOption = () => {
     if (newOptionTitle.trim() && onAddOption) {
+      // Set loading state before the option is added
+      setIsGeneratingDescription(true);
+      
+      // Generate a temporary ID to track the new option
+      const tempId = `temp-${Date.now()}`;
+      setNewOptionId(tempId);
+      
+      // Add the option
       onAddOption({ title: newOptionTitle.trim() });
+      
+      // Reset form state
       setNewOptionTitle('');
       setIsAddingOption(false);
+      
+      // Simulate a delay for description generation (will be managed by the actual backend)
+      // In the real implementation, this would be handled by the parent component
+      setTimeout(() => {
+        setIsGeneratingDescription(false);
+        setNewOptionId(null);
+      }, 3000); // 3-second simulation
     }
   };
 
@@ -79,7 +99,10 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
                   onChange={(e) => setNewOptionTitle(e.target.value)}
                   className="flex-1"
                 />
-                <Button onClick={handleAddOption} disabled={!newOptionTitle.trim()}>
+                <Button 
+                  onClick={handleAddOption} 
+                  disabled={!newOptionTitle.trim() || isGeneratingDescription}
+                >
                   Ajouter
                 </Button>
                 <Button 
@@ -88,6 +111,7 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
                     setIsAddingOption(false);
                     setNewOptionTitle('');
                   }}
+                  disabled={isGeneratingDescription}
                 >
                   Annuler
                 </Button>
@@ -96,6 +120,36 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
                 Une description sera générée automatiquement pour cette option.
               </p>
             </div>
+          </CardContent>
+        </Card>
+      )}
+      
+      {isGeneratingDescription && (
+        <Card key="loading-option" className="mb-4 border border-primary/30 animate-pulse">
+          <CardHeader className="pb-2">
+            <div className="flex items-start justify-between">
+              <CardTitle className="text-lg">{newOptionTitle}</CardTitle>
+              <div className="text-lg font-bold">
+                <Skeleton className="h-6 w-16" />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-5/6" />
+            </div>
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex items-center gap-1 w-full justify-between mt-3"
+              disabled
+            >
+              <span>Détails par critère</span>
+              <ChevronDown className="h-4 w-4" />
+            </Button>
           </CardContent>
         </Card>
       )}
