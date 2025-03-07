@@ -1,4 +1,5 @@
-import { useState } from 'react';
+
+import { useState, useRef, useEffect } from 'react';
 import { Star, ChevronUp, ChevronDown, Info, Plus } from 'lucide-react';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -34,6 +35,9 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [newOptionId, setNewOptionId] = useState<string | null>(null);
   const [loadingOptionTitle, setLoadingOptionTitle] = useState<string>('');
+  
+  // Reference to the newly added option card
+  const newOptionRef = useRef<HTMLDivElement>(null);
 
   const toggleExpandOption = (optionId: string) => {
     if (expandedOption === optionId) {
@@ -59,9 +63,26 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
       setTimeout(() => {
         setIsGeneratingDescription(false);
         setNewOptionId(null);
+        
+        // After the description is generated, scroll to the new option
+        setTimeout(() => {
+          if (newOptionRef.current) {
+            newOptionRef.current.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'center'
+            });
+          }
+        }, 100);
       }, 3000);
     }
   };
+
+  // Find the index of the newly added option to reference it
+  const newOptionIndex = finalScores.length > 0 ? finalScores.findIndex(
+    option => option.title === loadingOptionTitle && 
+    isGeneratingDescription === false && 
+    Date.now() - (parseInt(newOptionId?.split('-')[1] || '0')) < 5000
+  ) : -1;
 
   return (
     <div className="mt-8">
@@ -151,7 +172,13 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
       
       <div className="space-y-4">
         {finalScores.map((option, index) => (
-          <Card key={option.id} className={index === 0 ? "border-primary" : ""}>
+          <Card 
+            key={option.id} 
+            className={`${index === 0 ? "border-primary" : ""} ${
+              newOptionIndex === index ? "border-green-500 shadow-md animate-fade-in" : ""
+            }`}
+            ref={newOptionIndex === index ? newOptionRef : null}
+          >
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between">
                 <div className="flex items-center">
