@@ -4,12 +4,11 @@ import { useDecisionState, type Step, type Decision } from './useDecisionState';
 import { useCriteriaState, type Criterion } from './useCriteriaState';
 import { useOptionsState, type Option, type Evaluation } from './useOptionsState';
 import { useRecommendation } from './useRecommendation';
+import { useOptionActions } from './useOptionActions';
 
 export type { Step, Decision, Option, Criterion, Evaluation };
 
 export function useDecisionSteps(existingDecision?: { id: string; title: string; description: string; deadline?: string }) {
-  const [isProcessingManualEntries, setIsProcessingManualEntries] = useState(false);
-  
   const {
     step,
     setStep,
@@ -43,6 +42,13 @@ export function useDecisionSteps(existingDecision?: { id: string; title: string;
     updateRecommendation
   } = useRecommendation();
 
+  const {
+    isProcessingManualEntries,
+    handleOptionsComplete: baseHandleOptionsComplete,
+    handleRegenerateOptions: baseHandleRegenerateOptions,
+    handleAddOption: baseHandleAddOption
+  } = useOptionActions();
+
   useEffect(() => {
     if (existingDecision) {
       console.log("Loading existing decision:", existingDecision);
@@ -71,8 +77,6 @@ export function useDecisionSteps(existingDecision?: { id: string; title: string;
   };
 
   const handleCriteriaComplete = async (criteriaData: Criterion[]) => {
-    setIsProcessingManualEntries(true);
-    
     const processedCriteria = await baseHandleCriteriaComplete(criteriaData);
     
     try {
@@ -80,30 +84,23 @@ export function useDecisionSteps(existingDecision?: { id: string; title: string;
       
       const deterministicEvaluations = generateEvaluations(generatedOptions, processedCriteria);
       
-      setIsProcessingManualEntries(false);
       setStep('options');
     } catch (error) {
       console.error("Error in criteria completion flow:", error);
-      setIsProcessingManualEntries(false);
       setStep('options');
     }
   };
 
   const handleOptionsComplete = async (optionsData: Option[], generateWithAI: boolean = false) => {
-    console.log("handleOptionsComplete called with:", optionsData, generateWithAI);
-    
-    setIsProcessingManualEntries(true);
-    
-    const processedOptions = await processOptionDescriptions(optionsData, decision.title);
-    
-    const deterministicEvaluations = generateEvaluations(processedOptions, criteria);
-    
-    if (decision.id) {
-      await updateRecommendation(decision.id, processedOptions, criteria, deterministicEvaluations);
-    }
-    
-    setIsProcessingManualEntries(false);
-    setStep('analysis');
+    return baseHandleOptionsComplete(
+      optionsData, 
+      generateWithAI, 
+      decision, 
+      criteria, 
+      setOptions, 
+      setEvaluations, 
+      setStep
+    );
   };
 
   const handleBackToCriteria = () => {
@@ -112,66 +109,26 @@ export function useDecisionSteps(existingDecision?: { id: string; title: string;
   };
 
   const handleRegenerateOptions = async () => {
-    setIsProcessingManualEntries(true);
-    try {
-      const generatedOptions = await generateOptions(decision.title, decision.description);
-      
-      const deterministicEvaluations = generateEvaluations(generatedOptions, criteria);
-      
-      if (decision.id) {
-        await updateRecommendation(decision.id, generatedOptions, criteria, deterministicEvaluations);
-      }
-    } catch (error) {
-      console.error("Error regenerating options:", error);
-    } finally {
-      setIsProcessingManualEntries(false);
-    }
+    return baseHandleRegenerateOptions(
+      decision, 
+      criteria, 
+      setOptions, 
+      setEvaluations, 
+      generateOptions, 
+      generateEvaluations
+    );
   };
 
   const handleAddOption = async (newOption: { title: string }) => {
-    setIsProcessingManualEntries(true);
-    try {
-      console.log("Adding new option:", newOption.title);
-      
-      // Create a new option with a unique ID
-      const newOptionObj: Option = {
-        id: `manual-${Date.now()}`,
-        title: newOption.title,
-        description: '',
-        isAIGenerated: false
-      };
-      
-      // Process the new option to generate a description
-      const processedOptions = await processOptionDescriptions([newOptionObj], decision.title);
-      const addedOption = processedOptions[0];
-      
-      // Add the new option to the existing options
-      const updatedOptions = [...options, addedOption];
-      setOptions(updatedOptions);
-      
-      // Generate evaluations for the new option
-      const newEvaluations = criteria.map(criterion => ({
-        optionId: addedOption.id,
-        criterionId: criterion.id,
-        score: 0 // Will be replaced by generated score
-      }));
-      
-      // Generate scores for the new evaluations
-      const deterministicEvaluations = generateEvaluations([addedOption], criteria);
-      
-      // Merge the new evaluations with existing ones
-      const updatedEvaluations = [...evaluations, ...deterministicEvaluations];
-      setEvaluations(updatedEvaluations);
-      
-      // Update recommendation if needed
-      if (decision.id) {
-        await updateRecommendation(decision.id, updatedOptions, criteria, updatedEvaluations);
-      }
-    } catch (error) {
-      console.error("Error adding new option:", error);
-    } finally {
-      setIsProcessingManualEntries(false);
-    }
+    return baseHandleAddOption(
+      newOption, 
+      decision, 
+      options, 
+      criteria, 
+      evaluations, 
+      setOptions, 
+      setEvaluations
+    );
   };
 
   return {

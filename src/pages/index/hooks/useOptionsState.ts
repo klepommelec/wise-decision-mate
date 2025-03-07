@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { generateAIOptions, generateDescription, generateDeterministicScore } from '../utils/aiHelpers';

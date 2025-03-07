@@ -96,3 +96,52 @@ export const generateDeterministicScore = (optionTitle: string, criterionName: s
   const combinedHash = hash(optionTitle + criterionName);
   return 3 + (combinedHash % 8);
 };
+
+export const processOptionDescriptions = async (options: Option[], decisionTitle: string): Promise<Option[]> => {
+  const processedOptions = [...options];
+  const optionsToProcess = processedOptions.filter(option => 
+    !option.isAIGenerated && (!option.description || option.description.trim() === '')
+  );
+  
+  if (optionsToProcess.length > 0) {
+    toast.info("Traitement des options ajoutées manuellement...");
+    
+    for (let i = 0; i < optionsToProcess.length; i++) {
+      const option = optionsToProcess[i];
+      if (!option.description || option.description.trim() === '') {
+        try {
+          const description = await generateDescription(
+            option.title, 
+            decisionTitle, 
+            'option'
+          );
+          
+          const index = processedOptions.findIndex(o => o.id === option.id);
+          if (index !== -1) {
+            processedOptions[index] = {
+              ...processedOptions[index],
+              description
+            };
+          }
+        } catch (error) {
+          console.error("Erreur lors de la génération de description pour l'option:", error);
+        }
+      }
+    }
+  }
+  
+  return processedOptions;
+};
+
+export const generateEvaluations = (options: Option[], criteria: Criterion[]): Evaluation[] => {
+  const evaluations = options.flatMap(option => 
+    criteria.map(criterion => ({
+      optionId: option.id,
+      criterionId: criterion.id,
+      score: generateDeterministicScore(option.title, criterion.name)
+    }))
+  );
+  
+  console.log("Generated deterministic evaluations:", evaluations);
+  return evaluations;
+};
