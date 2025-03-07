@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { ArrowRight, GripVertical, Plus, Sparkles, Trash2 } from 'lucide-react';
-import { Option } from './OptionsList';
+import { Option } from '@/components/decision/options/types';
 import { cn } from '@/lib/utils';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 
