@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useDecisionState, type Step, type Decision } from './useDecisionState';
 import { useCriteriaState, type Criterion } from './useCriteriaState';
@@ -111,6 +110,23 @@ export function useDecisionSteps(existingDecision?: { id: string; title: string;
     setStep('criteria');
   };
 
+  const handleRegenerateOptions = async () => {
+    setIsProcessingManualEntries(true);
+    try {
+      const generatedOptions = await generateOptions(decision.title, decision.description);
+      
+      const deterministicEvaluations = generateEvaluations(generatedOptions, criteria);
+      
+      if (decision.id) {
+        await updateRecommendation(decision.id, generatedOptions, criteria, deterministicEvaluations);
+      }
+    } catch (error) {
+      console.error("Error regenerating options:", error);
+    } finally {
+      setIsProcessingManualEntries(false);
+    }
+  };
+
   return {
     step,
     setStep,
@@ -130,6 +146,7 @@ export function useDecisionSteps(existingDecision?: { id: string; title: string;
     handleCriteriaComplete,
     handleOptionsComplete,
     handleBackToCriteria,
-    handleReset
+    handleReset,
+    handleRegenerateOptions
   };
 }

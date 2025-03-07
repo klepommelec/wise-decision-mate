@@ -46,7 +46,8 @@ const Index = () => {
     handleCriteriaComplete,
     handleOptionsComplete,
     handleBackToCriteria,
-    handleReset
+    handleReset,
+    handleRegenerateOptions
   } = useDecisionSteps(existingDecision);
 
   useEffect(() => {
@@ -147,7 +148,15 @@ const Index = () => {
                 
                 {step === 'analysis' && <div>
                     <StepNavigator onNewDecision={handleNewDecision} currentStep="Analyse" previousSteps={["Décision", "Critères", "Options"]} onBackStep={() => handleBackToCriteria()} />
-                    <AnalysisResult decisionTitle={decision.title} options={options} criteria={criteria} evaluations={evaluations} onBack={() => handleBackToCriteria()} onReset={handleReset} />
+                    <AnalysisResult 
+                      decisionTitle={decision.title} 
+                      options={options} 
+                      criteria={criteria} 
+                      evaluations={evaluations} 
+                      onBack={() => handleBackToCriteria()} 
+                      onReset={handleReset}
+                      onRegenerateOptions={handleRegenerateOptions}
+                    />
                   </div>}
               </motion.div>
             </Container>}
