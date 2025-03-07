@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, Home, PlusCircle, HelpCircle, Share2, Settings, Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
@@ -86,13 +87,14 @@ export function StepNavigator({
             </div>
             <div className="text-right">
               <span className="text-xs font-semibold inline-block text-primary">
-                {previousSteps.length + 1}/4
+                {/* Updated to reflect the new 3-step flow (Decision, Criteria, Analysis) */}
+                {previousSteps.length + 1}/3
               </span>
             </div>
           </div>
           <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-secondary">
             <div style={{
-          width: `${(previousSteps.length + 1) / 4 * 100}%`
+          width: `${(previousSteps.length + 1) / 3 * 100}%`
         }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary transition-all duration-500"></div>
           </div>
         </div>}

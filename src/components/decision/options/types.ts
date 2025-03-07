@@ -13,4 +13,5 @@ export interface OptionsListProps {
   onBack?: () => void;
   isLoading?: boolean;
   initialOptions?: Option[];
+  autoSubmit?: boolean;
 }

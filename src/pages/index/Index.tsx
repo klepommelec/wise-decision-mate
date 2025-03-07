@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -142,13 +143,14 @@ const Index = () => {
                     <CriteriaEvaluation criteria={criteria} isLoading={isGeneratingCriteria || isProcessingManualEntries} onComplete={handleCriteriaComplete} decisionTitle={decision.title} />
                   </div>}
                 
-                {step === 'options' && <div>
+                {/* The options step is still in the code but won't be shown anymore since we're skipping directly to analysis */}
+                {step === 'options' && <div style={{ display: 'none' }}>
                     <StepNavigator onNewDecision={handleNewDecision} currentStep="Options" previousSteps={["Décision", "Critères"]} onBackStep={handleBackToCriteria} />
-                    <OptionsList decisionTitle={decision.title} onComplete={handleOptionsComplete} onBack={handleBackToCriteria} isLoading={isGeneratingOptions || isProcessingManualEntries} initialOptions={options} />
+                    <OptionsList decisionTitle={decision.title} onComplete={handleOptionsComplete} onBack={handleBackToCriteria} isLoading={isGeneratingOptions || isProcessingManualEntries} initialOptions={options} autoSubmit={true} />
                   </div>}
                 
                 {step === 'analysis' && <div>
-                    <StepNavigator onNewDecision={handleNewDecision} currentStep="Analyse" previousSteps={["Décision", "Critères", "Options"]} onBackStep={() => handleBackToCriteria()} />
+                    <StepNavigator onNewDecision={handleNewDecision} currentStep="Analyse" previousSteps={["Décision", "Critères"]} onBackStep={() => handleBackToCriteria()} />
                     <AnalysisResult 
                       decisionTitle={decision.title} 
                       options={options} 

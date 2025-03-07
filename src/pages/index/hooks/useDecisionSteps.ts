@@ -84,14 +84,18 @@ export function useDecisionSteps(existingDecision?: { id: string; title: string;
     const processedCriteria = await baseHandleCriteriaComplete(criteriaData);
     
     try {
+      // Generate options automatically
       const generatedOptions = await generateOptions(decision.title, decision.description);
       
+      // Generate evaluations for the options
       const deterministicEvaluations = generateEvaluations(generatedOptions, processedCriteria);
       
-      setStep('options');
+      // Skip the options step and go directly to analysis
+      setStep('analysis');
     } catch (error) {
       console.error("Error in criteria completion flow:", error);
-      setStep('options');
+      // Even if there's an error, proceed to analysis with whatever we have
+      setStep('analysis');
     }
   };
 

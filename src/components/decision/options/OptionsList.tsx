@@ -7,7 +7,7 @@ import { AIGenerationSettings } from './AIGenerationSettings';
 import { useOptionsLogic } from './useOptionsLogic';
 import { OptionsListProps } from './types';
 
-export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = false, initialOptions }: OptionsListProps) {
+export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = false, initialOptions, autoSubmit = false }: OptionsListProps) {
   const {
     options,
     useAI,
@@ -28,6 +28,14 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
     
     onComplete(options, hasEmptyOptions && useAI);
   };
+  
+  // Auto submit if the autoSubmit prop is true
+  React.useEffect(() => {
+    if (autoSubmit && isValid) {
+      console.log("Auto-submitting options");
+      handleSubmit();
+    }
+  }, [autoSubmit, isValid]);
   
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
