@@ -214,15 +214,6 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
               </div>
             ))}
             
-            <Button 
-              variant="outline" 
-              className="w-full flex items-center justify-center gap-2" 
-              onClick={addOption}
-            >
-              <Plus className="h-4 w-4" />
-              Ajouter une option
-            </Button>
-            
             <div className="flex items-center space-x-2 pt-2">
               <Switch
                 id="ai-options"
@@ -242,6 +233,16 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
                 </p>
               </div>
             </div>
+            
+            {/* Moved the "Add Option" button to the bottom of the list */}
+            <Button 
+              variant="outline" 
+              className="w-full flex items-center justify-center gap-2" 
+              onClick={addOption}
+            >
+              <Plus className="h-4 w-4" />
+              Ajouter une option
+            </Button>
           </div>
         </CardContent>
         <CardFooter className="justify-between pt-2">
