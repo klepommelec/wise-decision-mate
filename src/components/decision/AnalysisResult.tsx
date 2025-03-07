@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -222,38 +223,6 @@ export function AnalysisResult({
                 Générer de nouvelles options
               </Button>
             )}
-            
-            {onAddOption && (
-              <Dialog open={isAddOptionOpen} onOpenChange={setIsAddOptionOpen}>
-                <DialogTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    className="w-full flex items-center justify-center gap-2"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Ajouter une option
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Ajouter une nouvelle option</DialogTitle>
-                    <DialogDescription>
-                      Saisissez un titre pour votre nouvelle option. Une description sera générée automatiquement.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="py-4">
-                    <Input
-                      placeholder="Titre de l'option (ex: Acheter une maison neuve)"
-                      value={newOptionTitle}
-                      onChange={(e) => setNewOptionTitle(e.target.value)}
-                    />
-                  </div>
-                  <DialogFooter>
-                    <Button onClick={handleAddOption}>Ajouter</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            )}
           </div>
         </CardContent>
       </Card>
@@ -331,7 +300,43 @@ export function AnalysisResult({
           </div>
           
           <div className="mt-8">
-            <h3 className="text-lg font-medium mb-4">Détails des options</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium">Détails des options</h3>
+              
+              {onAddOption && (
+                <Dialog open={isAddOptionOpen} onOpenChange={setIsAddOptionOpen}>
+                  <DialogTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="flex items-center gap-1"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Ajouter une option
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Ajouter une nouvelle option</DialogTitle>
+                      <DialogDescription>
+                        Saisissez un titre pour votre nouvelle option. Une description sera générée automatiquement.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4">
+                      <Input
+                        placeholder="Titre de l'option (ex: Acheter une maison neuve)"
+                        value={newOptionTitle}
+                        onChange={(e) => setNewOptionTitle(e.target.value)}
+                      />
+                    </div>
+                    <DialogFooter>
+                      <Button onClick={handleAddOption}>Ajouter</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
+            
             <div className="space-y-4">
               {finalScores.map((option: any, index: number) => (
                 <Card key={option.id} className={index === 0 ? "border-primary" : ""}>
