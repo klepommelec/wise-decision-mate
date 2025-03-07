@@ -2,18 +2,17 @@
 import { useState, useMemo, useRef } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
-import { ArrowLeft, Download, Star, Check, ArrowRight, ChevronDown, ChevronUp, Info, Sparkles, Plus } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 import type { Option, Criterion, Evaluation } from '@/integrations/supabase/client';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+
+// Import our new components
+import { BestOption } from './analysis/BestOption';
+import { OptionsChart } from './analysis/OptionsChart';
+import { CriteriaChart } from './analysis/CriteriaChart';
+import { OptionDetails } from './analysis/OptionDetails';
+import { DownloadPDF } from './analysis/DownloadPDF';
 
 interface AnalysisResultProps {
   decisionTitle: string;
@@ -26,18 +25,6 @@ interface AnalysisResultProps {
   onAddOption?: (option: { title: string }) => void;
 }
 
-interface OptionScore {
-  option: Option;
-  score: number;
-  details: {
-    criterionId: string;
-    criterionName: string;
-    weight: number;
-    score: number;
-    weightedScore: number;
-  }[];
-}
-
 export function AnalysisResult({ 
   decisionTitle, 
   options, 
@@ -48,16 +35,11 @@ export function AnalysisResult({
   onRegenerateOptions,
   onAddOption
 }: AnalysisResultProps) {
-  const [isSaving, setIsSaving] = useState(false);
-  const [expandedOption, setExpandedOption] = useState<string | null>(null);
   const [selectedCriterion, setSelectedCriterion] = useState<string | null>(null);
-  const [isAddOptionOpen, setIsAddOptionOpen] = useState(false);
-  const [newOptionTitle, setNewOptionTitle] = useState('');
-  const [isDownloading, setIsDownloading] = useState(false);
-
   const contentRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
 
+  // Calculate final scores for options
   const finalScores = useMemo(() => {
     const scores: Record<string, any> = {};
     
@@ -101,6 +83,7 @@ export function AnalysisResult({
     return Object.values(scores).sort((a: any, b: any) => b.score - a.score);
   }, [options, criteria, evaluations]);
 
+  // Prepare data for the criteria chart
   const criteriaChartData = useMemo(() => {
     const criterionToUse = selectedCriterion || (criteria.length > 0 ? criteria[0].id : null);
     
@@ -118,175 +101,23 @@ export function AnalysisResult({
     });
   }, [options, criteria, evaluations, selectedCriterion]);
 
+  // Get the best option (with highest score)
   const bestOption = finalScores.length > 0 ? finalScores[0] : null;
 
-  const toggleExpandOption = (optionId: string) => {
-    if (expandedOption === optionId) {
-      setExpandedOption(null);
-    } else {
-      setExpandedOption(optionId);
-    }
-  };
-
-  const handleSaveFavoriteOption = async () => {
-    if (!user || !bestOption) return;
-    
-    setIsSaving(true);
-    try {
-      const { error } = await supabase
-        .from('decisions')
-        .update({ favorite_option: bestOption.title })
-        .eq('title', decisionTitle);
-        
-      if (error) throw error;
-      
-      toast.success('Option favorite enregistrée!');
-    } catch (error) {
-      console.error('Erreur lors de l\'enregistrement de l\'option favorite:', error);
-      toast.error('Erreur lors de l\'enregistrement de l\'option favorite');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
+  // Prepare data for the options chart
   const chartData = finalScores.map((item: any) => ({
     name: item.title,
     score: item.score
   }));
 
-  const handleRegenerateOptions = () => {
-    if (onRegenerateOptions) {
-      toast.info('Génération de nouvelles options en cours...');
-      onRegenerateOptions();
-    }
-  };
-
-  const handleAddOption = () => {
-    if (newOptionTitle.trim() && onAddOption) {
-      onAddOption({ title: newOptionTitle.trim() });
-      setNewOptionTitle('');
-      setIsAddOptionOpen(false);
-      toast.info('Ajout de la nouvelle option en cours...');
-    } else {
-      toast.error('Veuillez saisir un titre pour l\'option');
-    }
-  };
-
-  const handleDownload = async () => {
-    if (!contentRef.current) return;
-    
-    setIsDownloading(true);
-    toast.info('Préparation du téléchargement...');
-    
-    try {
-      // Temporarily expand all options for the PDF
-      const previousExpandedOption = expandedOption;
-      const allOptions = finalScores.map((option: any) => option.id);
-      allOptions.forEach(optionId => setExpandedOption(optionId));
-      
-      // Wait for the DOM to update
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const canvas = await html2canvas(contentRef.current, {
-        scale: 2,
-        logging: false,
-        useCORS: true,
-        allowTaint: true
-      });
-      
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-      
-      // Calculate dimensions to fit the image on page
-      const imgWidth = 210; // A4 width
-      const imgHeight = canvas.height * imgWidth / canvas.width;
-      
-      // Add title to PDF
-      pdf.setFontSize(16);
-      pdf.text(`Analyse de décision: ${decisionTitle}`, 10, 10);
-      
-      // Add image to PDF
-      pdf.addImage(imgData, 'PNG', 0, 20, imgWidth, imgHeight);
-      
-      // Generate filename
-      const filename = `decision-${decisionTitle.toLowerCase().replace(/\s+/g, '-')}.pdf`;
-      pdf.save(filename);
-      
-      // Restore previous expanded state
-      setExpandedOption(previousExpandedOption);
-      
-      toast.success('PDF téléchargé avec succès!');
-    } catch (error) {
-      console.error('Erreur lors de la génération du PDF:', error);
-      toast.error('Erreur lors de la génération du PDF');
-    } finally {
-      setIsDownloading(false);
-    }
-  };
-
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
-      <Card className="mb-6 border border-gray-200">
-        <CardHeader>
-          <CardTitle className="text-2xl font-medium">Résumé de l'analyse</CardTitle>
-          <CardDescription>
-            Voici le résultat de votre décision "{decisionTitle}"
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {bestOption && (
-            <div className="bg-primary/10 p-4 rounded-lg">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Star className="h-5 w-5 text-yellow-500" />
-                  <h3 className="text-lg font-medium">Option suggérée</h3>
-                </div>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="flex items-center gap-1"
-                  onClick={handleSaveFavoriteOption}
-                  disabled={isSaving}
-                >
-                  {isSaving ? (
-                    <>Enregistrement...</>
-                  ) : (
-                    <>
-                      <Check className="h-4 w-4" />
-                      Enregistrer comme choix
-                    </>
-                  )}
-                </Button>
-              </div>
-              
-              <div className="mb-2">
-                <div className="flex items-center justify-between mb-1">
-                  <p className="text-xl font-semibold">{bestOption.title}</p>
-                  <div className="text-xl font-bold">{bestOption.score}</div>
-                </div>
-                <p className="text-sm text-muted-foreground line-clamp-2">{bestOption.description}</p>
-              </div>
-            </div>
-          )}
-          
-          <div className="flex flex-col gap-4 mt-4">
-            {onRegenerateOptions && (
-              <Button 
-                variant="outline" 
-                onClick={handleRegenerateOptions} 
-                className="w-full flex items-center justify-center gap-2"
-              >
-                <Sparkles className="h-4 w-4" />
-                Générer de nouvelles options
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Display the best option */}
+      <BestOption 
+        bestOption={bestOption} 
+        decisionTitle={decisionTitle} 
+        onRegenerateOptions={onRegenerateOptions} 
+      />
 
       <div ref={contentRef}>
         <Card className="border border-gray-200">
@@ -301,198 +132,32 @@ export function AnalysisResult({
             </div>
           </CardHeader>
           <CardContent>
-            <div className="mb-8">
-              <h3 className="text-lg font-medium mb-4">Score global par option</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={chartData}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="score" fill="#8884d8">
-                    {chartData.map((entry: any, index: number) => (
-                      <Cell key={`cell-${index}`} fill={index === 0 ? '#4f46e5' : '#8884d8'} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            {/* Options chart */}
+            <OptionsChart chartData={chartData} />
             
-            <div className="mb-8">
-              <div className="flex flex-col mb-4">
-                <h3 className="text-lg font-medium mb-2">Score par critère</h3>
-                <div className="overflow-x-auto pb-2 -mx-1 px-1">
-                  <div className="flex gap-2 min-w-min">
-                    {criteria.map((criterion) => (
-                      <Button
-                        key={criterion.id}
-                        variant="outline"
-                        size="sm"
-                        className={cn(
-                          "text-xs whitespace-nowrap",
-                          selectedCriterion === criterion.id && "bg-primary/10 border-primary"
-                        )}
-                        onClick={() => setSelectedCriterion(criterion.id)}
-                      >
-                        {criterion.name}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={criteriaChartData}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  barSize={20}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis domain={[0, 5]} />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="score" fill="#82ca9d" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            {/* Criteria chart */}
+            <CriteriaChart 
+              criteria={criteria}
+              criteriaChartData={criteriaChartData}
+              selectedCriterion={selectedCriterion}
+              setSelectedCriterion={setSelectedCriterion}
+            />
             
-            <div className="mt-8">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium">Détails des options</h3>
-                
-                {onAddOption && (
-                  <Dialog open={isAddOptionOpen} onOpenChange={setIsAddOptionOpen}>
-                    <DialogTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="flex items-center gap-1"
-                      >
-                        <Plus className="h-4 w-4" />
-                        Ajouter une option
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Ajouter une nouvelle option</DialogTitle>
-                        <DialogDescription>
-                          Saisissez un titre pour votre nouvelle option. Une description sera générée automatiquement.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="py-4">
-                        <Input
-                          placeholder="Titre de l'option (ex: Acheter une maison neuve)"
-                          value={newOptionTitle}
-                          onChange={(e) => setNewOptionTitle(e.target.value)}
-                        />
-                      </div>
-                      <DialogFooter>
-                        <Button onClick={handleAddOption}>Ajouter</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                )}
-              </div>
-              
-              <div className="space-y-4">
-                {finalScores.map((option: any, index: number) => (
-                  <Card key={option.id} className={index === 0 ? "border-primary" : ""}>
-                    <CardHeader className="pb-2">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center">
-                          {index === 0 && (
-                            <div className="bg-primary/10 text-primary p-1 rounded-full mr-2">
-                              <Star className="h-4 w-4" />
-                            </div>
-                          )}
-                          <CardTitle className="text-lg">
-                            {option.title}
-                          </CardTitle>
-                        </div>
-                        <div className="text-lg font-bold">
-                          Score: {option.score}
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-2">
-                      <p className="text-muted-foreground text-sm mb-3">{option.description}</p>
-                      
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="flex items-center gap-1 w-full justify-between"
-                        onClick={() => toggleExpandOption(option.id)}
-                      >
-                        <span>Détails par critère</span>
-                        {expandedOption === option.id ? (
-                          <ChevronUp className="h-4 w-4" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4" />
-                        )}
-                      </Button>
-                      
-                      {expandedOption === option.id && (
-                        <div className="mt-4 border rounded-md divide-y">
-                          <div className="grid grid-cols-12 p-2 bg-muted font-medium text-sm">
-                            <div className="col-span-5">Critère</div>
-                            <div className="col-span-2 text-center">Poids</div>
-                            <div className="col-span-2 text-center">Score</div>
-                            <div className="col-span-3 text-center">Score pondéré</div>
-                          </div>
-                          {option.details.map((detail: any) => (
-                            <div key={detail.criterionId} className="grid grid-cols-12 p-2 text-sm">
-                              <div className="col-span-5 flex items-center">
-                                {detail.criterionName}
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="h-5 w-5 ml-1">
-                                      <Info className="h-3 w-3" />
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-80">
-                                    <div className="space-y-2">
-                                      <h4 className="font-medium">Formule de calcul</h4>
-                                      <p className="text-sm text-muted-foreground">
-                                        Score pondéré = Score × Poids du critère
-                                      </p>
-                                    </div>
-                                  </PopoverContent>
-                                </Popover>
-                              </div>
-                              <div className="col-span-2 text-center">{detail.weight}</div>
-                              <div className="col-span-2 text-center">{detail.score}</div>
-                              <div className="col-span-3 text-center font-medium">
-                                {detail.weightedScore.toFixed(2)}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
+            {/* Option details */}
+            <OptionDetails 
+              finalScores={finalScores}
+              onAddOption={onAddOption}
+            />
           </CardContent>
           <CardFooter className="justify-between pt-4">
             <Button variant="back" onClick={onBack} className="gap-2">
               <ArrowLeft className="h-4 w-4" />
               Retour aux options
             </Button>
-            <Button 
-              variant="default" 
-              onClick={handleDownload} 
-              className="gap-2"
-              disabled={isDownloading}
-            >
-              <Download className="h-4 w-4" />
-              {isDownloading ? 'Téléchargement...' : 'Download'}
-            </Button>
+            <DownloadPDF 
+              decisionTitle={decisionTitle}
+              contentRef={contentRef}
+            />
           </CardFooter>
         </Card>
       </div>
