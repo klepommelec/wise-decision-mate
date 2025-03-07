@@ -21,12 +21,17 @@ import {
   Share2,
   Bell,
   Calendar,
-  Filter
+  Filter,
+  Sun,
+  Moon,
+  Laptop
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTheme } from "@/hooks/use-theme";
+import { Switch } from "@/components/ui/switch";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,6 +55,7 @@ import {
 
 export default function Profile() {
   const { user, loading } = useAuth();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const [decisions, setDecisions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -210,6 +216,48 @@ export default function Profile() {
                             </DialogDescription>
                           </DialogHeader>
                           <div className="space-y-4 py-4">
+                            <div className="border-b pb-4">
+                              <h3 className="text-sm font-medium mb-3">Thème</h3>
+                              <div className="grid grid-cols-3 gap-2">
+                                <Button 
+                                  variant={theme === "light" ? "default" : "outline"} 
+                                  size="sm" 
+                                  className="w-full justify-start"
+                                  onClick={() => {
+                                    setTheme("light");
+                                    toast.success("Thème clair activé");
+                                  }}
+                                >
+                                  <Sun className="h-4 w-4 mr-2" />
+                                  Clair
+                                </Button>
+                                <Button 
+                                  variant={theme === "dark" ? "default" : "outline"} 
+                                  size="sm" 
+                                  className="w-full justify-start"
+                                  onClick={() => {
+                                    setTheme("dark");
+                                    toast.success("Thème sombre activé");
+                                  }}
+                                >
+                                  <Moon className="h-4 w-4 mr-2" />
+                                  Sombre
+                                </Button>
+                                <Button 
+                                  variant={theme === "system" ? "default" : "outline"} 
+                                  size="sm" 
+                                  className="w-full justify-start"
+                                  onClick={() => {
+                                    setTheme("system");
+                                    toast.success("Thème système activé");
+                                  }}
+                                >
+                                  <Laptop className="h-4 w-4 mr-2" />
+                                  Système
+                                </Button>
+                              </div>
+                            </div>
+                            
                             <div className="flex justify-between items-center">
                               <span>Notifications par email</span>
                               <Button variant="outline" size="sm">Configurer</Button>
