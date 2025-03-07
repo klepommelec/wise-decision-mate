@@ -68,7 +68,11 @@ export function useDecisionSteps(existingDecision?: { id: string; title: string;
     }
   }, [existingDecision, step]);
 
-  const handleDecisionSubmit = async (decisionData: { title: string; description: string; deadline?: string }, generateWithAI: boolean = false) => {
+  const handleDecisionSubmit = async (decisionData: { 
+    title: string; 
+    description: string; 
+    deadline?: string 
+  }, generateWithAI: boolean = false) => {
     await baseHandleDecisionSubmit(decisionData);
     
     await generateCriteria(decisionData.title, decisionData.description, generateWithAI);
@@ -99,7 +103,7 @@ export function useDecisionSteps(existingDecision?: { id: string; title: string;
       criteria, 
       setOptions, 
       setEvaluations, 
-      setStep
+      (stepValue: string) => setStep(stepValue as Step)  // Fix: Convert string to Step type
     );
   };
 
