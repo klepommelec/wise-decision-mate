@@ -1,8 +1,7 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { DecisionForm } from '@/components/decision/DecisionForm';
-import { OptionsList } from '@/components/decision/OptionsList';
+import { OptionsList } from '@/components/decision/options';
 import { CriteriaEvaluation } from '@/components/decision/CriteriaEvaluation';
 import { AnalysisResult } from '@/components/decision/AnalysisResult';
 import { useAuth } from '@/context/AuthContext';
