@@ -1,9 +1,8 @@
-
 import { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
-import { ArrowLeft, Download, Star, Check, ArrowRight, ChevronDown, ChevronUp, Info } from 'lucide-react';
+import { ArrowLeft, Download, Star, Check, ArrowRight, ChevronDown, ChevronUp, Info, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,6 +17,7 @@ interface AnalysisResultProps {
   evaluations: Evaluation[];
   onBack: () => void;
   onReset: () => void;
+  onRegenerateOptions?: () => void;
 }
 
 interface OptionScore {
@@ -38,7 +38,8 @@ export function AnalysisResult({
   criteria, 
   evaluations, 
   onBack, 
-  onReset 
+  onReset,
+  onRegenerateOptions
 }: AnalysisResultProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [expandedOption, setExpandedOption] = useState<string | null>(null);
@@ -141,6 +142,13 @@ export function AnalysisResult({
     score: item.score
   }));
 
+  const handleRegenerateOptions = () => {
+    if (onRegenerateOptions) {
+      toast.info('Génération de nouvelles options en cours...');
+      onRegenerateOptions();
+    }
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
       <Card className="mb-6 border border-gray-200">
@@ -183,6 +191,19 @@ export function AnalysisResult({
                 </div>
                 <p className="text-sm text-muted-foreground line-clamp-2">{bestOption.description}</p>
               </div>
+            </div>
+          )}
+          
+          {onRegenerateOptions && (
+            <div className="mt-4">
+              <Button 
+                variant="outline" 
+                onClick={handleRegenerateOptions} 
+                className="w-full flex items-center justify-center gap-2"
+              >
+                <Sparkles className="h-4 w-4" />
+                Générer de nouvelles options
+              </Button>
             </div>
           )}
         </CardContent>
@@ -356,3 +377,4 @@ export function AnalysisResult({
     </div>
   );
 }
+

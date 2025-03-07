@@ -12,6 +12,8 @@ import { useDecisionSteps, type Decision } from './hooks/useDecisionSteps';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { toast } from 'sonner';
+
 interface LocationState {
   existingDecision?: {
     id: string;
@@ -20,6 +22,7 @@ interface LocationState {
     deadline?: string;
   };
 }
+
 const Index = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -45,11 +48,13 @@ const Index = () => {
     handleBackToCriteria,
     handleReset
   } = useDecisionSteps(existingDecision);
+
   useEffect(() => {
     if (existingDecision) {
       console.log("Loading existing decision:", existingDecision);
     }
   }, [existingDecision]);
+
   useEffect(() => {
     if (contentRef.current) {
       contentRef.current.scrollIntoView({
@@ -58,9 +63,11 @@ const Index = () => {
       });
     }
   }, [step]);
+
   const handleNewDecision = () => {
     window.location.href = '/';
   };
+
   const handleDecisionClick = (selectedDecision: Decision) => {
     console.log("Opening decision:", selectedDecision.id, selectedDecision.title);
     navigate("/", {
@@ -74,9 +81,11 @@ const Index = () => {
       }
     });
   };
+
   if (!loading && !user) {
     return <Navigate to="/auth" />;
   }
+
   const renderWelcomeScreen = () => {
     if (step !== 'decision' || existingDecision) return null;
     return <motion.div initial={{
@@ -92,6 +101,7 @@ const Index = () => {
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Notre outil vous aide à structurer votre réflexion et à analyser objectivement les options qui s'offrent à vous.</p>
       </motion.div>;
   };
+
   return <div className="flex flex-col min-h-screen" ref={contentRef}>
       <div className="flex-1 flex flex-col py-[80px]">
         {step === 'decision' && <div className="flex-1 flex flex-col items-center justify-center py-0">
@@ -160,4 +170,5 @@ const Index = () => {
       </div>
     </div>;
 };
+
 export default Index;
