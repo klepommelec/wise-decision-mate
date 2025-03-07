@@ -1,10 +1,11 @@
 
 import { useState } from 'react';
-import { Star, ChevronUp, ChevronDown, Info } from 'lucide-react';
+import { Star, ChevronUp, ChevronDown, Info, Plus } from 'lucide-react';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { AddOptionDialog } from './AddOptionDialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import type { Option } from '@/integrations/supabase/client';
 
 interface OptionScore {
@@ -28,6 +29,8 @@ interface OptionDetailsProps {
 
 export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) {
   const [expandedOption, setExpandedOption] = useState<string | null>(null);
+  const [newOptionTitle, setNewOptionTitle] = useState('');
+  const [isAddingOption, setIsAddingOption] = useState(false);
 
   const toggleExpandOption = (optionId: string) => {
     if (expandedOption === optionId) {
@@ -37,13 +40,65 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
     }
   };
 
+  const handleAddOption = () => {
+    if (newOptionTitle.trim() && onAddOption) {
+      onAddOption({ title: newOptionTitle.trim() });
+      setNewOptionTitle('');
+      setIsAddingOption(false);
+    }
+  };
+
   return (
     <div className="mt-8">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-medium">Détails des options</h3>
         
-        {onAddOption && <AddOptionDialog onAddOption={onAddOption} />}
+        {onAddOption && !isAddingOption && (
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="flex items-center gap-1"
+            onClick={() => setIsAddingOption(true)}
+          >
+            <Plus className="h-4 w-4" />
+            Ajouter une option
+          </Button>
+        )}
       </div>
+      
+      {isAddingOption && (
+        <Card className="mb-4 border-dashed border-primary/50">
+          <CardContent className="pt-4">
+            <div className="space-y-3">
+              <Label htmlFor="new-option">Nouvelle option</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="new-option"
+                  placeholder="Titre de l'option (ex: Acheter une maison neuve)"
+                  value={newOptionTitle}
+                  onChange={(e) => setNewOptionTitle(e.target.value)}
+                  className="flex-1"
+                />
+                <Button onClick={handleAddOption} disabled={!newOptionTitle.trim()}>
+                  Ajouter
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setIsAddingOption(false);
+                    setNewOptionTitle('');
+                  }}
+                >
+                  Annuler
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Une description sera générée automatiquement pour cette option.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
       
       <div className="space-y-4">
         {finalScores.map((option, index) => (
