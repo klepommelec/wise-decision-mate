@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Star, ChevronUp, ChevronDown, Info, Plus } from 'lucide-react';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
@@ -34,6 +33,7 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
   const [isAddingOption, setIsAddingOption] = useState(false);
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [newOptionId, setNewOptionId] = useState<string | null>(null);
+  const [loadingOptionTitle, setLoadingOptionTitle] = useState<string>('');
 
   const toggleExpandOption = (optionId: string) => {
     if (expandedOption === optionId) {
@@ -45,26 +45,21 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
 
   const handleAddOption = () => {
     if (newOptionTitle.trim() && onAddOption) {
-      // Set loading state before the option is added
       setIsGeneratingDescription(true);
+      setLoadingOptionTitle(newOptionTitle.trim());
       
-      // Generate a temporary ID to track the new option
       const tempId = `temp-${Date.now()}`;
       setNewOptionId(tempId);
       
-      // Add the option
       onAddOption({ title: newOptionTitle.trim() });
       
-      // Reset form state
       setNewOptionTitle('');
       setIsAddingOption(false);
       
-      // Simulate a delay for description generation (will be managed by the actual backend)
-      // In the real implementation, this would be handled by the parent component
       setTimeout(() => {
         setIsGeneratingDescription(false);
         setNewOptionId(null);
-      }, 3000); // 3-second simulation
+      }, 3000);
     }
   };
 
@@ -128,7 +123,7 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
         <Card key="loading-option" className="mb-4 border border-primary/30 animate-pulse">
           <CardHeader className="pb-2">
             <div className="flex items-start justify-between">
-              <CardTitle className="text-lg">{newOptionTitle}</CardTitle>
+              <CardTitle className="text-lg">{loadingOptionTitle}</CardTitle>
               <div className="text-lg font-bold">
                 <Skeleton className="h-6 w-16" />
               </div>
