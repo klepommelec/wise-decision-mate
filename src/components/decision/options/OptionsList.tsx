@@ -1,4 +1,5 @@
 
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { ArrowRight, Plus, Sparkles, ArrowLeft } from 'lucide-react';
@@ -30,7 +31,7 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
   };
   
   // Auto submit if the autoSubmit prop is true
-  React.useEffect(() => {
+  useEffect(() => {
     if (autoSubmit && isValid) {
       console.log("Auto-submitting options");
       handleSubmit();
