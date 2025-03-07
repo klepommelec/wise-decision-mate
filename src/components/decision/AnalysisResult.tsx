@@ -2,13 +2,15 @@ import { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
-import { ArrowLeft, Download, Star, Check, ArrowRight, ChevronDown, ChevronUp, Info, Sparkles } from 'lucide-react';
+import { ArrowLeft, Download, Star, Check, ArrowRight, ChevronDown, ChevronUp, Info, Sparkles, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import type { Option, Criterion, Evaluation } from '@/integrations/supabase/client';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 interface AnalysisResultProps {
   decisionTitle: string;
@@ -18,6 +20,7 @@ interface AnalysisResultProps {
   onBack: () => void;
   onReset: () => void;
   onRegenerateOptions?: () => void;
+  onAddOption?: (option: { title: string }) => void;
 }
 
 interface OptionScore {
@@ -39,11 +42,14 @@ export function AnalysisResult({
   evaluations, 
   onBack, 
   onReset,
-  onRegenerateOptions
+  onRegenerateOptions,
+  onAddOption
 }: AnalysisResultProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [expandedOption, setExpandedOption] = useState<string | null>(null);
   const [selectedCriterion, setSelectedCriterion] = useState<string | null>(null);
+  const [isAddOptionOpen, setIsAddOptionOpen] = useState(false);
+  const [newOptionTitle, setNewOptionTitle] = useState('');
   const { user } = useAuth();
 
   const finalScores = useMemo(() => {
@@ -149,6 +155,17 @@ export function AnalysisResult({
     }
   };
 
+  const handleAddOption = () => {
+    if (newOptionTitle.trim() && onAddOption) {
+      onAddOption({ title: newOptionTitle.trim() });
+      setNewOptionTitle('');
+      setIsAddOptionOpen(false);
+      toast.info('Ajout de la nouvelle option en cours...');
+    } else {
+      toast.error('Veuillez saisir un titre pour l\'option');
+    }
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
       <Card className="mb-6 border border-gray-200">
@@ -194,8 +211,8 @@ export function AnalysisResult({
             </div>
           )}
           
-          {onRegenerateOptions && (
-            <div className="mt-4">
+          <div className="flex flex-col gap-4 mt-4">
+            {onRegenerateOptions && (
               <Button 
                 variant="outline" 
                 onClick={handleRegenerateOptions} 
@@ -204,8 +221,40 @@ export function AnalysisResult({
                 <Sparkles className="h-4 w-4" />
                 Générer de nouvelles options
               </Button>
-            </div>
-          )}
+            )}
+            
+            {onAddOption && (
+              <Dialog open={isAddOptionOpen} onOpenChange={setIsAddOptionOpen}>
+                <DialogTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    className="w-full flex items-center justify-center gap-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Ajouter une option
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Ajouter une nouvelle option</DialogTitle>
+                    <DialogDescription>
+                      Saisissez un titre pour votre nouvelle option. Une description sera générée automatiquement.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="py-4">
+                    <Input
+                      placeholder="Titre de l'option (ex: Acheter une maison neuve)"
+                      value={newOptionTitle}
+                      onChange={(e) => setNewOptionTitle(e.target.value)}
+                    />
+                  </div>
+                  <DialogFooter>
+                    <Button onClick={handleAddOption}>Ajouter</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
+          </div>
         </CardContent>
       </Card>
 
@@ -377,4 +426,3 @@ export function AnalysisResult({
     </div>
   );
 }
-

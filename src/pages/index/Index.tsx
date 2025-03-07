@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -47,7 +48,8 @@ const Index = () => {
     handleOptionsComplete,
     handleBackToCriteria,
     handleReset,
-    handleRegenerateOptions
+    handleRegenerateOptions,
+    handleAddOption
   } = useDecisionSteps(existingDecision);
 
   useEffect(() => {
@@ -156,6 +158,7 @@ const Index = () => {
                       onBack={() => handleBackToCriteria()} 
                       onReset={handleReset}
                       onRegenerateOptions={handleRegenerateOptions}
+                      onAddOption={handleAddOption}
                     />
                   </div>}
               </motion.div>
