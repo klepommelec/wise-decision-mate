@@ -155,44 +155,105 @@ export function AnalysisResult({
 
       // Save criteria
       for (const criterion of criteria) {
+        // Ne pas envoyer l'ID temporaire à Supabase
+        const criterionData: any = {
+          decision_id: decisionId,
+          name: criterion.name,
+          weight: criterion.weight
+        };
+        
+        // Si l'ID n'est pas un ID temporaire (ne contient pas 'temp-'), l'inclure
+        if (!criterion.id.includes('temp-')) {
+          criterionData.id = criterion.id;
+        }
+        
         const { error: criterionError } = await supabase
           .from('criteria')
-          .upsert({
-            decision_id: decisionId,
-            name: criterion.name,
-            weight: criterion.weight,
-            id: criterion.id.includes('temp-') ? undefined : criterion.id
-          });
+          .upsert(criterionData);
 
-        if (criterionError) throw criterionError;
+        if (criterionError) {
+          console.error("Erreur lors de la sauvegarde d'un critère:", criterionError);
+          throw criterionError;
+        }
       }
 
       // Save options
       for (const option of options) {
+        // Ne pas envoyer l'ID temporaire à Supabase
+        const optionData: any = {
+          decision_id: decisionId,
+          title: option.title,
+          description: option.description
+        };
+        
+        // Si l'ID n'est pas un ID temporaire (ne contient pas 'temp-'), l'inclure
+        if (!option.id.includes('temp-')) {
+          optionData.id = option.id;
+        }
+        
         const { error: optionError } = await supabase
           .from('options')
-          .upsert({
-            decision_id: decisionId,
-            title: option.title,
-            description: option.description,
-            id: option.id.includes('temp-') ? undefined : option.id
-          });
+          .upsert(optionData);
 
-        if (optionError) throw optionError;
+        if (optionError) {
+          console.error("Erreur lors de la sauvegarde d'une option:", optionError);
+          throw optionError;
+        }
       }
 
-      // Save evaluations
+      // Attendre que les options et critères soient sauvegardés avant d'enregistrer les évaluations
+      // Pour éviter les problèmes de référence, on peut récupérer les nouveaux IDs
+      const { data: savedCriteria, error: getCriteriaError } = await supabase
+        .from('criteria')
+        .select('id, name')
+        .eq('decision_id', decisionId);
+        
+      const { data: savedOptions, error: getOptionsError } = await supabase
+        .from('options')
+        .select('id, title')
+        .eq('decision_id', decisionId);
+        
+      if (getCriteriaError || getOptionsError) {
+        throw getCriteriaError || getOptionsError;
+      }
+      
+      // Créer un mapping des noms aux IDs pour faire la correspondance
+      const criteriaMap = savedCriteria.reduce((map, c) => {
+        map[c.name] = c.id;
+        return map;
+      }, {});
+      
+      const optionsMap = savedOptions.reduce((map, o) => {
+        map[o.title] = o.id;
+        return map;
+      }, {});
+
+      // Save evaluations avec les IDs corrects
       for (const evaluation of evaluations) {
+        // Trouver l'option et le critère correspondants par leur nom
+        const option = options.find(o => o.id === evaluation.optionId);
+        const criterion = criteria.find(c => c.id === evaluation.criterionId);
+        
+        if (!option || !criterion) continue;
+        
+        const optionId = optionsMap[option.title];
+        const criterionId = criteriaMap[criterion.name];
+        
+        if (!optionId || !criterionId) continue;
+        
         const { error: evaluationError } = await supabase
           .from('evaluations')
           .upsert({
             decision_id: decisionId,
-            option_id: evaluation.optionId,
-            criterion_id: evaluation.criterionId,
+            option_id: optionId,
+            criterion_id: criterionId,
             score: evaluation.score,
           });
 
-        if (evaluationError) throw evaluationError;
+        if (evaluationError) {
+          console.error("Erreur lors de la sauvegarde d'une évaluation:", evaluationError);
+          throw evaluationError;
+        }
       }
 
       toast.success("Décision sauvegardée avec succès");
