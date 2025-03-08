@@ -30,16 +30,6 @@ export function Header() {
           </a>
         </div>
         <nav className="flex items-center gap-4">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="text-muted-foreground" 
-            onClick={() => navigate('/help')}
-          >
-            <HelpCircle className="h-4 w-4 mr-2" />
-            Aide et documentation
-          </Button>
-          
           {loading ? (
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
           ) : user ? (
@@ -55,6 +45,14 @@ export function Header() {
               <Button 
                 variant="ghost" 
                 size="sm" 
+                onClick={() => navigate("/help")}
+              >
+                <HelpCircle className="h-4 w-4 mr-2" />
+                Aide et documentation
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
                 onClick={() => navigate("/profile")}
               >
                 <User className="h-4 w-4 mr-2" />
@@ -62,10 +60,21 @@ export function Header() {
               </Button>
             </div>
           ) : (
-            <Button size="sm" onClick={() => navigate("/auth")}>
-              <User className="h-4 w-4 mr-2" />
-              Connexion
-            </Button>
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-muted-foreground" 
+                onClick={() => navigate('/help')}
+              >
+                <HelpCircle className="h-4 w-4 mr-2" />
+                Aide et documentation
+              </Button>
+              <Button size="sm" onClick={() => navigate("/auth")}>
+                <User className="h-4 w-4 mr-2" />
+                Connexion
+              </Button>
+            </div>
           )}
         </nav>
       </div>

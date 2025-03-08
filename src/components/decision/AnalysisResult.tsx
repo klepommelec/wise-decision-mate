@@ -1,4 +1,3 @@
-
 import { useState, useMemo, useRef } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -392,7 +391,7 @@ export function AnalysisResult({
         </Card>
       </div>
       
-      {/* Notes component */}
+      {/* Enhanced Notes component with sharing capability */}
       <Notes decisionId={decisionId} decisionTitle={decisionTitle} />
     </div>
   );
