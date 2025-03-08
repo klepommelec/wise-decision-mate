@@ -2,9 +2,10 @@
 import { useState, useMemo, useRef } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import type { Option, Criterion, Evaluation } from '@/integrations/supabase/client';
 
 // Import our new components
@@ -36,6 +37,7 @@ export function AnalysisResult({
   onAddOption
 }: AnalysisResultProps) {
   const [selectedCriterion, setSelectedCriterion] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const contentRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
 
@@ -110,6 +112,98 @@ export function AnalysisResult({
     score: item.score
   }));
 
+  // Function to save current decision state
+  const saveDecision = async () => {
+    if (!user) {
+      toast.error("Vous devez être connecté pour sauvegarder une décision");
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+
+      // Find existing decision or create a new one
+      const { data: existingDecisions, error: fetchError } = await supabase
+        .from('decisions')
+        .select('id')
+        .eq('title', decisionTitle)
+        .eq('user_id', user.id)
+        .limit(1);
+
+      if (fetchError) throw fetchError;
+
+      let decisionId;
+
+      if (existingDecisions && existingDecisions.length > 0) {
+        // Update existing decision
+        decisionId = existingDecisions[0].id;
+      } else {
+        // Create new decision
+        const { data: newDecision, error: insertError } = await supabase
+          .from('decisions')
+          .insert({ 
+            title: decisionTitle, 
+            user_id: user.id,
+            ai_recommendation: bestOption ? bestOption.title : null
+          })
+          .select('id')
+          .single();
+
+        if (insertError) throw insertError;
+        decisionId = newDecision.id;
+      }
+
+      // Save criteria
+      for (const criterion of criteria) {
+        const { error: criterionError } = await supabase
+          .from('criteria')
+          .upsert({
+            decision_id: decisionId,
+            name: criterion.name,
+            weight: criterion.weight,
+            id: criterion.id.includes('temp-') ? undefined : criterion.id
+          });
+
+        if (criterionError) throw criterionError;
+      }
+
+      // Save options
+      for (const option of options) {
+        const { error: optionError } = await supabase
+          .from('options')
+          .upsert({
+            decision_id: decisionId,
+            title: option.title,
+            description: option.description,
+            id: option.id.includes('temp-') ? undefined : option.id
+          });
+
+        if (optionError) throw optionError;
+      }
+
+      // Save evaluations
+      for (const evaluation of evaluations) {
+        const { error: evaluationError } = await supabase
+          .from('evaluations')
+          .upsert({
+            decision_id: decisionId,
+            option_id: evaluation.optionId,
+            criterion_id: evaluation.criterionId,
+            score: evaluation.score,
+          });
+
+        if (evaluationError) throw evaluationError;
+      }
+
+      toast.success("Décision sauvegardée avec succès");
+    } catch (error) {
+      console.error("Error saving decision:", error);
+      toast.error("Erreur lors de la sauvegarde de la décision");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
       {/* Display the best option */}
@@ -129,6 +223,17 @@ export function AnalysisResult({
                   Comparaison des options selon les critères d'évaluation
                 </CardDescription>
               </div>
+              {user && (
+                <Button 
+                  onClick={saveDecision} 
+                  variant="outline" 
+                  className="gap-2"
+                  disabled={isSaving}
+                >
+                  <Save className="h-4 w-4" />
+                  {isSaving ? "Sauvegarde..." : "Sauvegarder"}
+                </Button>
+              )}
             </div>
           </CardHeader>
           <CardContent>
