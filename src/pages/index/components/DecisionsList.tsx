@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, List, Clock, Star, CheckCircle } from 'lucide-react';
+import { ArrowRight, List, Clock, Star, CheckCircle, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/context/AuthContext';
@@ -30,7 +30,9 @@ export function DecisionsList({ onDecisionClick, onNewDecision }: DecisionsListP
   const { user } = useAuth();
 
   useEffect(() => {
-    fetchDecisionsWithRecommendations();
+    if (user) {
+      fetchDecisionsWithRecommendations();
+    }
   }, [user]);
 
   const fetchDecisionsWithRecommendations = async () => {
@@ -38,14 +40,20 @@ export function DecisionsList({ onDecisionClick, onNewDecision }: DecisionsListP
 
     try {
       setLoadingDecisions(true);
+      console.log("Récupération des décisions pour l'utilisateur:", user.id);
+      
       const { data, error } = await supabase
         .from("decisions")
         .select("id, title, description, created_at, deadline, favorite_option, ai_recommendation")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erreur lors de la récupération des décisions:", error);
+        throw error;
+      }
       
+      console.log("Décisions récupérées:", data);
       setUserDecisions(data || []);
       
       const recMap: Record<string, string> = {};
@@ -75,14 +83,25 @@ export function DecisionsList({ onDecisionClick, onNewDecision }: DecisionsListP
     }).format(date);
   };
 
+  const handleRefresh = () => {
+    fetchDecisionsWithRecommendations();
+    toast.success("Liste des décisions actualisée");
+  };
+
   return (
     <div className="w-full max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Mes Décisions</h2>
-        <Button onClick={onNewDecision} className="gap-2">
-          Nouvelle décision
-          <ArrowRight className="h-4 w-4" />
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleRefresh} className="gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Actualiser
+          </Button>
+          <Button onClick={onNewDecision} className="gap-2">
+            Nouvelle décision
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       {loadingDecisions ? (
@@ -119,7 +138,10 @@ export function DecisionsList({ onDecisionClick, onNewDecision }: DecisionsListP
             <Card 
               key={decision.id}
               className="hover:shadow-md transition-shadow cursor-pointer border border-gray-200"
-              onClick={() => onDecisionClick(decision)}
+              onClick={() => {
+                console.log("Décision sélectionnée:", decision);
+                onDecisionClick(decision);
+              }}
             >
               <CardHeader>
                 <div className="flex justify-between items-start mb-2">

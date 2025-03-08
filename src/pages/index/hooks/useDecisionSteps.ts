@@ -5,6 +5,8 @@ import { useCriteriaState, type Criterion } from './useCriteriaState';
 import { useOptionsState, type Option, type Evaluation } from './useOptionsState';
 import { useRecommendation } from './useRecommendation';
 import { useOptionActions } from './useOptionActions';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 export type { Step, Decision, Option, Criterion, Evaluation };
 
@@ -61,12 +63,89 @@ export function useDecisionSteps(existingDecision?: { id: string; title: string;
       
       if (step === 'decision') {
         console.log("Loading existing decision, moving to criteria step:", existingDecision.id);
-        setStep('criteria');
         
-        generateCriteria(existingDecision.title, existingDecision.description, true);
+        // Charger les données sauvegardées depuis Supabase
+        loadSavedDecisionData(existingDecision.id);
       }
     }
   }, [existingDecision, step]);
+
+  // Fonction pour charger les données complètes d'une décision
+  const loadSavedDecisionData = async (decisionId: string) => {
+    try {
+      console.log("Chargement des données pour la décision:", decisionId);
+      
+      // 1. Charger les critères
+      const { data: criteriaData, error: criteriaError } = await supabase
+        .from('criteria')
+        .select('*')
+        .eq('decision_id', decisionId);
+      
+      if (criteriaError) throw criteriaError;
+      console.log("Critères chargés:", criteriaData);
+      
+      if (!criteriaData || criteriaData.length === 0) {
+        console.log("Aucun critère trouvé, génération automatique");
+        setStep('criteria');
+        generateCriteria(existingDecision!.title, existingDecision!.description || "", true);
+        return;
+      }
+      
+      // 2. Charger les options
+      const { data: optionsData, error: optionsError } = await supabase
+        .from('options')
+        .select('*')
+        .eq('decision_id', decisionId);
+      
+      if (optionsError) throw optionsError;
+      console.log("Options chargées:", optionsData);
+      
+      // 3. Charger les évaluations
+      const { data: evaluationsData, error: evalError } = await supabase
+        .from('evaluations')
+        .select('*')
+        .eq('decision_id', decisionId);
+      
+      if (evalError) throw evalError;
+      console.log("Évaluations chargées:", evaluationsData);
+      
+      // Transformer les données pour notre application
+      const formattedCriteria: Criterion[] = criteriaData.map(c => ({
+        id: c.id,
+        name: c.name,
+        weight: c.weight
+      }));
+      
+      const formattedOptions: Option[] = optionsData.map(o => ({
+        id: o.id,
+        title: o.title,
+        description: o.description || ""
+      }));
+      
+      const formattedEvaluations: Evaluation[] = evaluationsData.map(e => ({
+        optionId: e.option_id,
+        criterionId: e.criterion_id,
+        score: e.score
+      }));
+      
+      // Mettre à jour l'état avec les données chargées
+      setCriteria(formattedCriteria);
+      setOptions(formattedOptions);
+      setEvaluations(formattedEvaluations);
+      
+      // Passer directement à l'étape d'analyse
+      setStep('analysis');
+      
+      console.log("Données chargées avec succès, passage à l'analyse");
+      
+    } catch (error) {
+      console.error("Erreur lors du chargement des données:", error);
+      toast.error("Impossible de charger les données de la décision");
+      // En cas d'erreur, revenir à l'étape des critères
+      setStep('criteria');
+      generateCriteria(existingDecision!.title, existingDecision!.description || "", true);
+    }
+  };
 
   const handleDecisionSubmit = async (decisionData: { 
     title: string; 
