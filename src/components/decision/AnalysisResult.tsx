@@ -152,7 +152,7 @@ export function AnalysisResult({
           <CardFooter className="justify-between pt-4">
             <Button variant="back" onClick={onBack} className="gap-2">
               <ArrowLeft className="h-4 w-4" />
-              Retour aux options
+              Retour aux critères
             </Button>
             <DownloadPDF 
               decisionTitle={decisionTitle}
