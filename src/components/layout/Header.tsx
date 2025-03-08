@@ -1,7 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, PlusCircle } from "lucide-react";
+import { LogOut, User, PlusCircle, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,6 +30,16 @@ export function Header() {
           </a>
         </div>
         <nav className="flex items-center gap-4">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-muted-foreground" 
+            onClick={() => navigate('/help')}
+          >
+            <HelpCircle className="h-4 w-4 mr-2" />
+            Aide et documentation
+          </Button>
+          
           {loading ? (
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
           ) : user ? (

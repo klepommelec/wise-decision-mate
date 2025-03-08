@@ -8,12 +8,13 @@ import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import type { Option, Criterion, Evaluation } from '@/integrations/supabase/client';
 
-// Import our new components
+// Import our components
 import { BestOption } from './analysis/BestOption';
 import { OptionsChart } from './analysis/OptionsChart';
 import { CriteriaChart } from './analysis/CriteriaChart';
 import { OptionDetails } from './analysis/OptionDetails';
 import { DownloadPDF } from './analysis/DownloadPDF';
+import { Notes } from './analysis/Notes'; // Import the new Notes component
 
 interface AnalysisResultProps {
   decisionTitle: string;
@@ -310,6 +311,24 @@ export function AnalysisResult({
     }
   };
 
+  // Find existing decision ID for the Notes component
+  const [decisionId, setDecisionId] = useState<string | undefined>(undefined);
+  
+  useMemo(async () => {
+    if (!user) return;
+    
+    const { data } = await supabase
+      .from('decisions')
+      .select('id')
+      .eq('title', decisionTitle)
+      .eq('user_id', user.id)
+      .limit(1);
+      
+    if (data && data.length > 0) {
+      setDecisionId(data[0].id);
+    }
+  }, [decisionTitle, user]);
+
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
       {/* Display the best option */}
@@ -372,6 +391,9 @@ export function AnalysisResult({
           </CardFooter>
         </Card>
       </div>
+      
+      {/* Notes component */}
+      <Notes decisionId={decisionId} decisionTitle={decisionTitle} />
     </div>
   );
 }

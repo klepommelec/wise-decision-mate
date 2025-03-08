@@ -1,6 +1,6 @@
 
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Home, PlusCircle, HelpCircle, Share2, Settings, Moon, Sun } from 'lucide-react';
+import { ChevronLeft, Home, PlusCircle, Settings, Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -60,21 +60,6 @@ export function StepNavigator({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" className="text-muted-foreground" onClick={() => navigate('/help')}>
-                  <HelpCircle className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Aide et documentation</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          
-          
         </div>
       </div>
       
