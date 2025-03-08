@@ -45,7 +45,8 @@ export function Notes({ decisionId, decisionTitle }: NotesProps) {
         
         // Set shared state based on whether the current user is the owner
         const isOwner = user && existingDecisions.user_id === user.id;
-        setIsShared(!isOwner && existingDecisions.notes);
+        // Fix: Convert to boolean instead of assigning the string directly
+        setIsShared(!isOwner && Boolean(existingDecisions.notes));
         
         if (existingDecisions?.notes) {
           setNotes(existingDecisions.notes);
