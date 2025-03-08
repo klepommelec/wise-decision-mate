@@ -121,6 +121,7 @@ export function AnalysisResult({
 
     try {
       setIsSaving(true);
+      console.log("Starting decision save process...");
 
       // Find existing decision or create a new one
       const { data: existingDecisions, error: fetchError } = await supabase
@@ -130,13 +131,17 @@ export function AnalysisResult({
         .eq('user_id', user.id)
         .limit(1);
 
-      if (fetchError) throw fetchError;
+      if (fetchError) {
+        console.error("Error fetching existing decision:", fetchError);
+        throw fetchError;
+      }
 
       let decisionId;
 
       if (existingDecisions && existingDecisions.length > 0) {
         // Update existing decision
         decisionId = existingDecisions[0].id;
+        console.log("Updating existing decision:", decisionId);
       } else {
         // Create new decision
         const { data: newDecision, error: insertError } = await supabase
@@ -149,114 +154,154 @@ export function AnalysisResult({
           .select('id')
           .single();
 
-        if (insertError) throw insertError;
+        if (insertError) {
+          console.error("Error creating new decision:", insertError);
+          throw insertError;
+        }
+        
         decisionId = newDecision.id;
+        console.log("Created new decision:", decisionId);
       }
 
-      // Save criteria
-      for (const criterion of criteria) {
-        // Ne pas envoyer l'ID temporaire à Supabase
-        const criterionData: any = {
-          decision_id: decisionId,
-          name: criterion.name,
-          weight: criterion.weight
-        };
-        
-        // Si l'ID n'est pas un ID temporaire (ne contient pas 'temp-'), l'inclure
-        if (!criterion.id.includes('temp-')) {
-          criterionData.id = criterion.id;
-        }
-        
-        const { error: criterionError } = await supabase
-          .from('criteria')
-          .upsert(criterionData);
-
-        if (criterionError) {
-          console.error("Erreur lors de la sauvegarde d'un critère:", criterionError);
-          throw criterionError;
-        }
-      }
-
-      // Save options
-      for (const option of options) {
-        // Ne pas envoyer l'ID temporaire à Supabase
-        const optionData: any = {
-          decision_id: decisionId,
-          title: option.title,
-          description: option.description
-        };
-        
-        // Si l'ID n'est pas un ID temporaire (ne contient pas 'temp-'), l'inclure
-        if (!option.id.includes('temp-')) {
-          optionData.id = option.id;
-        }
-        
-        const { error: optionError } = await supabase
-          .from('options')
-          .upsert(optionData);
-
-        if (optionError) {
-          console.error("Erreur lors de la sauvegarde d'une option:", optionError);
-          throw optionError;
-        }
-      }
-
-      // Attendre que les options et critères soient sauvegardés avant d'enregistrer les évaluations
-      // Pour éviter les problèmes de référence, on peut récupérer les nouveaux IDs
-      const { data: savedCriteria, error: getCriteriaError } = await supabase
-        .from('criteria')
-        .select('id, name')
+      // First, delete any existing criteria, options and evaluations to avoid duplicates
+      console.log("Cleaning existing data...");
+      
+      // Delete existing evaluations first (due to foreign key constraints)
+      const { error: deleteEvalError } = await supabase
+        .from('evaluations')
+        .delete()
         .eq('decision_id', decisionId);
         
-      const { data: savedOptions, error: getOptionsError } = await supabase
-        .from('options')
-        .select('id, title')
-        .eq('decision_id', decisionId);
-        
-      if (getCriteriaError || getOptionsError) {
-        throw getCriteriaError || getOptionsError;
+      if (deleteEvalError) {
+        console.error("Error deleting existing evaluations:", deleteEvalError);
+        throw deleteEvalError;
       }
       
-      // Créer un mapping des noms aux IDs pour faire la correspondance
-      const criteriaMap = savedCriteria.reduce((map, c) => {
+      // Delete existing criteria
+      const { error: deleteCriteriaError } = await supabase
+        .from('criteria')
+        .delete()
+        .eq('decision_id', decisionId);
+        
+      if (deleteCriteriaError) {
+        console.error("Error deleting existing criteria:", deleteCriteriaError);
+        throw deleteCriteriaError;
+      }
+      
+      // Delete existing options
+      const { error: deleteOptionsError } = await supabase
+        .from('options')
+        .delete()
+        .eq('decision_id', decisionId);
+        
+      if (deleteOptionsError) {
+        console.error("Error deleting existing options:", deleteOptionsError);
+        throw deleteOptionsError;
+      }
+      
+      console.log("Data cleaned, proceeding with new data insertion...");
+
+      // Now insert all criteria and get their new IDs
+      const criteriaToInsert = criteria.map(criterion => ({
+        decision_id: decisionId,
+        name: criterion.name,
+        weight: criterion.weight
+      }));
+      
+      const { data: insertedCriteria, error: criteriaError } = await supabase
+        .from('criteria')
+        .insert(criteriaToInsert)
+        .select('id, name');
+        
+      if (criteriaError) {
+        console.error("Error inserting criteria:", criteriaError);
+        throw criteriaError;
+      }
+      
+      console.log("Inserted criteria:", insertedCriteria);
+      
+      // Create a mapping from criteria names to their new IDs
+      const criteriaMap = insertedCriteria.reduce((map, c) => {
         map[c.name] = c.id;
         return map;
-      }, {});
+      }, {} as Record<string, string>);
       
-      const optionsMap = savedOptions.reduce((map, o) => {
+      // Now insert all options and get their new IDs
+      const optionsToInsert = options.map(option => ({
+        decision_id: decisionId,
+        title: option.title,
+        description: option.description
+      }));
+      
+      const { data: insertedOptions, error: optionsError } = await supabase
+        .from('options')
+        .insert(optionsToInsert)
+        .select('id, title');
+        
+      if (optionsError) {
+        console.error("Error inserting options:", optionsError);
+        throw optionsError;
+      }
+      
+      console.log("Inserted options:", insertedOptions);
+      
+      // Create a mapping from option titles to their new IDs
+      const optionsMap = insertedOptions.reduce((map, o) => {
         map[o.title] = o.id;
         return map;
-      }, {});
-
-      // Save evaluations avec les IDs corrects
+      }, {} as Record<string, string>);
+      
+      // Finally, insert all evaluations with the new IDs
+      const evaluationsToInsert = [];
+      
       for (const evaluation of evaluations) {
-        // Trouver l'option et le critère correspondants par leur nom
         const option = options.find(o => o.id === evaluation.optionId);
         const criterion = criteria.find(c => c.id === evaluation.criterionId);
         
-        if (!option || !criterion) continue;
+        if (!option || !criterion) {
+          console.warn("Skipping evaluation - missing option or criterion", evaluation);
+          continue;
+        }
         
         const optionId = optionsMap[option.title];
         const criterionId = criteriaMap[criterion.name];
         
-        if (!optionId || !criterionId) continue;
-        
-        const { error: evaluationError } = await supabase
-          .from('evaluations')
-          .upsert({
-            decision_id: decisionId,
-            option_id: optionId,
-            criterion_id: criterionId,
-            score: evaluation.score,
+        if (!optionId || !criterionId) {
+          console.warn("Skipping evaluation - missing mapped ID", {
+            optionTitle: option.title,
+            criterionName: criterion.name,
+            optionId,
+            criterionId
           });
-
-        if (evaluationError) {
-          console.error("Erreur lors de la sauvegarde d'une évaluation:", evaluationError);
-          throw evaluationError;
+          continue;
         }
+        
+        evaluationsToInsert.push({
+          decision_id: decisionId,
+          option_id: optionId,
+          criterion_id: criterionId,
+          score: evaluation.score
+        });
+      }
+      
+      // Only proceed if we have evaluations to insert
+      if (evaluationsToInsert.length > 0) {
+        const { error: evalError } = await supabase
+          .from('evaluations')
+          .insert(evaluationsToInsert);
+          
+        if (evalError) {
+          console.error("Error inserting evaluations:", evalError);
+          throw evalError;
+        }
+        
+        console.log("Inserted evaluations:", evaluationsToInsert.length);
+      } else {
+        console.warn("No evaluations to insert");
       }
 
       toast.success("Décision sauvegardée avec succès");
+      console.log("Decision saved successfully");
     } catch (error) {
       console.error("Error saving decision:", error);
       toast.error("Erreur lors de la sauvegarde de la décision");
