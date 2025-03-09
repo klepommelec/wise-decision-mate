@@ -23,8 +23,8 @@ export function Header() {
             }}
           >
             <img 
-              src="/lovable-uploads/6101851f-2549-45ba-a231-ed9bfb465e2b.png" 
-              alt="Wise Logo" 
+              src="/lovable-uploads/1465f08a-adfe-457b-a2f9-f046b763d7f1.png" 
+              alt="Memo Logo" 
               className="h-8 max-h-[32px] w-auto" 
             />
           </a>
