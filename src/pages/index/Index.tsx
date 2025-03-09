@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -90,7 +89,7 @@ const Index = () => {
     if (step !== 'decision' || existingDecision) return null;
     return (
       <div className="text-center mb-16">
-        <h1 className="text-5xl font-bold tracking-tight mb-5 font-handwriting">
+        <h1 className="text-5xl font-bold tracking-tight mb-5 font-figma">
           Prenez des décisions<br />averties, avec Memo.
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -146,12 +145,6 @@ const Index = () => {
                 {step === 'criteria' && <div>
                     <StepNavigator onNewDecision={handleNewDecision} currentStep="Critères" previousSteps={["Décision"]} onBackStep={() => handleReset()} />
                     <CriteriaEvaluation criteria={criteria} isLoading={isGeneratingCriteria || isProcessingManualEntries} onComplete={handleCriteriaComplete} decisionTitle={decision.title} />
-                  </div>}
-                
-                {/* The options step is still in the code but won't be shown anymore since we're skipping directly to analysis */}
-                {step === 'options' && <div style={{ display: 'none' }}>
-                    <StepNavigator onNewDecision={handleNewDecision} currentStep="Options" previousSteps={["Décision", "Critères"]} onBackStep={handleBackToCriteria} />
-                    <OptionsList decisionTitle={decision.title} onComplete={handleOptionsComplete} onBack={handleBackToCriteria} isLoading={isGeneratingOptions || isProcessingManualEntries} initialOptions={options} autoSubmit={true} />
                   </div>}
                 
                 {step === 'analysis' && <div>

@@ -20,7 +20,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				handwriting: ['Caveat', 'cursive'],
+				handwriting: ['Kalam', 'Caveat', 'cursive'],
+				figma: ['Kalam', 'cursive'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
