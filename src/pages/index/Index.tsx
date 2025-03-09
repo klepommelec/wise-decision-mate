@@ -11,9 +11,6 @@ import { StepNavigator } from './components/StepNavigator';
 import { DecisionsList } from './components/DecisionsList';
 import { useDecisionSteps, type Decision } from './hooks/useDecisionSteps';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
-import { toast } from 'sonner';
 
 interface LocationState {
   existingDecision?: {
@@ -91,38 +88,46 @@ const Index = () => {
 
   const renderWelcomeScreen = () => {
     if (step !== 'decision' || existingDecision) return null;
-    return <motion.div initial={{
-      opacity: 0,
-      y: 20
-    }} animate={{
-      opacity: 1,
-      y: 0
-    }} transition={{
-      duration: 0.5
-    }} className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight mb-3">Prenez des décisions éclairées</h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Notre outil vous aide à structurer votre réflexion et à analyser objectivement les options qui s'offrent à vous.</p>
-      </motion.div>;
+    return (
+      <div className="text-center mb-16">
+        <h1 className="text-5xl font-bold tracking-tight mb-5 font-handwriting">
+          Prenez des décisions<br />averties, avec Memo.
+        </h1>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          Memo vous assiste à structurer votre réflexion<br />
+          et à analyser objectivement les options qui s'offrent à vous.
+        </p>
+      </div>
+    );
   };
 
-  return <div className="flex flex-col min-h-screen" ref={contentRef}>
-      <div className="flex-1 flex flex-col py-[80px]">
-        {step === 'decision' && <div className="flex-1 flex flex-col items-center justify-center py-0">
+  return (
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50" ref={contentRef}>
+      <div className="flex-1 flex flex-col py-[80px] relative">
+        {/* Hand SVG background */}
+        <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none z-0">
+          <img 
+            src="/lovable-uploads/c2e072d3-6efa-4ea3-82df-5e038dd43589.png" 
+            alt="Hand decoration" 
+            className="object-contain w-full h-full opacity-40"
+          />
+        </div>
+        
+        {step === 'decision' && (
+          <div className="flex-1 flex flex-col items-center justify-center py-0 z-10 relative">
             <Container className="flex flex-col justify-center items-center w-full max-w-4xl mx-auto">
               {renderWelcomeScreen()}
-              <motion.div className="w-full max-w-2xl mx-auto" initial={{
-            opacity: 0,
-            y: 20
-          }} animate={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.4
-          }}>
+              <motion.div 
+                className="w-full max-w-2xl mx-auto" 
+                initial={{ opacity: 0, y: 20 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.4 }}
+              >
                 <DecisionForm onSubmit={handleDecisionSubmit} initialDecision={decision.id ? decision : undefined} />
               </motion.div>
             </Container>
-          </div>}
+          </div>
+        )}
         
         <AnimatePresence mode="wait">
           {step !== 'decision' && <Container>
@@ -181,7 +186,8 @@ const Index = () => {
             </Container>
           </div>}
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default Index;

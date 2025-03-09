@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Sparkles, Calendar, PlusCircle, ArrowRight } from 'lucide-react';
+import { Sparkles, Calendar, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -117,20 +117,18 @@ export function DecisionForm({
   }, [title, description, deadline, useAI, user, navigate, onSubmit, initialDecision]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto animate-fade-in pt-10 py-0">
-      <Card className="transition-all duration-300 border border-gray-200">
-        <CardHeader>
-          <CardTitle className="text-2xl font-medium">
-            {initialDecision?.id ? "Modifier votre décision" : "Quelle décision devez-vous prendre?"}
-          </CardTitle>
-          <CardDescription>
-            {initialDecision?.id 
-              ? "Vous pouvez modifier les détails de votre décision." 
-              : "Décrivez la décision que vous devez prendre. Soyez aussi précis que possible."}
-          </CardDescription>
+    <div className="w-full max-w-2xl mx-auto animate-fade-in pt-0">
+      <Card className="transition-all duration-300 border border-gray-200 shadow-sm overflow-hidden rounded-2xl">
+        <CardHeader className="bg-gray-50 border-b">
+          <div className="flex items-center gap-3">
+            <div className="bg-yellow-400 rounded-full w-10 h-10 flex items-center justify-center text-black font-bold text-xl font-handwriting">M</div>
+            <CardTitle className="text-xl font-medium">
+              Bonjour, quelle décision voulez-vous prendre, aujourd'hui ?
+            </CardTitle>
+          </div>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <CardContent className="pt-6">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="space-y-2">
               <Label htmlFor="title">Titre de la décision</Label>
               <Input 
@@ -182,25 +180,22 @@ export function DecisionForm({
               </Popover>
             </div>
             
-            <div className="flex items-center space-x-2 pt-2">
+            <div className="flex items-center space-x-2 pt-2 border-t">
               <Switch id="ai-options" checked={useAI} onCheckedChange={setUseAI} />
               <div className="grid gap-1.5">
                 <Label 
                   htmlFor="ai-options" 
                   className="text-sm font-medium leading-none flex items-center gap-1.5"
                 >
-                  <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                  Générer automatiquement des options avec l'IA
+                  Générer automatiquement des options et critères
                 </Label>
-                <p className="text-sm text-muted-foreground">
-                  L'IA vous suggérera des options pertinentes en fonction de votre décision
-                </p>
               </div>
             </div>
             
             <Button 
               type="submit" 
-              className="w-full transition-all mt-2 gap-2" 
+              className="w-full transition-all mt-2 gap-2 py-6 rounded-xl bg-gray-300 hover:bg-gray-400 text-gray-700" 
+              variant="secondary"
               disabled={!title.trim() || isSubmitting}
             >
               {isSubmitting 

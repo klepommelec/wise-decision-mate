@@ -1,6 +1,9 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -13,7 +16,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 20% 16%;
 
-    --primary: 221 83% 53%;
+    --primary: 146 64% 36%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 20% 96%;
@@ -30,7 +33,7 @@
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 221 83% 53%;
+    --ring: 146 64% 36%;
 
     --radius: 0.75rem;
 
@@ -54,7 +57,7 @@
     --popover: 228 20% 12%;
     --popover-foreground: 210 20% 98%;
 
-    --primary: 221 83% 53%;
+    --primary: 146 64% 36%;
     --primary-foreground: 210 20% 98%;
 
     --secondary: 228 19% 17%;
@@ -71,7 +74,7 @@
 
     --border: 228 19% 17%;
     --input: 228 19% 17%;
-    --ring: 221 83% 53%;
+    --ring: 146 64% 36%;
 
     --sidebar-background: 240 6% 10%;
     --sidebar-foreground: 240 5% 96%;
@@ -119,6 +122,10 @@
   
   .text-balance {
     text-wrap: balance;
+  }
+
+  .font-handwriting {
+    font-family: 'Caveat', cursive;
   }
 }
 

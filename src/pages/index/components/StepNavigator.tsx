@@ -63,7 +63,6 @@ export const StepNavigator = ({
         <span className="font-medium">{currentStep}</span>
       </div>
       
-      {/* Replace the existing button with a share button */}
       <Button
         variant="outline"
         size="sm"
