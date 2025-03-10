@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, PlusCircle, HelpCircle } from "lucide-react";
@@ -17,7 +16,7 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-100 shadow-[0_1px_3px_0_rgba(0,0,0,0.05)]">
+    <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
       <div className="container flex h-16 items-center justify-between py-3 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <a 
