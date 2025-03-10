@@ -161,7 +161,7 @@ const Index = () => {
                       <StepNavigator 
                         onNewDecision={handleNewDecision} 
                         currentStep="Critères" 
-                        previousSteps={["Décision"]} 
+                        previousSteps={[]} 
                         onBackStep={() => handleReset()} 
                       />
                       <CriteriaEvaluation 
@@ -178,7 +178,7 @@ const Index = () => {
                       <StepNavigator 
                         onNewDecision={handleNewDecision} 
                         currentStep="Analyse" 
-                        previousSteps={["Décision", "Critères"]} 
+                        previousSteps={["Critères"]} 
                         onBackStep={() => handleBackToCriteria()} 
                       />
                       <AnalysisResult 

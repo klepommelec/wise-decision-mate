@@ -42,10 +42,11 @@ export const StepNavigator = ({
           Accueil
         </Button>
         
-        {previousSteps.map((step, index) => (
+        {/* Afficher uniquement les étapes précédentes, sans Décision */}
+        {previousSteps.filter(step => step !== "Décision").map((step, index, filteredSteps) => (
           <React.Fragment key={step}>
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
-            {index === previousSteps.length - 1 && onBackStep ? (
+            {index === filteredSteps.length - 1 && onBackStep ? (
               <Button
                 variant="ghost"
                 size="sm"
