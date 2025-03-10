@@ -14,6 +14,7 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover
 import { format } from 'date-fns';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
+import { StyledCard } from '@/components/ui/styled-card';
 
 interface Decision {
   id?: string;
