@@ -25,7 +25,7 @@ export function Header() {
         </div>
         <nav className="flex items-center gap-3">
           {loading ? <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div> : user ? <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" onClick={() => navigate("/help")} className="rounded-full text-gray-600 bg-white border-gray-200 hover:bg-gray-100">
+              <Button variant="outline" size="sm" onClick={() => navigate("/help")} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100">
                 Aide
               </Button>
               <Button variant="outline" size="sm" onClick={() => navigate("/profile")} className="rounded-full text-gray-600 bg-white border-gray-200 hover:bg-gray-100">
