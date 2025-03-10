@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Option, Criterion, Evaluation } from './types';
+import { Option, Criterion, Evaluation } from './useDecisionSteps';
 import { useRecommendation } from './useRecommendation';
 import { processOptionDescriptions, generateEvaluations } from '../utils/aiHelpers';
 
