@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -55,19 +54,15 @@ const Index = () => {
   useEffect(() => {
     // Use the document.fonts API to check when fonts are loaded
     if ("fonts" in document) {
-      Promise.all([
-        document.fonts.load('1em "Shadows Into Light"'),
-        document.fonts.load('1em "Gochi Hand"'),
-        document.fonts.load('1em "Kalam"'),
-        document.fonts.load('1em "Caveat"')
-      ]).then(() => {
-        console.log("All fonts have loaded!");
-        setFontsLoaded(true);
-      }).catch(err => {
-        console.warn("Font loading issue:", err);
-        // Set loaded anyway after a delay to avoid UI being stuck
-        setTimeout(() => setFontsLoaded(true), 1000);
-      });
+      document.fonts.load('1em "Source Sans Pro"')
+        .then(() => {
+          console.log("Font has loaded!");
+          setFontsLoaded(true);
+        }).catch(err => {
+          console.warn("Font loading issue:", err);
+          // Set loaded anyway after a delay to avoid UI being stuck
+          setTimeout(() => setFontsLoaded(true), 1000);
+        });
     } else {
       // Fallback for browsers without the fonts API
       setTimeout(() => setFontsLoaded(true), 1000);
@@ -116,7 +111,7 @@ const Index = () => {
     return (
       <div className="text-center mb-16">
         <h1 
-          className={`text-5xl tracking-tight mb-5 font-shadows ${fontsLoaded ? 'font-loaded' : 'font-loading'}`}
+          className={`text-5xl tracking-tight mb-5 ${fontsLoaded ? 'font-loaded' : 'font-loading'}`}
         >
           Prenez des décisions<br />averties, avec Memo.
         </h1>

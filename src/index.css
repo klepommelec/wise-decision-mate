@@ -1,22 +1,12 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Optimized font loading - putting this at the top */
-@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap&text=Prenezcdisoavt,M.');
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
+/* Optimized font loading */
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
 
-/* High specificity font class - defined outside layers */
-.font-shadows {
-  font-family: 'Shadows Into Light', cursive !important;
-  font-weight: normal !important;
-  font-display: swap !important;
-  letter-spacing: 0.02em !important;
-}
-
-/* Preload animation for fonts */
+/* Simple fade-in animation for fonts */
 @keyframes fontFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -110,8 +100,6 @@
     --sidebar-border: 240 4% 16%;
     --sidebar-ring: 217 91% 60%;
   }
-  
-  /* Move this outside of @layer base to ensure it has higher specificity */
 }
 
 @layer base {
@@ -122,6 +110,7 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: 'Source Sans Pro', sans-serif;
   }
 
   html, body {
@@ -149,10 +138,6 @@
   
   .text-balance {
     text-wrap: balance;
-  }
-
-  .font-handwriting {
-    font-family: 'Gochi Hand', 'Kalam', 'Caveat', cursive;
   }
 }
 
