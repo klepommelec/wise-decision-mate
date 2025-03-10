@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, PlusCircle, HelpCircle } from "lucide-react";
@@ -38,10 +37,10 @@ export function Header() {
           ) : user ? (
             <div className="flex items-center gap-3">
               <Button 
-                variant="secondary" 
+                variant="outline" 
                 size="sm" 
                 onClick={() => navigate("/help")}
-                className="rounded-full text-gray-600"
+                className="rounded-full text-gray-600 bg-white border-gray-300 hover:bg-gray-50"
               >
                 Aide
               </Button>
@@ -65,9 +64,9 @@ export function Header() {
           ) : (
             <div className="flex items-center gap-3">
               <Button 
-                variant="secondary" 
+                variant="outline" 
                 size="sm" 
-                className="rounded-full text-gray-600" 
+                className="rounded-full text-gray-600 bg-white border-gray-300 hover:bg-gray-50" 
                 onClick={() => navigate('/help')}
               >
                 Aide
