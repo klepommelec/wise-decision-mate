@@ -8,6 +8,7 @@ import { useOptionActions } from './useOptionActions';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
+// Export types for use across the application
 export type { Step, Decision, Option, Criterion, Evaluation };
 
 export function useDecisionSteps(existingDecision?: { id: string; title: string; description: string; deadline?: string }) {

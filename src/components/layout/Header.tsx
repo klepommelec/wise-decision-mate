@@ -17,8 +17,8 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
-      <div className="container flex h-16 items-center justify-between py-4">
+    <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-100 shadow-sm">
+      <div className="container flex h-16 items-center justify-between py-3">
         <div className="flex items-center gap-2">
           <a 
             href="/" 
@@ -28,54 +28,65 @@ export function Header() {
             <img 
               src="/lovable-uploads/1465f08a-adfe-457b-a2f9-f046b763d7f1.png" 
               alt="Memo Logo" 
-              className="h-8 max-h-[32px] w-auto" 
+              className="h-10 max-h-[40px] w-auto" 
             />
           </a>
         </div>
-        <nav className="flex items-center gap-4">
+        <nav className="flex items-center gap-3">
           {loading ? (
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
           ) : user ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => navigate("/new-decision")}
-              >
-                <PlusCircle className="h-4 w-4 mr-2" />
-                Nouvelle décision
-              </Button>
-              <Button 
-                variant="ghost" 
+                variant="secondary" 
                 size="sm" 
                 onClick={() => navigate("/help")}
+                className="rounded-full text-gray-600"
               >
-                <HelpCircle className="h-4 w-4 mr-2" />
-                Aide et documentation
+                Aide
               </Button>
               <Button 
-                variant="ghost" 
+                variant="secondary" 
                 size="sm" 
                 onClick={() => navigate("/profile")}
+                className="rounded-full text-gray-600"
               >
-                <User className="h-4 w-4 mr-2" />
                 Mon profil
+              </Button>
+              <Button 
+                variant="highlight" 
+                size="sm" 
+                onClick={() => navigate("/new-decision")}
+                className="rounded-full bg-[#D2FC79] hover:bg-[#c8f056] text-gray-800 font-medium"
+              >
+                Nouvelle décision
               </Button>
             </div>
           ) : (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <Button 
-                variant="outline" 
+                variant="secondary" 
                 size="sm" 
-                className="text-muted-foreground" 
+                className="rounded-full text-gray-600" 
                 onClick={() => navigate('/help')}
               >
-                <HelpCircle className="h-4 w-4 mr-2" />
-                Aide et documentation
+                Aide
               </Button>
-              <Button size="sm" onClick={() => navigate("/auth")}>
-                <User className="h-4 w-4 mr-2" />
-                Connexion
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                className="rounded-full text-gray-600"
+                onClick={() => navigate("/profile")}
+              >
+                Mon profil
+              </Button>
+              <Button 
+                variant="highlight" 
+                size="sm" 
+                onClick={() => navigate("/auth")}
+                className="rounded-full bg-[#D2FC79] hover:bg-[#c8f056] text-gray-800 font-medium"
+              >
+                Nouvelle décision
               </Button>
             </div>
           )}
