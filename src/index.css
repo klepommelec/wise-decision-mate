@@ -2,10 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Optimized font loading - putting this at the top */
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap&text=Prenezcdisoavt,M.');
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap'); /* Kalam est similaire à Figma Hand */
-@import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap'); /* Added Gochi Hand font */
-@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap'); /* Added Shadows Into Light font */
+@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap');
+
+/* High specificity font class - defined outside layers */
+.font-shadows {
+  font-family: 'Shadows Into Light', cursive !important;
+  font-weight: normal !important;
+  font-display: swap !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Preload animation for fonts */
+@keyframes fontFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.font-loading {
+  opacity: 0;
+}
+
+.font-loaded {
+  animation: fontFadeIn 0.5s ease-in-out forwards;
+}
 
 @layer base {
   :root {
@@ -89,13 +112,6 @@
   }
   
   /* Move this outside of @layer base to ensure it has higher specificity */
-}
-
-/* Define the font-shadows class with higher specificity */
-.font-shadows {
-  font-family: 'Shadows Into Light', cursive !important;
-  font-weight: normal !important;
-  font-display: swap;
 }
 
 @layer base {

@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -30,6 +31,8 @@ const Index = () => {
     loading
   } = useAuth();
   const contentRef = useRef<HTMLDivElement>(null);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+  
   const {
     step,
     decision,
@@ -47,6 +50,29 @@ const Index = () => {
     handleRegenerateOptions,
     handleAddOption
   } = useDecisionSteps(existingDecision);
+
+  // Font loading detection
+  useEffect(() => {
+    // Use the document.fonts API to check when fonts are loaded
+    if ("fonts" in document) {
+      Promise.all([
+        document.fonts.load('1em "Shadows Into Light"'),
+        document.fonts.load('1em "Gochi Hand"'),
+        document.fonts.load('1em "Kalam"'),
+        document.fonts.load('1em "Caveat"')
+      ]).then(() => {
+        console.log("All fonts have loaded!");
+        setFontsLoaded(true);
+      }).catch(err => {
+        console.warn("Font loading issue:", err);
+        // Set loaded anyway after a delay to avoid UI being stuck
+        setTimeout(() => setFontsLoaded(true), 1000);
+      });
+    } else {
+      // Fallback for browsers without the fonts API
+      setTimeout(() => setFontsLoaded(true), 1000);
+    }
+  }, []);
 
   useEffect(() => {
     if (existingDecision) {
@@ -89,7 +115,9 @@ const Index = () => {
     if (step !== 'decision' || existingDecision) return null;
     return (
       <div className="text-center mb-16">
-        <h1 className="text-5xl tracking-tight mb-5" style={{ fontFamily: "'Shadows Into Light', cursive", fontWeight: "normal" }}>
+        <h1 
+          className={`text-5xl tracking-tight mb-5 font-shadows ${fontsLoaded ? 'font-loaded' : 'font-loading'}`}
+        >
           Prenez des décisions<br />averties, avec Memo.
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
