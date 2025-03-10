@@ -124,16 +124,7 @@ const Index = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50" ref={contentRef}>
       <div className="flex-1 flex flex-col py-[80px] relative">
-        {/* Background decoration - fixed position with lower z-index */}
-        <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none z-0 opacity-5">
-          <img 
-            src="/lovable-uploads/c2e072d3-6efa-4ea3-82df-5e038dd43589.png" 
-            alt="Hand decoration" 
-            className="object-contain w-full h-full" 
-          />
-        </div>
-        
-        {/* Content containers with higher z-index to prevent overlap */}
+        {/* Content with higher z-index */}
         <div className="relative z-10 flex-1 flex flex-col">
           {step === 'decision' && (
             <div className="flex-1 flex flex-col items-center justify-center py-0">
