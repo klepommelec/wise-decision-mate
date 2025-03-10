@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -111,9 +110,7 @@ const Index = () => {
     if (step !== 'decision' || existingDecision) return null;
     return (
       <div className="text-center mb-16">
-        <h1 
-          className={`text-5xl tracking-tight mb-5 ${fontsLoaded ? 'font-loaded' : 'font-loading'}`}
-        >
+        <h1 className="main-title">
           Prenez des décisions<br />averties, avec Memo.
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
