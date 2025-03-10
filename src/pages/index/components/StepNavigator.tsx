@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, Home, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface StepNavigatorProps {
   previousSteps: string[];
@@ -19,6 +19,7 @@ export const StepNavigator = ({
   onNewDecision
 }: StepNavigatorProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const shareDecision = () => {
     // Create a share URL for this decision
@@ -29,6 +30,10 @@ export const StepNavigator = ({
       .catch(() => toast.error("Impossible de copier le lien de partage"));
   };
 
+  const goToHome = () => {
+    navigate('/');
+  };
+
   return (
     <div className="flex items-center justify-between mb-6">
       <div className="flex items-center gap-2 text-sm">
@@ -36,7 +41,7 @@ export const StepNavigator = ({
           variant="ghost"
           size="sm"
           className="gap-1"
-          onClick={onNewDecision}
+          onClick={goToHome}
         >
           <Home className="h-4 w-4" />
           Accueil
