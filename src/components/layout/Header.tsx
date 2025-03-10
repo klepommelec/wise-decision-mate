@@ -46,10 +46,10 @@ export function Header() {
                 Aide
               </Button>
               <Button 
-                variant="secondary" 
+                variant="outline" 
                 size="sm" 
                 onClick={() => navigate("/profile")}
-                className="rounded-full text-gray-600"
+                className="rounded-full text-gray-600 bg-white border-gray-300 hover:bg-gray-50"
               >
                 Mon profil
               </Button>
@@ -73,9 +73,9 @@ export function Header() {
                 Aide
               </Button>
               <Button 
-                variant="secondary" 
+                variant="outline" 
                 size="sm" 
-                className="rounded-full text-gray-600"
+                className="rounded-full text-gray-600 bg-white border-gray-300 hover:bg-gray-50"
                 onClick={() => navigate("/profile")}
               >
                 Mon profil
