@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -22,6 +21,7 @@ export default {
 			fontFamily: {
 				handwriting: ['Gochi Hand', 'Kalam', 'Caveat', 'cursive'],
 				figma: ['Gochi Hand', 'Kalam', 'cursive'],
+				shadows: ['Shadows Into Light', 'cursive'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
