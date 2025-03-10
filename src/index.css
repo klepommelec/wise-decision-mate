@@ -88,11 +88,14 @@
     --sidebar-ring: 217 91% 60%;
   }
   
-  .font-shadows {
-    font-family: 'Shadows Into Light', cursive !important;
-    font-weight: normal !important;
-    font-display: swap;
-  }
+  /* Move this outside of @layer base to ensure it has higher specificity */
+}
+
+/* Define the font-shadows class with higher specificity */
+.font-shadows {
+  font-family: 'Shadows Into Light', cursive !important;
+  font-weight: normal !important;
+  font-display: swap;
 }
 
 @layer base {
