@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -54,7 +55,7 @@ const Index = () => {
   useEffect(() => {
     // Use the document.fonts API to check when fonts are loaded
     if ("fonts" in document) {
-      document.fonts.load('1em "Source Sans Pro"')
+      document.fonts.load('1em "Roboto"')
         .then(() => {
           console.log("Font has loaded!");
           setFontsLoaded(true);
