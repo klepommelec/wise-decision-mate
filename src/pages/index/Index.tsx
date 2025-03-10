@@ -110,7 +110,7 @@ const Index = () => {
       </div>;
   };
   return <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50" ref={contentRef}>
-      <div className="flex-1 flex flex-col relative py-[72px]">
+      <div className="flex-1 flex flex-col relative py-[80px]">
         {/* Content with higher z-index */}
         <div className="relative z-10 flex-1 flex flex-col">
           {step === 'decision' && <div className="flex-1 flex flex-col items-center justify-center py-0">
