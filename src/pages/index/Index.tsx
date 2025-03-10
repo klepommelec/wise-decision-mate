@@ -84,7 +84,8 @@ const Index = () => {
   }, [step]);
 
   const handleNewDecision = () => {
-    window.location.href = '/';
+    // Use navigate instead of window.location.href for SPA navigation
+    navigate('/');
   };
 
   const handleDecisionClick = (selectedDecision: Decision) => {

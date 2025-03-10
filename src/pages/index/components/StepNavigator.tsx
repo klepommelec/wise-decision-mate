@@ -31,7 +31,12 @@ export const StepNavigator = ({
   };
 
   const goToHome = () => {
-    navigate('/');
+    // Use the provided onNewDecision if available, otherwise use navigate
+    if (onNewDecision) {
+      onNewDecision();
+    } else {
+      navigate('/');
+    }
   };
 
   return (
