@@ -2,12 +2,12 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { Decision, Criterion, Option, Evaluation } from './types';
+import { Decision, Criterion, Option, Evaluation, Step } from './types';
 
 export function useExistingDecision() {
   const loadSavedDecisionData = async (
     decisionId: string,
-    setStep: (step: string) => void,
+    setStep: (step: Step) => void,
     setCriteria: (criteria: Criterion[]) => void,
     setOptions: (options: Option[]) => void,
     setEvaluations: (evaluations: Evaluation[]) => void,

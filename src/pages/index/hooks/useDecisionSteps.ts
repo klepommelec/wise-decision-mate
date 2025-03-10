@@ -1,15 +1,13 @@
 
 import { useState, useEffect } from 'react';
-import { useDecisionState, type Step } from './useDecisionState';
+import { useDecisionState } from './useDecisionState';
 import { useCriteriaState } from './useCriteriaState';
 import { useOptionsState } from './useOptionsState';
 import { useRecommendation } from './useRecommendation';
 import { useOptionActions } from './useOptionActions';
 import { useExistingDecision } from './useExistingDecision';
 import { useDecisionWorkflow } from './useDecisionWorkflow';
-import { Decision, Criterion, Option, Evaluation } from './types';
-
-export type { Step, Decision, Option, Criterion, Evaluation };
+import { Decision, Criterion, Option, Evaluation, Step } from './types';
 
 export function useDecisionSteps(existingDecision?: { id: string; title: string; description: string; deadline?: string }) {
   const {
@@ -124,7 +122,7 @@ export function useDecisionSteps(existingDecision?: { id: string; title: string;
       criteria, 
       setOptions, 
       setEvaluations, 
-      (stepValue: string) => setStep(stepValue as Step)
+      (stepValue: Step) => setStep(stepValue)
     );
   };
 

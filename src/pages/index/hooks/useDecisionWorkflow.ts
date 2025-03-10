@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Decision, Criterion, Option, Evaluation } from './types';
+import { Decision, Criterion, Option, Evaluation, Step } from './types';
 
 export function useDecisionWorkflow() {
   const handleDecisionSubmit = async (
@@ -11,7 +11,7 @@ export function useDecisionWorkflow() {
     },
     setDecision: (decision: Decision) => void,
     generateCriteria: (title: string, description: string, generateWithAI: boolean) => Promise<void>,
-    setStep: (step: string) => void,
+    setStep: (step: Step) => void,
     decision: Decision
   ) => {
     // Update the decision data
@@ -35,7 +35,7 @@ export function useDecisionWorkflow() {
     decision: Decision,
     generateOptions: (title: string, description: string) => Promise<Option[]>,
     generateEvaluations: (options: Option[], criteria: Criterion[]) => Evaluation[],
-    setStep: (step: string) => void
+    setStep: (step: Step) => void
   ) => {
     // Process the criteria data
     const processedCriteria = await baseHandleCriteriaComplete(criteriaData);
@@ -56,7 +56,7 @@ export function useDecisionWorkflow() {
     }
   };
 
-  const handleBackToCriteria = (setStep: (step: string) => void) => {
+  const handleBackToCriteria = (setStep: (step: Step) => void) => {
     console.log("Navigating back to criteria screen");
     setStep('criteria');
   };
