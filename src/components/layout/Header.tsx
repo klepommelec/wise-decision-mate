@@ -10,6 +10,12 @@ export function Header() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
+  // Function to handle logo click and navigate to home
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate('/');
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
       <div className="container flex h-16 items-center justify-between py-4">
@@ -17,10 +23,7 @@ export function Header() {
           <a 
             href="/" 
             className="flex items-center gap-2"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/');
-            }}
+            onClick={handleLogoClick}
           >
             <img 
               src="/lovable-uploads/1465f08a-adfe-457b-a2f9-f046b763d7f1.png" 
