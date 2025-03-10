@@ -31,7 +31,7 @@ export function Header() {
               <Button variant="outline" size="sm" onClick={() => navigate("/profile")} className="rounded-full text-gray-600 bg-white border-gray-300 hover:bg-gray-50 font-medium">
                 Mon profil
               </Button>
-              <Button variant="highlight" size="sm" onClick={() => navigate("/new-decision")} className="rounded-full bg-[#D2FC79] hover:bg-[#c8f056] text-gray-800 font-medium">
+              <Button variant="highlight" size="sm" onClick={() => navigate("/new-decision")} className="rounded-full font-medium text-gray-900 bg-lime-400 hover:bg-lime-300">
                 Nouvelle décision
               </Button>
             </div> : <div className="flex items-center gap-3">
