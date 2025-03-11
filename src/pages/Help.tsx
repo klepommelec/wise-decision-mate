@@ -26,7 +26,7 @@ export default function Help() {
             <TabsList className="grid w-full grid-cols-3 rounded-full">
               <TabsTrigger value="guide" className="rounded-full">Guide d'utilisation</TabsTrigger>
               <TabsTrigger value="faq" className="rounded-full">FAQ</TabsTrigger>
-              <TabsTrigger value="contact">Contact</TabsTrigger>
+              <TabsTrigger value="contact" className="rounded-full">Contact</TabsTrigger>
             </TabsList>
             
             <TabsContent value="guide" className="mt-6 space-y-6">
