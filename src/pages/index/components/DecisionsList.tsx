@@ -79,7 +79,7 @@ export function DecisionsList({
     toast.success("Liste des décisions actualisée");
   };
   return <div className="w-full max-w-5xl mx-auto">
-      <div className="flex justify-between items-center mb-6 pt-16">
+      <div className="flex justify-between items-center mb-6 pt-24">
         <h2 className="text-2xl font-bold">Mes Décisions</h2>
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleRefresh} className="gap-2">
