@@ -252,7 +252,7 @@ export default function Profile() {
             <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4">
               <h3 className="text-2xl font-bold">Mes décisions</h3>
               <div className="flex flex-wrap gap-2">
-                <Button variant="outline" size="sm" onClick={() => setShowFavorites(!showFavorites)} className="">
+                <Button variant="outline" size="sm" onClick={() => setShowFavorites(!showFavorites)} className="rounded-full">
                   <Star className="h-3.5 w-3.5 mr-1" />
                   {showFavorites ? "Toutes" : "Favorites"}
                 </Button>
