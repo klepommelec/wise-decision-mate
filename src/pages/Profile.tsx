@@ -242,7 +242,7 @@ export default function Profile() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button variant="destructive" className="w-full" onClick={handleSignOut}>
+                <Button variant="destructive" onClick={handleSignOut} className="w-full rounded-full">
                   <LogOut className="mr-2 h-4 w-4" />
                   Déconnexion
                 </Button>
