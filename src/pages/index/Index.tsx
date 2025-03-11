@@ -33,6 +33,7 @@ const Index = () => {
   
   const contentRef = useRef<HTMLDivElement>(null);
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   
   const {
     step,
@@ -83,11 +84,18 @@ const Index = () => {
 
   useEffect(() => {
     if (location.pathname === '/' && !location.state?.existingDecision) {
-      handleReset();
+      setIsTransitioning(true);
+      // Delay the reset to allow exit animations to complete
+      const timer = setTimeout(() => {
+        handleReset();
+        setIsTransitioning(false);
+      }, 300); // Match this with exit animation duration
+      return () => clearTimeout(timer);
     }
   }, [location.pathname, location.state]);
 
   const handleNewDecision = () => {
+    setIsTransitioning(true);
     navigate('/');
   };
 
@@ -105,13 +113,24 @@ const Index = () => {
     });
   };
 
+  const pageTransition = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+    transition: { duration: 0.3, ease: "easeInOut" }
+  };
+
   if (!loading && !user) {
     return <Navigate to="/auth" />;
   }
 
   const renderWelcomeScreen = () => {
     if (step !== 'decision' || existingDecision) return null;
-    return <div className="text-center mb-16 relative z-10">
+    return (
+      <motion.div 
+        className="text-center mb-16 relative z-10"
+        {...pageTransition}
+      >
         <h1 className="main-title font-medium">
           Prenez des décisions<br />averties, avec Memo.
         </h1>
@@ -119,81 +138,102 @@ const Index = () => {
           Memo vous assiste à structurer votre réflexion<br />
           et à analyser objectivement les options qui s'offrent à vous.
         </p>
-      </div>;
+      </motion.div>
+    );
   };
 
-  return <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50" ref={contentRef}>
+  return (
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50" ref={contentRef}>
       <div className="flex-1 flex flex-col relative pt-[110px] pb-[90px] py-0">
         <div className="relative z-10 flex-1 flex flex-col">
-          {step === 'decision' && <div className="flex-1 flex flex-col items-center justify-center py-0">
-              <Container className="flex flex-col justify-center items-center w-full max-w-4xl mx-auto">
-                {renderWelcomeScreen()}
-                <motion.div className="w-full max-w-2xl mx-auto" initial={{
-              opacity: 0,
-              y: 40
-            }} animate={{
-              opacity: 1,
-              y: 0
-            }} transition={{
-              duration: 0.5
-            }}>
-                  <DecisionForm onSubmit={handleDecisionSubmit} initialDecision={decision.id ? decision : undefined} />
-                </motion.div>
-              </Container>
-            </div>}
-          
           <AnimatePresence mode="wait">
-            {step !== 'decision' && <Container>
-                <motion.div className="w-full max-w-2xl mx-auto" key={step} initial={{
-              opacity: 0,
-              y: 40
-            }} animate={{
-              opacity: 1,
-              y: 0
-            }} exit={{
-              opacity: 0,
-              y: -20
-            }} transition={{
-              duration: 0.5
-            }}>
-                  {step === 'criteria' && <div>
+            {step === 'decision' && (
+              <motion.div 
+                key="decision"
+                className="flex-1 flex flex-col items-center justify-center py-0"
+                {...pageTransition}
+              >
+                <Container className="flex flex-col justify-center items-center w-full max-w-4xl mx-auto">
+                  {renderWelcomeScreen()}
+                  <motion.div 
+                    className="w-full max-w-2xl mx-auto"
+                    {...pageTransition}
+                  >
+                    <DecisionForm 
+                      onSubmit={handleDecisionSubmit} 
+                      initialDecision={decision.id ? decision : undefined} 
+                    />
+                  </motion.div>
+                </Container>
+              </motion.div>
+            )}
+
+            {step !== 'decision' && (
+              <Container key="other-steps">
+                <motion.div 
+                  className="w-full max-w-2xl mx-auto"
+                  {...pageTransition}
+                >
+                  {step === 'criteria' && (
+                    <div>
                       <StepNavigator 
                         currentStep="Critères" 
                         previousSteps={[]} 
                         onBackStep={() => handleReset()} 
                       />
-                      <CriteriaEvaluation criteria={criteria} isLoading={isGeneratingCriteria || isProcessingManualEntries} onComplete={handleCriteriaComplete} decisionTitle={decision.title} />
-                    </div>}
+                      <CriteriaEvaluation 
+                        criteria={criteria} 
+                        isLoading={isGeneratingCriteria || isProcessingManualEntries} 
+                        onComplete={handleCriteriaComplete} 
+                        decisionTitle={decision.title} 
+                      />
+                    </div>
+                  )}
                   
-                  {step === 'analysis' && <div>
+                  {step === 'analysis' && (
+                    <div>
                       <StepNavigator 
                         currentStep="Analyse" 
                         previousSteps={["Critères"]} 
                         onBackStep={() => handleBackToCriteria()} 
                       />
-                      <AnalysisResult decisionTitle={decision.title} options={options} criteria={criteria} evaluations={evaluations} onBack={() => handleBackToCriteria()} onReset={handleReset} onRegenerateOptions={handleRegenerateOptions} onAddOption={handleAddOption} />
-                    </div>}
-                </motion.div>
-              </Container>}
-          </AnimatePresence>
-
-          {user && step === 'decision' && !existingDecision && <div className="w-full mt-auto">
-              <Container className="py-12">
-                <motion.div initial={{
-              opacity: 0
-            }} animate={{
-              opacity: 1
-            }} transition={{
-              duration: 0.5,
-              delay: 0.5
-            }}>
-                  <DecisionsList onDecisionClick={handleDecisionClick} onNewDecision={handleReset} />
+                      <AnalysisResult 
+                        decisionTitle={decision.title} 
+                        options={options} 
+                        criteria={criteria} 
+                        evaluations={evaluations} 
+                        onBack={() => handleBackToCriteria()} 
+                        onReset={handleReset} 
+                        onRegenerateOptions={handleRegenerateOptions} 
+                        onAddOption={handleAddOption} 
+                      />
+                    </div>
+                  )}
                 </motion.div>
               </Container>
-            </div>}
+            )}
+          </AnimatePresence>
+
+          {user && step === 'decision' && !existingDecision && (
+            <div className="w-full mt-auto">
+              <Container className="py-12">
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: isTransitioning ? 0 : 1 }}
+                  transition={{ duration: 0.3, delay: 0.3 }}
+                >
+                  <DecisionsList 
+                    onDecisionClick={handleDecisionClick} 
+                    onNewDecision={handleReset} 
+                  />
+                </motion.div>
+              </Container>
+            </div>
+          )}
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default Index;
