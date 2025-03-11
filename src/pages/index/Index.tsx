@@ -81,6 +81,12 @@ const Index = () => {
     }
   }, [step]);
 
+  useEffect(() => {
+    if (location.pathname === '/' && !location.state?.existingDecision) {
+      handleReset();
+    }
+  }, [location.pathname, location.state]);
+
   const handleNewDecision = () => {
     navigate('/');
   };
