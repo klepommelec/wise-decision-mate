@@ -21,7 +21,7 @@
 
 /* Styles for the main title */
 .main-title {
-  @apply text-5xl tracking-tight mb-5 font-medium;
+  @apply text-6xl tracking-tight mb-5 font-medium;
   animation: fontFadeIn 0.5s ease-in-out forwards;
 }
 
@@ -33,17 +33,17 @@
   border: solid 1px transparent !important; /* Transparent border that will be filled with gradient */
   z-index: 0;
   box-shadow: 
-    0 8px 20px -3px rgba(155, 135, 245, 0.05),  /* Purple shadow - opacité réduite à 0.05 */
-    0 15px 30px -5px rgba(217, 70, 239, 0.05),   /* Magenta shadow - opacité réduite à 0.05 */
-    0 20px 40px -8px rgba(59, 130, 246, 0.05);  /* Blue shadow - opacité réduite à 0.05 */
+    0 8px 20px -3px rgba(155, 135, 245, 0.1),  /* Purple shadow - opacity set to 0.1 */
+    0 15px 30px -5px rgba(217, 70, 239, 0.1),   /* Magenta shadow - opacity set to 0.1 */
+    0 20px 40px -8px rgba(59, 130, 246, 0.1);  /* Blue shadow - opacity set to 0.1 */
   transition: box-shadow 0.5s ease;
 }
 
 .gradient-border-card:hover {
   box-shadow: 
-    0 12px 30px -5px rgba(155, 135, 245, 0.05),  /* Purple shadow - opacité réduite à 0.05 */
-    0 20px 40px -8px rgba(217, 70, 239, 0.05),  /* Magenta shadow - opacité réduite à 0.05 */
-    0 25px 50px -10px rgba(59, 130, 246, 0.05);  /* Blue shadow - opacité réduite à 0.05 */
+    0 12px 30px -5px rgba(155, 135, 245, 0.1),  /* Purple shadow - opacity set to 0.1 */
+    0 20px 40px -8px rgba(217, 70, 239, 0.1),  /* Magenta shadow - opacity set to 0.1 */
+    0 25px 50px -10px rgba(59, 130, 246, 0.1);  /* Blue shadow - opacity set to 0.1 */
 }
 
 .gradient-border-card::before {
