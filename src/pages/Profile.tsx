@@ -381,7 +381,7 @@ export default function Profile() {
                     state: {
                       existingDecision: decision
                     }
-                  })} className="rounded-full font-medium text-gray-900 bg-lime-400 hover:bg-lime-500 ml-auto">
+                  })} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100 font-medium ml-auto">
                           Ouvrir
                         </Button>
                       </div>
