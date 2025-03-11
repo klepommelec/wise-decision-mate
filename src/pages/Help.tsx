@@ -164,7 +164,7 @@ export default function Help() {
                     </div>
                   </div>
                   
-                  <Button className="rounded-full font-medium text-gray-900 bg-lime-400 hover:bg-lime-500">
+                  <Button className="w-full rounded-full font-medium text-gray-900 bg-lime-400 hover:bg-lime-500">
                     Envoyer un message
                   </Button>
                 </CardContent>
