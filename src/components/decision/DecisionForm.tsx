@@ -149,7 +149,7 @@ export function DecisionForm({
               </div>
             </div>
             
-            <Button type="submit" className="w-full transition-all mt-2 gap-2 py-6 rounded-xl bg-gray-300 hover:bg-gray-400 text-gray-700" variant="secondary" disabled={!title.trim() || isSubmitting}>
+            <Button type="submit" variant="secondary" disabled={!title.trim() || isSubmitting} className="w-full transition-all mt-2 gap-2 py-6 rounded-full bg-gray-300 hover:bg-gray-400 text-gray-700">
               {isSubmitting ? "Traitement..." : initialDecision ? "Continuer" : "Continuer"}
               <ArrowRight className="h-4 w-4" />
             </Button>
