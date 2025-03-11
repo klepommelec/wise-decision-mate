@@ -94,7 +94,7 @@ export default function Help() {
                   <p className="text-sm text-muted-foreground">
                     Consultez notre bibliothèque de composants pour mieux comprendre les éléments d'interface que vous rencontrerez dans l'application.
                   </p>
-                  <Button variant="outline" className="flex items-center w-full justify-center gap-2" onClick={() => window.open('/components', '_blank')}>
+                  <Button variant="outline" onClick={() => window.open('/components', '_blank')} className="flex items-center w-full justify-center gap-2 rounded-full">
                     Consulter les composants
                     <ExternalLink className="h-4 w-4" />
                   </Button>
