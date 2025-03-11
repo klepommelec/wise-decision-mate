@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
-import { LogOut, User, ArrowLeft, PlusCircle, Settings, Download, Share2, Bell, Calendar, Filter, Sun, Moon, Laptop } from "lucide-react";
+import { LogOut, User, ArrowLeft, PlusCircle, Settings, Download, Share2, Bell, Calendar, Filter, Sun, Moon, Laptop, GridIcon, ListIcon, Star, CheckCircle, Trash } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { InfoIcon } from "@/components/ui/icons";
 export default function Profile() {
   const {
     user,
@@ -144,7 +145,9 @@ export default function Profile() {
               <CardContent className="space-y-6">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                   <div className="h-24 w-24 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <User className="h-12 w-12 text-primary" />
+                    <span className="text-4xl font-bold text-primary">
+                      {user.email ? user.email[0].toUpperCase() : '?'}
+                    </span>
                   </div>
                   <div className="space-y-2">
                     <h3 className="text-xl font-medium">{user.email}</h3>
@@ -406,49 +409,4 @@ export default function Profile() {
         </Tabs>
       </div>
     </Container>;
-}
-
-// Composants d'icônes supplémentaires
-function GridIcon(props: React.SVGProps<SVGSVGElement>) {
-  return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <rect width="7" height="7" x="3" y="3" rx="1" />
-      <rect width="7" height="7" x="14" y="3" rx="1" />
-      <rect width="7" height="7" x="14" y="14" rx="1" />
-      <rect width="7" height="7" x="3" y="14" rx="1" />
-    </svg>;
-}
-function ListIcon(props: React.SVGProps<SVGSVGElement>) {
-  return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <line x1="8" x2="21" y1="6" y2="6" />
-      <line x1="8" x2="21" y1="12" y2="12" />
-      <line x1="8" x2="21" y1="18" y2="18" />
-      <line x1="3" x2="3.01" y1="6" y2="6" />
-      <line x1="3" x2="3.01" y1="12" y2="12" />
-      <line x1="3" x2="3.01" y1="18" y2="18" />
-    </svg>;
-}
-function InfoIcon(props: React.SVGProps<SVGSVGElement>) {
-  return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <circle cx="12" cy="12" r="10" />
-      <path d="M12 16v-4" />
-      <path d="M12 8h.01" />
-    </svg>;
-}
-function Star(props: React.SVGProps<SVGSVGElement>) {
-  return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-    </svg>;
-}
-function CheckCircle(props: React.SVGProps<SVGSVGElement>) {
-  return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-      <polyline points="22 4 12 14.01 9 11.01" />
-    </svg>;
-}
-function Trash(props: React.SVGProps<SVGSVGElement>) {
-  return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M3 6h18" />
-      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-    </svg>;
 }
