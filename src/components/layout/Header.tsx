@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, PlusCircle, HelpCircle } from "lucide-react";
@@ -31,17 +32,17 @@ export function Header() {
               <Button variant="outline" size="sm" onClick={() => navigate("/profile")} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100 font-medium">
                 Mon profil
               </Button>
-              <Button variant="highlight" size="sm" onClick={() => navigate("/new-decision")} className="rounded-full text-gray-900 bg-lime-400 hover:bg-lime-500 font-medium">
+              <Button variant="highlight" size="sm" onClick={() => navigate("/new-decision")} className="rounded-full text-gray-900 bg-lime-400 hover:bg-lime-500 font-semibold">
                 Nouvelle décision
               </Button>
             </div> : <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" className="rounded-full text-gray-600 bg-white border-gray-300 hover:bg-gray-50 font-[600]" onClick={() => navigate('/help')}>
+              <Button variant="outline" size="sm" className="rounded-full text-gray-600 bg-white border-gray-300 hover:bg-gray-50 font-medium" onClick={() => navigate('/help')}>
                 Aide
               </Button>
-              <Button variant="outline" size="sm" className="rounded-full text-gray-600 bg-white border-gray-300 hover:bg-gray-50 font-[600]" onClick={() => navigate("/profile")}>
+              <Button variant="outline" size="sm" className="rounded-full text-gray-600 bg-white border-gray-300 hover:bg-gray-50 font-medium" onClick={() => navigate("/profile")}>
                 Mon profil
               </Button>
-              <Button variant="highlight" size="sm" onClick={() => navigate("/auth")} className="rounded-full bg-[#D2FC79] hover:bg-[#c8f056] text-gray-800 font-[600]">
+              <Button variant="highlight" size="sm" onClick={() => navigate("/auth")} className="rounded-full bg-[#D2FC79] hover:bg-[#c8f056] text-gray-800 font-semibold">
                 Nouvelle décision
               </Button>
             </div>}
