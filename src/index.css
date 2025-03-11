@@ -30,14 +30,14 @@
   position: relative;
   overflow: visible !important; /* Override any hidden overflow */
   background-clip: padding-box; /* Important for the gradient to work */
-  border: solid 2px transparent !important; /* Transparent border that will be filled with gradient */
+  border: solid 1px transparent !important; /* Transparent border that will be filled with gradient */
   z-index: 0;
 }
 
 .gradient-border-card::before {
   content: "";
   position: absolute;
-  inset: -2px; /* Spread to cover the 2px transparent border */
+  inset: -1px; /* Spread to cover the 1px transparent border */
   z-index: -1;
   border-radius: inherit; /* Match the parent's border radius */
   background: linear-gradient(60deg, #9b87f5, #D946EF, #a3e635, #3b82f6);
