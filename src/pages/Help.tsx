@@ -9,7 +9,7 @@ export default function Help() {
   const navigate = useNavigate();
   return <Container className="py-10">
       <div className="max-w-3xl mx-auto">
-        <Button variant="ghost" className="mb-6" onClick={() => navigate(-1)}>
+        <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6 rounded-full">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Retour
         </Button>
