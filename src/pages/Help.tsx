@@ -1,34 +1,15 @@
-
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 export default function Help() {
   const navigate = useNavigate();
-
-  return (
-    <Container className="py-10">
+  return <Container className="py-10">
       <div className="max-w-3xl mx-auto">
-        <Button 
-          variant="ghost" 
-          className="mb-6" 
-          onClick={() => navigate(-1)}
-        >
+        <Button variant="ghost" className="mb-6" onClick={() => navigate(-1)}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Retour
         </Button>
@@ -183,7 +164,7 @@ export default function Help() {
                     </div>
                   </div>
                   
-                  <Button className="w-full">
+                  <Button className="rounded-full font-medium text-gray-900 bg-lime-400 hover:bg-lime-500">
                     Envoyer un message
                   </Button>
                 </CardContent>
@@ -192,6 +173,5 @@ export default function Help() {
           </Tabs>
         </div>
       </div>
-    </Container>
-  );
+    </Container>;
 }
