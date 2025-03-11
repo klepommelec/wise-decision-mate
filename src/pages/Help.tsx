@@ -23,7 +23,7 @@ export default function Help() {
           </div>
 
           <Tabs defaultValue="guide">
-            <TabsList className="grid w-full grid-cols-3 rounded-full">
+            <TabsList className="grid w-full grid-cols-3 rounded-full gap-1">
               <TabsTrigger value="guide" className="rounded-full hover:bg-gray-100">Guide d'utilisation</TabsTrigger>
               <TabsTrigger value="faq" className="rounded-full hover:bg-gray-100">FAQ</TabsTrigger>
               <TabsTrigger value="contact" className="rounded-full hover:bg-gray-100">Contact</TabsTrigger>
