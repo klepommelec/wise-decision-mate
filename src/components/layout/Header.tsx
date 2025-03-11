@@ -28,7 +28,7 @@ export function Header() {
               <Button variant="outline" size="sm" onClick={() => navigate("/help")} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100 font-medium">
                 Aide
               </Button>
-              <Button variant="outline" size="sm" onClick={() => navigate("/profile")} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100">
+              <Button variant="outline" size="sm" onClick={() => navigate("/profile")} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100 font-medium">
                 Mon profil
               </Button>
               <Button variant="highlight" size="sm" onClick={() => navigate("/new-decision")} className="rounded-full font-medium text-gray-900 bg-lime-400 hover:bg-lime-500">
