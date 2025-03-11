@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -104,7 +105,7 @@ export function DecisionForm({
     }
   }, [title, description, deadline, useAI, user, navigate, onSubmit, initialDecision]);
   return <div className="w-full max-w-2xl mx-auto animate-fade-in pt-0">
-      <Card className="transition-all duration-300 border border-gray-200 shadow-sm overflow-hidden rounded-2xl">
+      <Card className="gradient-border-card transition-all duration-300 shadow-sm overflow-hidden rounded-2xl">
         <CardHeader className="bg-gray-50 border-b">
           <div className="flex items-center gap-3">
             <div className="rounded-full w-10 h-10 flex items-center justify-center text-black font-bold text-xl font-handwriting bg-lime-400">M</div>

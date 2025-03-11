@@ -25,6 +25,38 @@
   animation: fontFadeIn 0.5s ease-in-out forwards;
 }
 
+/* Gradient border card */
+.gradient-border-card {
+  position: relative;
+  overflow: visible !important; /* Override any hidden overflow */
+  background-clip: padding-box; /* Important for the gradient to work */
+  border: solid 2px transparent !important; /* Transparent border that will be filled with gradient */
+  z-index: 0;
+}
+
+.gradient-border-card::before {
+  content: "";
+  position: absolute;
+  inset: -2px; /* Spread to cover the 2px transparent border */
+  z-index: -1;
+  border-radius: inherit; /* Match the parent's border radius */
+  background: linear-gradient(60deg, #9b87f5, #D946EF, #F97316);
+  background-size: 200% 200%;
+  animation: gradient-animation 6s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
