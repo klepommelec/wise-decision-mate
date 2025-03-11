@@ -9,14 +9,12 @@ interface StepNavigatorProps {
   previousSteps: string[];
   currentStep: string;
   onBackStep?: () => void;
-  onNewDecision?: () => void;
 }
 
 export const StepNavigator = ({
   previousSteps,
   currentStep,
-  onBackStep,
-  onNewDecision
+  onBackStep
 }: StepNavigatorProps) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,12 +29,8 @@ export const StepNavigator = ({
   };
 
   const goToHome = () => {
-    // Use the provided onNewDecision if available, otherwise use navigate
-    if (onNewDecision) {
-      onNewDecision();
-    } else {
-      navigate('/');
-    }
+    // Simply navigate to home page without resetting the decision state
+    navigate('/');
   };
 
   return (

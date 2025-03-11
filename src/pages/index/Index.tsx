@@ -10,6 +10,7 @@ import { StepNavigator } from './components/StepNavigator';
 import { DecisionsList } from './components/DecisionsList';
 import { useDecisionSteps, type Decision } from './hooks/useDecisionSteps';
 import { motion, AnimatePresence } from 'framer-motion';
+
 interface LocationState {
   existingDecision?: {
     id: string;
@@ -18,17 +19,21 @@ interface LocationState {
     deadline?: string;
   };
 }
+
 const Index = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const locationState = location.state as LocationState | null;
   const existingDecision = locationState?.existingDecision;
+  
   const {
     user,
     loading
   } = useAuth();
+  
   const contentRef = useRef<HTMLDivElement>(null);
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  
   const {
     step,
     decision,
@@ -46,6 +51,7 @@ const Index = () => {
     handleRegenerateOptions,
     handleAddOption
   } = useDecisionSteps(existingDecision);
+
   useEffect(() => {
     if ("fonts" in document) {
       document.fonts.load('1em "Roboto"').then(() => {
@@ -59,11 +65,13 @@ const Index = () => {
       setTimeout(() => setFontsLoaded(true), 1000);
     }
   }, []);
+
   useEffect(() => {
     if (existingDecision) {
       console.log("Loading existing decision:", existingDecision);
     }
   }, [existingDecision]);
+
   useEffect(() => {
     if (contentRef.current) {
       contentRef.current.scrollIntoView({
@@ -72,9 +80,11 @@ const Index = () => {
       });
     }
   }, [step]);
+
   const handleNewDecision = () => {
     navigate('/');
   };
+
   const handleDecisionClick = (selectedDecision: Decision) => {
     console.log("Opening decision:", selectedDecision.id, selectedDecision.title);
     navigate("/", {
@@ -88,9 +98,11 @@ const Index = () => {
       }
     });
   };
+
   if (!loading && !user) {
     return <Navigate to="/auth" />;
   }
+
   const renderWelcomeScreen = () => {
     if (step !== 'decision' || existingDecision) return null;
     return <div className="text-center mb-16 relative z-10">
@@ -103,6 +115,7 @@ const Index = () => {
         </p>
       </div>;
   };
+
   return <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50" ref={contentRef}>
       <div className="flex-1 flex flex-col relative pt-[110px] pb-[90px] py-0">
         <div className="relative z-10 flex-1 flex flex-col">
@@ -138,12 +151,12 @@ const Index = () => {
               duration: 0.5
             }}>
                   {step === 'criteria' && <div>
-                      <StepNavigator onNewDecision={handleNewDecision} currentStep="Critères" previousSteps={[]} onBackStep={() => handleReset()} />
+                      <StepNavigator currentStep="Critères" previousSteps={[]} onBackStep={() => handleReset()} />
                       <CriteriaEvaluation criteria={criteria} isLoading={isGeneratingCriteria || isProcessingManualEntries} onComplete={handleCriteriaComplete} decisionTitle={decision.title} />
                     </div>}
                   
                   {step === 'analysis' && <div>
-                      <StepNavigator onNewDecision={handleNewDecision} currentStep="Analyse" previousSteps={["Critères"]} onBackStep={() => handleBackToCriteria()} />
+                      <StepNavigator currentStep="Analyse" previousSteps={["Critères"]} onBackStep={() => handleBackToCriteria()} />
                       <AnalysisResult decisionTitle={decision.title} options={options} criteria={criteria} evaluations={evaluations} onBack={() => handleBackToCriteria()} onReset={handleReset} onRegenerateOptions={handleRegenerateOptions} onAddOption={handleAddOption} />
                     </div>}
                 </motion.div>
@@ -168,4 +181,5 @@ const Index = () => {
       </div>
     </div>;
 };
+
 export default Index;
