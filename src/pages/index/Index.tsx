@@ -94,7 +94,7 @@ const Index = () => {
   const renderWelcomeScreen = () => {
     if (step !== 'decision' || existingDecision) return null;
     return <div className="text-center mb-16 relative z-10">
-        <h1 className="main-title font-medium text-6xl">
+        <h1 className="main-title font-medium text-5xl">
           Prenez des décisions<br />averties, avec Memo.
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
