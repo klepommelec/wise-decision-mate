@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -110,7 +111,7 @@ const Index = () => {
       </div>;
   };
   return <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50" ref={contentRef}>
-      <div className="flex-1 flex flex-col relative py-[120px]">
+      <div className="flex-1 flex flex-col relative pt-[180px] pb-[120px]">
         {/* Content with higher z-index */}
         <div className="relative z-10 flex-1 flex flex-col">
           {step === 'decision' && <div className="flex-1 flex flex-col items-center justify-center py-0">
@@ -118,12 +119,12 @@ const Index = () => {
                 {renderWelcomeScreen()}
                 <motion.div className="w-full max-w-2xl mx-auto" initial={{
               opacity: 0,
-              y: 20
+              y: 40
             }} animate={{
               opacity: 1,
               y: 0
             }} transition={{
-              duration: 0.4
+              duration: 0.5
             }}>
                   <DecisionForm onSubmit={handleDecisionSubmit} initialDecision={decision.id ? decision : undefined} />
                 </motion.div>
@@ -134,7 +135,7 @@ const Index = () => {
             {step !== 'decision' && <Container>
                 <motion.div className="w-full max-w-2xl mx-auto" key={step} initial={{
               opacity: 0,
-              y: 20
+              y: 40
             }} animate={{
               opacity: 1,
               y: 0
@@ -142,7 +143,7 @@ const Index = () => {
               opacity: 0,
               y: -20
             }} transition={{
-              duration: 0.4
+              duration: 0.5
             }}>
                   {step === 'criteria' && <div>
                       <StepNavigator onNewDecision={handleNewDecision} currentStep="Critères" previousSteps={[]} onBackStep={() => handleReset()} />
