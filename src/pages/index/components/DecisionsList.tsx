@@ -82,7 +82,7 @@ export function DecisionsList({
       <div className="flex justify-between items-center mb-6 pt-24">
         <h2 className="text-2xl font-bold">Mes Décisions</h2>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleRefresh} className="gap-2">
+          <Button variant="outline" onClick={handleRefresh} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100">
             <RefreshCw className="h-4 w-4" />
             Actualiser
           </Button>
