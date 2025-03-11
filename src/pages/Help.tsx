@@ -1,4 +1,3 @@
-
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink } from "lucide-react";
@@ -6,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 export default function Help() {
   const navigate = useNavigate();
   return <Container className="py-10">
@@ -26,9 +24,9 @@ export default function Help() {
 
           <Tabs defaultValue="guide">
             <TabsList className="grid w-full grid-cols-3 rounded-full">
-              <TabsTrigger value="guide" className="rounded-full">Guide d'utilisation</TabsTrigger>
-              <TabsTrigger value="faq" className="rounded-full">FAQ</TabsTrigger>
-              <TabsTrigger value="contact" className="rounded-full">Contact</TabsTrigger>
+              <TabsTrigger value="guide" className="rounded-full hover:bg-gray-100">Guide d'utilisation</TabsTrigger>
+              <TabsTrigger value="faq" className="rounded-full hover:bg-gray-100">FAQ</TabsTrigger>
+              <TabsTrigger value="contact" className="rounded-full hover:bg-gray-100">Contact</TabsTrigger>
             </TabsList>
             
             <TabsContent value="guide" className="mt-6 space-y-6">
@@ -96,11 +94,7 @@ export default function Help() {
                   <p className="text-sm text-muted-foreground">
                     Consultez notre bibliothèque de composants pour mieux comprendre les éléments d'interface que vous rencontrerez dans l'application.
                   </p>
-                  <Button 
-                    variant="outline" 
-                    className="flex items-center w-full justify-center gap-2"
-                    onClick={() => window.open('/components', '_blank')}
-                  >
+                  <Button variant="outline" className="flex items-center w-full justify-center gap-2" onClick={() => window.open('/components', '_blank')}>
                     Consulter les composants
                     <ExternalLink className="h-4 w-4" />
                   </Button>
