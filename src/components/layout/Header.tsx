@@ -1,11 +1,9 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, PlusCircle, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-
 export function Header() {
   const {
     user,
@@ -18,7 +16,6 @@ export function Header() {
     e.preventDefault();
     navigate('/');
   };
-  
   return <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200">
       <div className="container flex h-16 items-center justify-between py-3">
         <div className="flex items-center gap-2">
@@ -28,7 +25,7 @@ export function Header() {
         </div>
         <nav className="flex items-center gap-3">
           {loading ? <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div> : user ? <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" onClick={() => navigate("/help")} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100 font-[600]">
+              <Button variant="outline" size="sm" onClick={() => navigate("/help")} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100 font-medium">
                 Aide
               </Button>
               <Button variant="outline" size="sm" onClick={() => navigate("/profile")} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100 font-[600]">
