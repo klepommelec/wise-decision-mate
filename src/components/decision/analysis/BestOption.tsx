@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Star, Check } from 'lucide-react';
 import { toast } from 'sonner';
@@ -6,7 +5,6 @@ import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import type { Option } from '@/integrations/supabase/client';
-
 interface BestOptionProps {
   bestOption: {
     id: string;
@@ -17,22 +15,22 @@ interface BestOptionProps {
   decisionTitle: string;
   onRegenerateOptions?: () => void;
 }
-
-export function BestOption({ bestOption, decisionTitle, onRegenerateOptions }: BestOptionProps) {
+export function BestOption({
+  bestOption,
+  decisionTitle,
+  onRegenerateOptions
+}: BestOptionProps) {
   const [isSaving, setIsSaving] = useState(false);
-
   const handleSaveFavoriteOption = async () => {
     if (!bestOption) return;
-    
     setIsSaving(true);
     try {
-      const { error } = await supabase
-        .from('decisions')
-        .update({ favorite_option: bestOption.title })
-        .eq('title', decisionTitle);
-        
+      const {
+        error
+      } = await supabase.from('decisions').update({
+        favorite_option: bestOption.title
+      }).eq('title', decisionTitle);
       if (error) throw error;
-      
       toast.success('Option favorite enregistrée!');
     } catch (error) {
       console.error('Erreur lors de l\'enregistrement de l\'option favorite:', error);
@@ -41,11 +39,8 @@ export function BestOption({ bestOption, decisionTitle, onRegenerateOptions }: B
       setIsSaving(false);
     }
   };
-
   if (!bestOption) return null;
-
-  return (
-    <Card className="mb-6 border border-gray-200">
+  return <Card className="mb-6 border border-gray-200">
       <CardHeader>
         <h2 className="text-2xl font-medium">Résumé de l'analyse</h2>
         <p className="text-sm text-muted-foreground">
@@ -59,21 +54,11 @@ export function BestOption({ bestOption, decisionTitle, onRegenerateOptions }: B
               <Star className="h-5 w-5 text-yellow-500" />
               <h3 className="text-lg font-medium">Option suggérée</h3>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex items-center gap-1"
-              onClick={handleSaveFavoriteOption}
-              disabled={isSaving}
-            >
-              {isSaving ? (
-                <>Enregistrement...</>
-              ) : (
-                <>
+            <Button variant="outline" size="sm" onClick={handleSaveFavoriteOption} disabled={isSaving} className="flex items-center gap-1 rounded-full">
+              {isSaving ? <>Enregistrement...</> : <>
                   <Check className="h-4 w-4" />
                   Enregistrer comme choix
-                </>
-              )}
+                </>}
             </Button>
           </div>
           
@@ -86,19 +71,12 @@ export function BestOption({ bestOption, decisionTitle, onRegenerateOptions }: B
           </div>
         </div>
         
-        {onRegenerateOptions && (
-          <div className="flex flex-col gap-4 mt-4">
-            <Button 
-              variant="outline" 
-              onClick={onRegenerateOptions} 
-              className="w-full flex items-center justify-center gap-2"
-            >
+        {onRegenerateOptions && <div className="flex flex-col gap-4 mt-4">
+            <Button variant="outline" onClick={onRegenerateOptions} className="w-full flex items-center justify-center gap-2 rounded-full">
               <span className="h-4 w-4">✨</span>
               Générer de nouvelles options
             </Button>
-          </div>
-        )}
+          </div>}
       </CardContent>
-    </Card>
-  );
+    </Card>;
 }

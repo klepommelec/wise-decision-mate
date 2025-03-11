@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Star, ChevronUp, ChevronDown, Info, Plus } from 'lucide-react';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
@@ -8,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Option } from '@/integrations/supabase/client';
-
 interface OptionScore {
   id: string;
   title: string;
@@ -22,38 +20,40 @@ interface OptionScore {
     weightedScore: number;
   }[];
 }
-
 interface OptionDetailsProps {
   finalScores: OptionScore[];
-  onAddOption?: (option: { title: string }) => void;
+  onAddOption?: (option: {
+    title: string;
+  }) => void;
 }
-
-export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) {
+export function OptionDetails({
+  finalScores,
+  onAddOption
+}: OptionDetailsProps) {
   const [expandedOption, setExpandedOption] = useState<string | null>(null);
   const [newOptionTitle, setNewOptionTitle] = useState('');
   const [isAddingOption, setIsAddingOption] = useState(false);
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [newOptionId, setNewOptionId] = useState<string | null>(null);
   const [loadingOptionTitle, setLoadingOptionTitle] = useState<string>('');
-  
+
   // Reference to the newly added option card
   const newOptionRef = useRef<HTMLDivElement>(null);
-  
+
   // Track when new option is added
   const [newOptionAdded, setNewOptionAdded] = useState(false);
-  
+
   // Effect to scroll to new option when it's added
   useEffect(() => {
     if (newOptionAdded && newOptionRef.current) {
       console.log("Attempting to scroll to new option");
-      newOptionRef.current.scrollIntoView({ 
+      newOptionRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'center'
       });
       setNewOptionAdded(false);
     }
   }, [newOptionAdded, finalScores]);
-
   const toggleExpandOption = (optionId: string) => {
     if (expandedOption === optionId) {
       setExpandedOption(null);
@@ -61,23 +61,20 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
       setExpandedOption(optionId);
     }
   };
-
   const handleAddOption = () => {
     if (newOptionTitle.trim() && onAddOption) {
       setIsGeneratingDescription(true);
       setLoadingOptionTitle(newOptionTitle.trim());
-      
       const tempId = `temp-${Date.now()}`;
       setNewOptionId(tempId);
-      
-      onAddOption({ title: newOptionTitle.trim() });
-      
+      onAddOption({
+        title: newOptionTitle.trim()
+      });
       setNewOptionTitle('');
       setIsAddingOption(false);
-      
       setTimeout(() => {
         setIsGeneratingDescription(false);
-        
+
         // Set flag to trigger scroll once the option is added to finalScores
         setTimeout(() => {
           setNewOptionAdded(true);
@@ -88,62 +85,34 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
   };
 
   // Find the index of the newly added option to reference it
-  const newOptionIndex = finalScores.length > 0 ? finalScores.findIndex(
-    option => option.title === loadingOptionTitle && 
-    !isGeneratingDescription && 
-    Date.now() - (parseInt(newOptionId?.split('-')[1] || '0')) < 10000
-  ) : -1;
-  
+  const newOptionIndex = finalScores.length > 0 ? finalScores.findIndex(option => option.title === loadingOptionTitle && !isGeneratingDescription && Date.now() - parseInt(newOptionId?.split('-')[1] || '0') < 10000) : -1;
   console.log("New option index:", newOptionIndex, "Title:", loadingOptionTitle);
   if (newOptionIndex !== -1) {
     console.log("Found new option:", finalScores[newOptionIndex].title);
   }
-
-  return (
-    <div className="mt-8">
+  return <div className="mt-8">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-medium">Détails des options</h3>
         
-        {onAddOption && !isAddingOption && (
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="flex items-center gap-1"
-            onClick={() => setIsAddingOption(true)}
-          >
+        {onAddOption && !isAddingOption && <Button variant="outline" size="sm" onClick={() => setIsAddingOption(true)} className="flex items-center gap-1 rounded-full">
             <Plus className="h-4 w-4" />
             Ajouter une option
-          </Button>
-        )}
+          </Button>}
       </div>
       
-      {isAddingOption && (
-        <Card className="mb-4 border-dashed border-primary/50">
+      {isAddingOption && <Card className="mb-4 border-dashed border-primary/50">
           <CardContent className="pt-4">
             <div className="space-y-3">
               <Label htmlFor="new-option">Nouvelle option</Label>
               <div className="flex gap-2">
-                <Input
-                  id="new-option"
-                  placeholder="Titre de l'option (ex: Acheter une maison neuve)"
-                  value={newOptionTitle}
-                  onChange={(e) => setNewOptionTitle(e.target.value)}
-                  className="flex-1"
-                />
-                <Button 
-                  onClick={handleAddOption} 
-                  disabled={!newOptionTitle.trim() || isGeneratingDescription}
-                >
+                <Input id="new-option" placeholder="Titre de l'option (ex: Acheter une maison neuve)" value={newOptionTitle} onChange={e => setNewOptionTitle(e.target.value)} className="flex-1" />
+                <Button onClick={handleAddOption} disabled={!newOptionTitle.trim() || isGeneratingDescription}>
                   Ajouter
                 </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => {
-                    setIsAddingOption(false);
-                    setNewOptionTitle('');
-                  }}
-                  disabled={isGeneratingDescription}
-                >
+                <Button variant="outline" onClick={() => {
+              setIsAddingOption(false);
+              setNewOptionTitle('');
+            }} disabled={isGeneratingDescription}>
                   Annuler
                 </Button>
               </div>
@@ -152,11 +121,9 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
               </p>
             </div>
           </CardContent>
-        </Card>
-      )}
+        </Card>}
       
-      {isGeneratingDescription && (
-        <Card key="loading-option" className="mb-4 border border-primary/30 animate-pulse">
+      {isGeneratingDescription && <Card key="loading-option" className="mb-4 border border-primary/30 animate-pulse">
           <CardHeader className="pb-2">
             <div className="flex items-start justify-between">
               <CardTitle className="text-lg">{loadingOptionTitle}</CardTitle>
@@ -172,36 +139,21 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
               <Skeleton className="h-4 w-5/6" />
             </div>
             
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex items-center gap-1 w-full justify-between mt-3"
-              disabled
-            >
+            <Button variant="outline" size="sm" className="flex items-center gap-1 w-full justify-between mt-3" disabled>
               <span>Détails par critère</span>
               <ChevronDown className="h-4 w-4" />
             </Button>
           </CardContent>
-        </Card>
-      )}
+        </Card>}
       
       <div className="space-y-4">
-        {finalScores.map((option, index) => (
-          <Card 
-            key={option.id} 
-            className={`${index === 0 ? "border-primary" : ""} ${
-              newOptionIndex === index ? "border-green-500 shadow-md animate-fade-in" : ""
-            }`}
-            ref={newOptionIndex === index ? newOptionRef : null}
-          >
+        {finalScores.map((option, index) => <Card key={option.id} className={`${index === 0 ? "border-primary" : ""} ${newOptionIndex === index ? "border-green-500 shadow-md animate-fade-in" : ""}`} ref={newOptionIndex === index ? newOptionRef : null}>
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between">
                 <div className="flex items-center">
-                  {index === 0 && (
-                    <div className="bg-primary/10 text-primary p-1 rounded-full mr-2">
+                  {index === 0 && <div className="bg-primary/10 text-primary p-1 rounded-full mr-2">
                       <Star className="h-4 w-4" />
-                    </div>
-                  )}
+                    </div>}
                   <CardTitle className="text-lg">
                     {option.title}
                   </CardTitle>
@@ -214,30 +166,19 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
             <CardContent className="pt-2">
               <p className="text-muted-foreground text-sm mb-3">{option.description}</p>
               
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex items-center gap-1 w-full justify-between"
-                onClick={() => toggleExpandOption(option.id)}
-              >
+              <Button variant="outline" size="sm" className="flex items-center gap-1 w-full justify-between" onClick={() => toggleExpandOption(option.id)}>
                 <span>Détails par critère</span>
-                {expandedOption === option.id ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
+                {expandedOption === option.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
               </Button>
               
-              {expandedOption === option.id && (
-                <div className="mt-4 border rounded-md divide-y">
+              {expandedOption === option.id && <div className="mt-4 border rounded-md divide-y">
                   <div className="grid grid-cols-12 p-2 bg-muted font-medium text-sm">
                     <div className="col-span-5">Critère</div>
                     <div className="col-span-2 text-center">Poids</div>
                     <div className="col-span-2 text-center">Score</div>
                     <div className="col-span-3 text-center">Score pondéré</div>
                   </div>
-                  {option.details.map((detail) => (
-                    <div key={detail.criterionId} className="grid grid-cols-12 p-2 text-sm">
+                  {option.details.map(detail => <div key={detail.criterionId} className="grid grid-cols-12 p-2 text-sm">
                       <div className="col-span-5 flex items-center">
                         {detail.criterionName}
                         <Popover>
@@ -261,14 +202,10 @@ export function OptionDetails({ finalScores, onAddOption }: OptionDetailsProps) 
                       <div className="col-span-3 text-center font-medium">
                         {detail.weightedScore.toFixed(2)}
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    </div>)}
+                </div>}
             </CardContent>
-          </Card>
-        ))}
+          </Card>)}
       </div>
-    </div>
-  );
+    </div>;
 }
