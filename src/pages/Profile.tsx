@@ -4,9 +4,22 @@ import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
 import { UserInfo } from "@/components/profile/UserInfo";
 import { DecisionsList } from "@/components/profile/DecisionsList";
+import { useState } from "react";
+import { useDecisions } from "@/hooks/use-decisions";
 
 export default function Profile() {
   const { user, loading } = useAuth();
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = useState<string>("recent");
+  const [showFavorites, setShowFavorites] = useState<boolean>(false);
+
+  // Use the hook to fetch decisions data
+  const {
+    decisions,
+    isLoading: loadingDecisions,
+    handleDeleteDecision,
+    exportDecision
+  } = useDecisions(user?.id, sortBy, showFavorites);
 
   if (loading) {
     return (
@@ -26,7 +39,18 @@ export default function Profile() {
   return (
     <Container className="py-8 space-y-8">
       <UserInfo />
-      <DecisionsList />
+      <DecisionsList 
+        decisions={decisions}
+        isLoading={loadingDecisions}
+        viewMode={viewMode}
+        sortBy={sortBy}
+        showFavorites={showFavorites}
+        onViewModeChange={setViewMode}
+        onSortByChange={setSortBy}
+        onShowFavoritesChange={setShowFavorites}
+        onExportDecision={exportDecision}
+        onDeleteDecision={handleDeleteDecision}
+      />
     </Container>
   );
 }
