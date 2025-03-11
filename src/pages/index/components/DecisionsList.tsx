@@ -122,7 +122,7 @@ export function DecisionsList({
       }}>
               <CardHeader>
                 <div className="flex justify-between items-start mb-2">
-                  <CardTitle className="line-clamp-1 font-normal">{decision.title}</CardTitle>
+                  <CardTitle className="line-clamp-1 font-medium">{decision.title}</CardTitle>
                 </div>
                 <div className="flex items-center justify-between">
                   <CardDescription className="flex items-center gap-1 text-xs">
