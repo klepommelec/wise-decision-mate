@@ -5,6 +5,7 @@ import { LogOut, User, PlusCircle, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+
 export function Header() {
   const {
     user,
@@ -17,8 +18,8 @@ export function Header() {
     e.preventDefault();
     navigate('/');
   };
-  return <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-100">
-      <div className="container flex h-16 items-center justify-between py-3 border-b border-gray-200">
+  return <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200">
+      <div className="container flex h-16 items-center justify-between py-3">
         <div className="flex items-center gap-2">
           <a href="/" className="flex items-center gap-2" onClick={handleLogoClick}>
             <img src="/lovable-uploads/1465f08a-adfe-457b-a2f9-f046b763d7f1.png" alt="Memo Logo" className="h-10 max-h-[40px] w-auto" />
