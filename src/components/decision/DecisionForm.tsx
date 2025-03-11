@@ -14,14 +14,12 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover
 import { format } from 'date-fns';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
-
 interface Decision {
   id?: string;
   title: string;
   description: string;
   deadline?: string;
 }
-
 interface DecisionFormProps {
   onSubmit: (decision: {
     title: string;
@@ -30,7 +28,6 @@ interface DecisionFormProps {
   }, generateOptions?: boolean) => void;
   initialDecision?: Decision;
 }
-
 export function DecisionForm({
   onSubmit,
   initialDecision
@@ -44,13 +41,11 @@ export function DecisionForm({
     user
   } = useAuth();
   const navigate = useNavigate();
-
   useEffect(() => {
     if (initialDecision) {
       console.log("DecisionForm received initialDecision:", initialDecision);
     }
   }, [initialDecision]);
-
   useEffect(() => {
     if (initialDecision && initialDecision.title) {
       console.log("Auto-submitting with initialDecision:", initialDecision);
@@ -61,7 +56,6 @@ export function DecisionForm({
       }, false);
     }
   }, [initialDecision, onSubmit]);
-
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
@@ -109,7 +103,6 @@ export function DecisionForm({
       setIsSubmitting(false);
     }
   }, [title, description, deadline, useAI, user, navigate, onSubmit, initialDecision]);
-
   return <div className="w-full max-w-2xl mx-auto animate-fade-in pt-0">
       <Card className="gradient-border-card transition-all duration-300 shadow-sm overflow-hidden rounded-xl bg-white">
         <CardHeader className="bg-white border-b rounded-t-xl">
@@ -120,7 +113,7 @@ export function DecisionForm({
             </CardTitle>
           </div>
         </CardHeader>
-        <CardContent className="pt-6 bg-white">
+        <CardContent className="pt-6 bg-white rounded-b-xl">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="space-y-2">
               <Label htmlFor="title">Titre de la décision</Label>
