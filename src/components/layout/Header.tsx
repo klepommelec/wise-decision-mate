@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, PlusCircle, HelpCircle } from "lucide-react";
@@ -32,7 +31,7 @@ export function Header() {
               <Button variant="outline" size="sm" onClick={() => navigate("/profile")} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100 font-medium">
                 Mon profil
               </Button>
-              <Button variant="highlight" size="sm" onClick={() => navigate("/new-decision")} className="rounded-full text-gray-900 bg-lime-400 hover:bg-lime-500 font-semibold">
+              <Button variant="highlight" size="sm" onClick={() => navigate("/new-decision")} className="rounded-full text-gray-900 bg-lime-400 hover:bg-lime-500 font-medium">
                 Nouvelle décision
               </Button>
             </div> : <div className="flex items-center gap-3">
