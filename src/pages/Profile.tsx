@@ -13,7 +13,6 @@ import { Switch } from "@/components/ui/switch";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
 export default function Profile() {
   const {
     user,
@@ -29,7 +28,6 @@ export default function Profile() {
   const [sortBy, setSortBy] = useState("recent");
   const [viewMode, setViewMode] = useState("grid");
   const [showFavorites, setShowFavorites] = useState(false);
-
   useEffect(() => {
     if (!user && !loading) {
       navigate("/auth");
@@ -37,16 +35,13 @@ export default function Profile() {
       fetchUserDecisions();
     }
   }, [user, loading, navigate, sortBy, showFavorites]);
-
   const fetchUserDecisions = async () => {
     try {
       setIsLoading(true);
       let query = supabase.from("decisions").select("*").eq("user_id", user?.id);
-
       if (showFavorites) {
         query = query.not('favorite_option', 'is', null);
       }
-
       if (sortBy === "recent") {
         query = query.order("created_at", {
           ascending: false
@@ -73,7 +68,6 @@ export default function Profile() {
       setIsLoading(false);
     }
   };
-
   const handleDeleteDecision = async (decisionId: string) => {
     try {
       const {
@@ -87,7 +81,6 @@ export default function Profile() {
       toast.error("Erreur lors de la suppression");
     }
   };
-
   const handleSignOut = async () => {
     try {
       const {
@@ -101,7 +94,6 @@ export default function Profile() {
       console.error("Erreur de déconnexion:", error);
     }
   };
-
   const exportDecision = (decision: any) => {
     try {
       const dataStr = JSON.stringify(decision, null, 2);
@@ -117,7 +109,6 @@ export default function Profile() {
       toast.error("Erreur lors de l'exportation");
     }
   };
-
   if (loading || !user) {
     return <Container className="py-10">
         <div className="flex justify-center items-center min-h-[60vh]">
@@ -125,7 +116,6 @@ export default function Profile() {
         </div>
       </Container>;
   }
-
   return <Container className="py-10">
       <div className="max-w-4xl mx-auto">
         <Button variant="ghost" onClick={() => navigate("/")} className="rounded-full text-gray-600 bg-white border-gray-200 hover:bg-gray-100">
@@ -149,8 +139,8 @@ export default function Profile() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-                  <div className="h-24 w-24 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-4xl font-bold text-primary">
+                  <div className="h-24 w-24 rounded-full flex items-center justify-center flex-shrink-0 bg-lime-100">
+                    <span className="text-4xl text-lime-600 font-medium">
                       {user.email ? user.email[0].toUpperCase() : '?'}
                     </span>
                   </div>
