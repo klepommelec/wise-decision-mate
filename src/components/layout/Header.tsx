@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, PlusCircle, HelpCircle } from "lucide-react";
@@ -14,7 +15,7 @@ export function Header() {
   // Function to handle logo click and navigate to home
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    navigate('/');
+    navigate('/', { replace: true });
   };
   return <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200">
       <div className="container flex h-16 items-center justify-between py-3">
