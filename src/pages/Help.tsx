@@ -25,7 +25,7 @@ export default function Help() {
           <Tabs defaultValue="guide">
             <TabsList className="grid w-full grid-cols-3 rounded-full">
               <TabsTrigger value="guide" className="rounded-full">Guide d'utilisation</TabsTrigger>
-              <TabsTrigger value="faq">FAQ</TabsTrigger>
+              <TabsTrigger value="faq" className="rounded-full">FAQ</TabsTrigger>
               <TabsTrigger value="contact">Contact</TabsTrigger>
             </TabsList>
             
