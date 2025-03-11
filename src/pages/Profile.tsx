@@ -277,7 +277,7 @@ export default function Profile() {
                   </DropdownMenuContent>
                 </DropdownMenu>
                 
-                <Button variant="outline" size="sm" onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}>
+                <Button variant="outline" size="sm" onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")} className="rounded-full">
                   {viewMode === "grid" ? <ListIcon className="h-3.5 w-3.5" /> : <GridIcon className="h-3.5 w-3.5" />}
                 </Button>
                 
