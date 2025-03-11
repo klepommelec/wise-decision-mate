@@ -12,6 +12,7 @@ import NewDecision from "./pages/NewDecision";
 import MyDecisions from "./pages/MyDecisions";
 import NotFound from "./pages/NotFound";
 import Help from "./pages/Help";
+import Components from "./pages/Components";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./hooks/use-theme";
 import { Header } from "./components/layout/Header";
@@ -35,6 +36,7 @@ const App = () => (
               <Route path="/new-decision" element={<NewDecision />} />
               <Route path="/my-decisions" element={<MyDecisions />} />
               <Route path="/help" element={<Help />} />
+              <Route path="/components" element={<Components />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

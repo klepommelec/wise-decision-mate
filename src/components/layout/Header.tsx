@@ -13,9 +13,7 @@ export function Header() {
   } = useAuth();
   const navigate = useNavigate();
 
-  // Function to handle logo click and navigate to home
   const handleLogoClick = (e: React.MouseEvent) => {
-    // Remove preventDefault to allow full page refresh when clicking on the logo
     navigate('/');
   };
 
@@ -28,6 +26,9 @@ export function Header() {
         </div>
         <nav className="flex items-center gap-3">
           {loading ? <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div> : user ? <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" onClick={() => navigate("/components")} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100 font-medium">
+                Components
+              </Button>
               <Button variant="outline" size="sm" onClick={() => navigate("/help")} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100 font-medium">
                 Aide
               </Button>
@@ -38,6 +39,9 @@ export function Header() {
                 Nouvelle décision
               </Button>
             </div> : <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" onClick={() => navigate("/components")} className="rounded-full text-gray-600 bg-white border-gray-300 hover:bg-gray-50 font-medium">
+                Components
+              </Button>
               <Button variant="outline" size="sm" className="rounded-full text-gray-600 bg-white border-gray-300 hover:bg-gray-50 font-medium" onClick={() => navigate('/help')}>
                 Aide
               </Button>
