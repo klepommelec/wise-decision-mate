@@ -18,32 +18,14 @@ export function Header() {
     e.preventDefault();
     navigate('/');
   };
-  
-  return (
-    <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200">
-      <div className="container flex h-16 items-center justify-between py-3 relative overflow-hidden">
-        {/* Left hand illustration */}
-        <img 
-          src="/lovable-uploads/6101851f-2549-45ba-a231-ed9bfb465e2b.png" 
-          alt="" 
-          className="hand-illustration hand-left" 
-          aria-hidden="true"
-        />
-        
-        {/* Right hand illustration */}
-        <img 
-          src="/lovable-uploads/c2e072d3-6efa-4ea3-82df-5e038dd43589.png" 
-          alt="" 
-          className="hand-illustration hand-right" 
-          aria-hidden="true"
-        />
-        
-        <div className="flex items-center gap-2 relative z-10">
+  return <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200">
+      <div className="container flex h-16 items-center justify-between py-3">
+        <div className="flex items-center gap-2">
           <a href="/" className="flex items-center gap-2" onClick={handleLogoClick}>
             <img src="/lovable-uploads/1465f08a-adfe-457b-a2f9-f046b763d7f1.png" alt="Memo Logo" className="h-8 max-h-[32px] w-auto" />
           </a>
         </div>
-        <nav className="flex items-center gap-3 relative z-10">
+        <nav className="flex items-center gap-3">
           {loading ? <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div> : user ? <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" onClick={() => navigate("/help")} className="rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100">
                 Aide
@@ -67,6 +49,5 @@ export function Header() {
             </div>}
         </nav>
       </div>
-    </header>
-  );
+    </header>;
 }
