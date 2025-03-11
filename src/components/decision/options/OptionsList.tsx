@@ -40,8 +40,8 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
   
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
-      <Card className="transition-all duration-300 border border-gray-200">
-        <CardHeader>
+      <Card className="transition-all duration-300 border border-gray-200 bg-white rounded-xl">
+        <CardHeader className="bg-white rounded-t-xl">
           <CardTitle className="text-2xl font-medium">
             Quelles sont vos options?
           </CardTitle>
@@ -62,7 +62,7 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
             </div>
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="bg-white">
           <div className="space-y-6">
             {options.map((option, index) => (
               <OptionItem
@@ -83,7 +83,7 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
             
             <Button 
               variant="outline" 
-              className="w-full flex items-center justify-center gap-2" 
+              className="w-full flex items-center justify-center gap-2 bg-white" 
               onClick={addOption}
             >
               <Plus className="h-4 w-4" />
@@ -91,7 +91,7 @@ export function OptionsList({ decisionTitle, onComplete, onBack, isLoading = fal
             </Button>
           </div>
         </CardContent>
-        <CardFooter className="justify-between pt-2">
+        <CardFooter className="justify-between pt-2 bg-white rounded-b-xl">
           {onBack && (
             <Button 
               onClick={onBack} 

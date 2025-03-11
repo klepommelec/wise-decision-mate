@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,12 +14,14 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover
 import { format } from 'date-fns';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
+
 interface Decision {
   id?: string;
   title: string;
   description: string;
   deadline?: string;
 }
+
 interface DecisionFormProps {
   onSubmit: (decision: {
     title: string;
@@ -29,6 +30,7 @@ interface DecisionFormProps {
   }, generateOptions?: boolean) => void;
   initialDecision?: Decision;
 }
+
 export function DecisionForm({
   onSubmit,
   initialDecision
@@ -42,11 +44,13 @@ export function DecisionForm({
     user
   } = useAuth();
   const navigate = useNavigate();
+
   useEffect(() => {
     if (initialDecision) {
       console.log("DecisionForm received initialDecision:", initialDecision);
     }
   }, [initialDecision]);
+
   useEffect(() => {
     if (initialDecision && initialDecision.title) {
       console.log("Auto-submitting with initialDecision:", initialDecision);
@@ -57,6 +61,7 @@ export function DecisionForm({
       }, false);
     }
   }, [initialDecision, onSubmit]);
+
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
@@ -104,9 +109,10 @@ export function DecisionForm({
       setIsSubmitting(false);
     }
   }, [title, description, deadline, useAI, user, navigate, onSubmit, initialDecision]);
+
   return <div className="w-full max-w-2xl mx-auto animate-fade-in pt-0">
-      <Card className="gradient-border-card transition-all duration-300 shadow-sm overflow-hidden rounded-2xl">
-        <CardHeader className="bg-gray-50 border-b">
+      <Card className="gradient-border-card transition-all duration-300 shadow-sm overflow-hidden rounded-xl bg-white">
+        <CardHeader className="bg-white border-b rounded-t-xl">
           <div className="flex items-center gap-3">
             <div className="rounded-full w-10 h-10 flex items-center justify-center text-black font-bold text-xl font-handwriting bg-lime-400">M</div>
             <CardTitle className="text-xl font-medium">
@@ -114,28 +120,28 @@ export function DecisionForm({
             </CardTitle>
           </div>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 bg-white">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="space-y-2">
               <Label htmlFor="title">Titre de la décision</Label>
-              <Input id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Choisir une nouvelle voiture" className="w-full" required />
+              <Input id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Choisir une nouvelle voiture" className="w-full bg-white" required />
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="description">Description (optionnel)</Label>
-              <Textarea id="description" value={description} onChange={e => setDescription(e.target.value)} placeholder="Détails supplémentaires sur votre décision..." className="min-h-[80px]" />
+              <Textarea id="description" value={description} onChange={e => setDescription(e.target.value)} placeholder="Détails supplémentaires sur votre décision..." className="min-h-[80px] bg-white" />
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="deadline">Date limite (optionnel)</Label>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button id="deadline" variant="outline" className={cn("w-full justify-start text-left font-normal", !deadline && "text-muted-foreground")}>
+                  <Button id="deadline" variant="outline" className={cn("w-full justify-start text-left font-normal bg-white", !deadline && "text-muted-foreground")}>
                     <Calendar className="mr-2 h-4 w-4" />
                     {deadline ? format(deadline, "dd MMMM yyyy") : "Sélectionner une date limite"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent className="w-auto p-0 bg-white" align="start">
                   <CalendarComponent mode="single" selected={deadline} onSelect={setDeadline} initialFocus className={cn("p-3 pointer-events-auto")} />
                 </PopoverContent>
               </Popover>

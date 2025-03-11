@@ -30,10 +30,10 @@ export function OptionItem({
   return (
     <div 
       className={cn(
-        "p-4 border rounded-lg animate-slide-in",
+        "p-4 border rounded-xl animate-slide-in",
         option.isAIGenerated 
           ? "bg-amber-50/80 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/30" 
-          : "bg-white/50 dark:bg-gray-800/50"
+          : "bg-white dark:bg-gray-800/50"
       )}
       style={{ animationDelay: `${index * 0.1}s` }}
     >
@@ -63,7 +63,7 @@ export function OptionItem({
             onChange={(e) => onUpdate(option.id, 'title', e.target.value)}
             onBlur={() => onTitleBlur(option)}
             placeholder="Ex: Acheter une maison neuve"
-            className="w-full"
+            className="w-full bg-white"
           />
         </div>
         <div className="space-y-2">
@@ -80,7 +80,7 @@ export function OptionItem({
               value={option.description}
               onChange={(e) => onUpdate(option.id, 'description', e.target.value)}
               placeholder="Détails, avantages et inconvénients de cette option..."
-              className="min-h-[80px]"
+              className="min-h-[80px] bg-white"
             />
           )}
         </div>
