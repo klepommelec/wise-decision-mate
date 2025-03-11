@@ -13,7 +13,6 @@ import { Switch } from "@/components/ui/switch";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
 export default function Profile() {
   const {
     user,
@@ -29,7 +28,6 @@ export default function Profile() {
   const [sortBy, setSortBy] = useState("recent");
   const [viewMode, setViewMode] = useState("grid");
   const [showFavorites, setShowFavorites] = useState(false);
-
   useEffect(() => {
     if (!user && !loading) {
       navigate("/auth");
@@ -37,7 +35,6 @@ export default function Profile() {
       fetchUserDecisions();
     }
   }, [user, loading, navigate, sortBy, showFavorites]);
-
   const fetchUserDecisions = async () => {
     try {
       setIsLoading(true);
@@ -71,7 +68,6 @@ export default function Profile() {
       setIsLoading(false);
     }
   };
-
   const handleDeleteDecision = async (decisionId: string) => {
     try {
       const {
@@ -85,7 +81,6 @@ export default function Profile() {
       toast.error("Erreur lors de la suppression");
     }
   };
-
   const handleSignOut = async () => {
     try {
       const {
@@ -99,7 +94,6 @@ export default function Profile() {
       console.error("Erreur de déconnexion:", error);
     }
   };
-
   const exportDecision = (decision: any) => {
     try {
       const dataStr = JSON.stringify(decision, null, 2);
@@ -115,7 +109,6 @@ export default function Profile() {
       toast.error("Erreur lors de l'exportation");
     }
   };
-
   if (loading || !user) {
     return <Container className="py-10">
         <div className="flex justify-center items-center min-h-[60vh]">
@@ -123,7 +116,6 @@ export default function Profile() {
         </div>
       </Container>;
   }
-
   return <Container className="py-10">
       <div className="max-w-4xl mx-auto">
         <Button variant="ghost" onClick={() => navigate("/")} className="rounded-full text-gray-600 bg-white border-gray-200 hover:bg-gray-100">
@@ -413,4 +405,3 @@ export default function Profile() {
       </div>
     </Container>;
 }
-
