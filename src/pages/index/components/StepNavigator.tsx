@@ -26,7 +26,7 @@ export const StepNavigator = ({
   };
   return <div className="flex items-center justify-between mb-6">
       <div className="flex items-center gap-2 text-sm">
-        <Button variant="ghost" size="sm" className="gap-1" onClick={goToHome}>
+        <Button variant="ghost" size="sm" onClick={goToHome} className="gap-1 rounded-full">
           <Home className="h-4 w-4" />
           Accueil
         </Button>
@@ -34,7 +34,7 @@ export const StepNavigator = ({
         {/* Afficher uniquement les étapes précédentes, sans Décision */}
         {previousSteps.filter(step => step !== "Décision").map((step, index, filteredSteps) => <React.Fragment key={step}>
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
-            {index === filteredSteps.length - 1 && onBackStep ? <Button variant="ghost" size="sm" onClick={onBackStep}>
+            {index === filteredSteps.length - 1 && onBackStep ? <Button variant="ghost" size="sm" onClick={onBackStep} className="rounded-full">
                 {step}
               </Button> : <span className="text-muted-foreground">{step}</span>}
           </React.Fragment>)}
