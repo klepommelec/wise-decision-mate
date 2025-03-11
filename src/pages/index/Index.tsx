@@ -155,7 +155,6 @@ const Index = () => {
                         currentStep="Critères" 
                         previousSteps={[]} 
                         onBackStep={() => handleReset()} 
-                        onResetDecision={handleReset}
                       />
                       <CriteriaEvaluation criteria={criteria} isLoading={isGeneratingCriteria || isProcessingManualEntries} onComplete={handleCriteriaComplete} decisionTitle={decision.title} />
                     </div>}
@@ -165,7 +164,6 @@ const Index = () => {
                         currentStep="Analyse" 
                         previousSteps={["Critères"]} 
                         onBackStep={() => handleBackToCriteria()} 
-                        onResetDecision={handleReset}
                       />
                       <AnalysisResult decisionTitle={decision.title} options={options} criteria={criteria} evaluations={evaluations} onBack={() => handleBackToCriteria()} onReset={handleReset} onRegenerateOptions={handleRegenerateOptions} onAddOption={handleAddOption} />
                     </div>}
