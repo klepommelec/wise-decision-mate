@@ -72,6 +72,21 @@ export default function Help() {
               
               <Card>
                 <CardHeader>
+                  <CardTitle>Astuces pour de meilleures décisions</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li>Prenez le temps de bien définir tous vos critères</li>
+                    <li>Soyez honnête dans l'évaluation des poids</li>
+                    <li>N'hésitez pas à revenir en arrière pour ajuster vos critères</li>
+                    <li>Sauvegardez votre décision pour la consulter plus tard</li>
+                    <li>Partagez votre analyse avec d'autres personnes pour obtenir leur avis</li>
+                  </ul>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
                   <CardTitle>Catalogue des composants</CardTitle>
                   <CardDescription>
                     Découvrez tous les éléments disponibles dans l'application
@@ -89,21 +104,6 @@ export default function Help() {
                     Consulter les composants
                     <ExternalLink className="h-4 w-4" />
                   </Button>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle>Astuces pour de meilleures décisions</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <ul className="list-disc pl-5 space-y-2">
-                    <li>Prenez le temps de bien définir tous vos critères</li>
-                    <li>Soyez honnête dans l'évaluation des poids</li>
-                    <li>N'hésitez pas à revenir en arrière pour ajuster vos critères</li>
-                    <li>Sauvegardez votre décision pour la consulter plus tard</li>
-                    <li>Partagez votre analyse avec d'autres personnes pour obtenir leur avis</li>
-                  </ul>
                 </CardContent>
               </Card>
             </TabsContent>
