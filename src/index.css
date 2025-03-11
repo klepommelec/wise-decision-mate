@@ -33,17 +33,17 @@
   border: solid 1px transparent !important; /* Transparent border that will be filled with gradient */
   z-index: 0;
   box-shadow: 
-    0 8px 20px -3px rgba(155, 135, 245, 0.1),  /* Purple shadow - opacity set to 0.1 */
-    0 15px 30px -5px rgba(217, 70, 239, 0.1),   /* Magenta shadow - opacity set to 0.1 */
-    0 20px 40px -8px rgba(59, 130, 246, 0.1);  /* Blue shadow - opacity set to 0.1 */
+    0 8px 20px -3px rgba(155, 135, 245, 0.02),  /* Purple shadow - opacity set to 0.02 */
+    0 15px 30px -5px rgba(217, 70, 239, 0.02),   /* Magenta shadow - opacity set to 0.02 */
+    0 20px 40px -8px rgba(59, 130, 246, 0.02);  /* Blue shadow - opacity set to 0.02 */
   transition: box-shadow 0.5s ease;
 }
 
 .gradient-border-card:hover {
   box-shadow: 
-    0 12px 30px -5px rgba(155, 135, 245, 0.1),  /* Purple shadow - opacity set to 0.1 */
-    0 20px 40px -8px rgba(217, 70, 239, 0.1),  /* Magenta shadow - opacity set to 0.1 */
-    0 25px 50px -10px rgba(59, 130, 246, 0.1);  /* Blue shadow - opacity set to 0.1 */
+    0 12px 30px -5px rgba(155, 135, 245, 0.02),  /* Purple shadow - opacity set to 0.02 */
+    0 20px 40px -8px rgba(217, 70, 239, 0.02),  /* Magenta shadow - opacity set to 0.02 */
+    0 25px 50px -10px rgba(59, 130, 246, 0.02);  /* Blue shadow - opacity set to 0.02 */
 }
 
 .gradient-border-card::before {
