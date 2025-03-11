@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25,13 +26,25 @@
   animation: fontFadeIn 0.5s ease-in-out forwards;
 }
 
-/* Gradient border card */
+/* Gradient border card with distant shadow effect */
 .gradient-border-card {
   position: relative;
   overflow: visible !important; /* Override any hidden overflow */
   background-clip: padding-box; /* Important for the gradient to work */
   border: solid 1px transparent !important; /* Transparent border that will be filled with gradient */
   z-index: 0;
+  box-shadow: 
+    0 6px 15px -3px rgba(155, 135, 245, 0.25),  /* Purple shadow */
+    0 10px 20px -5px rgba(217, 70, 239, 0.2),   /* Magenta shadow */
+    0 14px 25px -8px rgba(59, 130, 246, 0.15);  /* Blue shadow */
+  transition: box-shadow 0.5s ease;
+}
+
+.gradient-border-card:hover {
+  box-shadow: 
+    0 10px 25px -5px rgba(155, 135, 245, 0.3),  /* Purple shadow - more pronounced on hover */
+    0 15px 30px -8px rgba(217, 70, 239, 0.25),  /* Magenta shadow - more pronounced on hover */
+    0 20px 35px -10px rgba(59, 130, 246, 0.2);  /* Blue shadow - more pronounced on hover */
 }
 
 .gradient-border-card::before {
