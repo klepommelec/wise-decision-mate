@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -40,7 +41,7 @@
   inset: -2px; /* Spread to cover the 2px transparent border */
   z-index: -1;
   border-radius: inherit; /* Match the parent's border radius */
-  background: linear-gradient(60deg, #9b87f5, #D946EF, #a3e635, #3b82f6);
+  background: linear-gradient(60deg, #9b87f5, #D946EF, #F97316, #a3e635, #3b82f6);
   background-size: 300% 300%;
   animation: gradient-animation 8s ease infinite;
 }
