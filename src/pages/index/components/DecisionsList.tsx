@@ -86,7 +86,7 @@ export function DecisionsList({
             <RefreshCw className="h-4 w-4" />
             Actualiser
           </Button>
-          <Button onClick={onNewDecision} className="gap-2">
+          <Button onClick={onNewDecision} className="rounded-full font-medium text-gray-900 bg-lime-400 hover:bg-lime-500">
             Nouvelle décision
             <ArrowRight className="h-4 w-4" />
           </Button>
