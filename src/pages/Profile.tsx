@@ -330,10 +330,10 @@ export default function Profile() {
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="outline" size="icon" className="h-8 w-8" onClick={e => {
+                              <Button variant="outline" size="icon" onClick={e => {
                           e.stopPropagation();
                           exportDecision(decision);
-                        }}>
+                        }} className="h-8 w-8 rounded-full">
                                 <Download className="h-3.5 w-3.5" />
                               </Button>
                             </TooltipTrigger>
@@ -346,10 +346,10 @@ export default function Profile() {
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="outline" size="icon" className="h-8 w-8" onClick={e => {
+                              <Button variant="outline" size="icon" onClick={e => {
                           e.stopPropagation();
                           toast.info("Fonctionnalité de partage à venir");
-                        }}>
+                        }} className="h-8 w-8 rounded-full">
                                 <Share2 className="h-3.5 w-3.5" />
                               </Button>
                             </TooltipTrigger>
@@ -362,12 +362,12 @@ export default function Profile() {
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="outline" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={e => {
+                              <Button variant="outline" size="icon" onClick={e => {
                           e.stopPropagation();
                           if (confirm("Êtes-vous sûr de vouloir supprimer cette décision ?")) {
                             handleDeleteDecision(decision.id);
                           }
-                        }}>
+                        }} className="h-8 w-8 text-destructive hover:bg-destructive/10 rounded-full">
                                 <Trash className="h-3.5 w-3.5" />
                               </Button>
                             </TooltipTrigger>
