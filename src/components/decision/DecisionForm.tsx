@@ -139,7 +139,7 @@ export function DecisionForm({
             </div>
             
             <div className="flex items-center space-x-2 pt-2 border-t">
-              <Switch id="ai-options" checked={useAI} onCheckedChange={setUseAI} />
+              <Switch id="ai-options" checked={useAI} onCheckedChange={setUseAI} className="bg-lime-400 hover:bg-lime-300" />
               <div className="grid gap-1.5">
                 <Label htmlFor="ai-options" className="text-sm font-medium leading-none flex items-center gap-1.5">
                   Générer automatiquement des options et critères
