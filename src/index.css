@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -34,17 +33,17 @@
   border: solid 1px transparent !important; /* Transparent border that will be filled with gradient */
   z-index: 0;
   box-shadow: 
-    0 6px 15px -3px rgba(155, 135, 245, 0.25),  /* Purple shadow */
-    0 10px 20px -5px rgba(217, 70, 239, 0.2),   /* Magenta shadow */
-    0 14px 25px -8px rgba(59, 130, 246, 0.15);  /* Blue shadow */
+    0 8px 20px -3px rgba(155, 135, 245, 0.3),  /* Purple shadow - blur augmenté */
+    0 15px 30px -5px rgba(217, 70, 239, 0.25),   /* Magenta shadow - blur augmenté */
+    0 20px 40px -8px rgba(59, 130, 246, 0.2);  /* Blue shadow - blur augmenté */
   transition: box-shadow 0.5s ease;
 }
 
 .gradient-border-card:hover {
   box-shadow: 
-    0 10px 25px -5px rgba(155, 135, 245, 0.3),  /* Purple shadow - more pronounced on hover */
-    0 15px 30px -8px rgba(217, 70, 239, 0.25),  /* Magenta shadow - more pronounced on hover */
-    0 20px 35px -10px rgba(59, 130, 246, 0.2);  /* Blue shadow - more pronounced on hover */
+    0 12px 30px -5px rgba(155, 135, 245, 0.35),  /* Purple shadow - encore plus prononcé sur hover */
+    0 20px 40px -8px rgba(217, 70, 239, 0.3),  /* Magenta shadow - encore plus prononcé sur hover */
+    0 25px 50px -10px rgba(59, 130, 246, 0.25);  /* Blue shadow - encore plus prononcé sur hover */
 }
 
 .gradient-border-card::before {
