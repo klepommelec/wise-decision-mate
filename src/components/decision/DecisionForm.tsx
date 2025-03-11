@@ -108,7 +108,7 @@ export function DecisionForm({
         <CardHeader className="bg-white border-b rounded-t-xl">
           <div className="flex items-center gap-3">
             <div className="rounded-full w-10 h-10 flex items-center justify-center text-black font-bold text-xl font-handwriting bg-lime-400">M</div>
-            <CardTitle className="font-medium text-3xl">
+            <CardTitle className="font-medium text-xl">
               Bonjour, quelle décision voulez-vous prendre, aujourd'hui ?
             </CardTitle>
           </div>
