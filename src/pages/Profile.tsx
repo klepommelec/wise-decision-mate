@@ -129,7 +129,7 @@ export default function Profile() {
 
         <Tabs defaultValue="profile" className="w-full py-[16px]">
           <TabsList className="grid w-full grid-cols-2 mb-8 rounded-full">
-            <TabsTrigger value="profile">Profil</TabsTrigger>
+            <TabsTrigger value="profile" className="rounded-full">Profil</TabsTrigger>
             <TabsTrigger value="decisions">Mes décisions</TabsTrigger>
           </TabsList>
           
