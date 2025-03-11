@@ -154,7 +154,7 @@ export default function Profile() {
                     <div className="flex flex-wrap gap-2 mt-2">
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" className="gap-1.5">
+                          <Button variant="outline" size="sm" className="gap-1.5 rounded-full text-gray-900 bg-white border-gray-200 hover:bg-gray-100">
                             <Settings className="h-3.5 w-3.5" />
                             Paramètres
                           </Button>
