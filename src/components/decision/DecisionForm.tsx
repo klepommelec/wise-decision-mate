@@ -104,7 +104,7 @@ export function DecisionForm({
     }
   }, [title, description, deadline, useAI, user, navigate, onSubmit, initialDecision]);
   return <div className="w-full max-w-2xl mx-auto animate-fade-in pt-0">
-      <Card className="gradient-border-card transition-all duration-300 shadow-sm overflow-hidden rounded-xl bg-white">
+      <Card className="gradient-border-card transition-all duration-300 shadow-sm overflow-hidden bg-white rounded-sm">
         <CardHeader className="bg-white border-b rounded-t-xl">
           <div className="flex items-center gap-3">
             <div className="rounded-full w-10 h-10 flex items-center justify-center text-black font-bold text-xl font-handwriting bg-lime-400">M</div>
