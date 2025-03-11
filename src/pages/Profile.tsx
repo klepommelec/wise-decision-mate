@@ -170,10 +170,10 @@ export default function Profile() {
                             <div className="border-b pb-4">
                               <h3 className="text-sm font-medium mb-3">Thème</h3>
                               <div className="grid grid-cols-3 gap-2">
-                                <Button variant={theme === "light" ? "default" : "outline"} size="sm" className="w-full justify-start" onClick={() => {
+                                <Button variant={theme === "light" ? "default" : "outline"} size="sm" onClick={() => {
                                 setTheme("light");
                                 toast.success("Thème clair activé");
-                              }}>
+                              }} className="w-full justify-start bg-lime-400">
                                   <Sun className="h-4 w-4 mr-2" />
                                   Clair
                                 </Button>
