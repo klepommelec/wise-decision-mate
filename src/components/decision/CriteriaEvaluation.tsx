@@ -118,7 +118,7 @@ export function CriteriaEvaluation({
                               <h3 className="font-medium">Critère {index + 1}</h3>
                               {criterion.isAIGenerated && <Sparkles className="h-4 w-4 text-amber-500" />}
                             </div>
-                            {criteria.length > 2 && <Button variant="ghost" size="icon" onClick={() => removeCriterion(criterion.id)} className="h-8 w-8 text-muted-foreground hover:text-destructive">
+                            {criteria.length > 2 && <Button variant="ghost" size="icon" onClick={() => removeCriterion(criterion.id)} className="h-8 w-8 text-muted-foreground hover:text-destructive rounded-full">
                                 <Trash2 className="h-4 w-4" />
                               </Button>}
                           </div>
