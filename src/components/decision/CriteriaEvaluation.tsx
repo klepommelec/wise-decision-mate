@@ -145,7 +145,7 @@ export function CriteriaEvaluation({
             </Droppable>
           </DragDropContext>
           
-          <Button variant="outline" className="w-full flex items-center justify-center gap-2 mt-6" onClick={addCriterion}>
+          <Button variant="outline" onClick={addCriterion} className="w-full flex items-center justify-center gap-2 mt-6 rounded-full">
             <Plus className="h-4 w-4" />
             Ajouter un critère
           </Button>
