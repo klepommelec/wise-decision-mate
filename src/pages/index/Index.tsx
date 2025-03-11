@@ -151,12 +151,22 @@ const Index = () => {
               duration: 0.5
             }}>
                   {step === 'criteria' && <div>
-                      <StepNavigator currentStep="Critères" previousSteps={[]} onBackStep={() => handleReset()} />
+                      <StepNavigator 
+                        currentStep="Critères" 
+                        previousSteps={[]} 
+                        onBackStep={() => handleReset()} 
+                        onResetDecision={handleReset}
+                      />
                       <CriteriaEvaluation criteria={criteria} isLoading={isGeneratingCriteria || isProcessingManualEntries} onComplete={handleCriteriaComplete} decisionTitle={decision.title} />
                     </div>}
                   
                   {step === 'analysis' && <div>
-                      <StepNavigator currentStep="Analyse" previousSteps={["Critères"]} onBackStep={() => handleBackToCriteria()} />
+                      <StepNavigator 
+                        currentStep="Analyse" 
+                        previousSteps={["Critères"]} 
+                        onBackStep={() => handleBackToCriteria()} 
+                        onResetDecision={handleReset}
+                      />
                       <AnalysisResult decisionTitle={decision.title} options={options} criteria={criteria} evaluations={evaluations} onBack={() => handleBackToCriteria()} onReset={handleReset} onRegenerateOptions={handleRegenerateOptions} onAddOption={handleAddOption} />
                     </div>}
                 </motion.div>
