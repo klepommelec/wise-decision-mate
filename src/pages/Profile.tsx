@@ -283,7 +283,7 @@ export default function Profile() {
                   {viewMode === "grid" ? <ListIcon className="h-3.5 w-3.5" /> : <GridIcon className="h-3.5 w-3.5" />}
                 </Button>
                 
-                <Button className="gap-1.5" size="sm" onClick={() => navigate("/new-decision")}>
+                <Button size="sm" onClick={() => navigate("/new-decision")} className="gap-1.5 rounded-full font-medium text-gray-900 bg-lime-400 hover:bg-lime-500">
                   <PlusCircle className="h-3.5 w-3.5" />
                   Nouvelle décision
                 </Button>
