@@ -173,7 +173,7 @@ export default function Profile() {
                                 <Button variant={theme === "light" ? "default" : "outline"} size="sm" onClick={() => {
                                 setTheme("light");
                                 toast.success("Thème clair activé");
-                              }} className="w-full justify-start bg-lime-400">
+                              }} className="w-full justify-start rounded-full text-gray-900 bg-lime-400 hover:bg-lime-500 font-medium">
                                   <Sun className="h-4 w-4 mr-2" />
                                   Clair
                                 </Button>
