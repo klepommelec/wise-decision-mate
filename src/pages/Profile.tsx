@@ -379,11 +379,11 @@ export default function Profile() {
                           </Tooltip>
                         </TooltipProvider>
                         
-                        <Button variant="default" size="sm" className="ml-auto" onClick={() => navigate("/", {
+                        <Button variant="default" size="sm" onClick={() => navigate("/", {
                     state: {
                       existingDecision: decision
                     }
-                  })}>
+                  })} className="rounded-full font-medium text-gray-900 bg-lime-400 hover:bg-lime-500">
                           Ouvrir
                         </Button>
                       </div>
