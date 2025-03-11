@@ -1,10 +1,12 @@
+
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 export default function Help() {
   const navigate = useNavigate();
   return <Container className="py-10">
@@ -65,6 +67,28 @@ export default function Help() {
                       Examinez l'analyse et la recommandation générée par notre outil.
                     </p>
                   </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Catalogue des composants</CardTitle>
+                  <CardDescription>
+                    Découvrez tous les éléments disponibles dans l'application
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Consultez notre bibliothèque de composants pour mieux comprendre les éléments d'interface que vous rencontrerez dans l'application.
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    className="flex items-center w-full justify-center gap-2"
+                    onClick={() => window.open('/components', '_blank')}
+                  >
+                    Consulter les composants
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
                 </CardContent>
               </Card>
               
