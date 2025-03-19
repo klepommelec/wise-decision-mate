@@ -135,7 +135,7 @@ const Index = () => {
           Prenez des décisions<br />averties, avec Jupi.
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Memo vous assiste à structurer votre réflexion<br />
+          Jupi vous assiste à structurer votre réflexion<br />
           et à analyser objectivement les options qui s'offrent à vous.
         </p>
       </motion.div>
