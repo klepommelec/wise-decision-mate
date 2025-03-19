@@ -174,7 +174,7 @@ export default function Help() {
                   <div className="grid gap-4 py-4">
                     <div className="flex flex-col space-y-1.5">
                       <p className="font-medium">Email</p>
-                      <p className="text-sm text-muted-foreground">support@wisedecision.app</p>
+                      <p className="text-sm text-muted-foreground">support@jupi.co</p>
                     </div>
                     <div className="flex flex-col space-y-1.5">
                       <p className="font-medium">Heures de support</p>
