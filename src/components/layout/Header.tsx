@@ -17,7 +17,7 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between py-3">
         <div className="flex items-center gap-2">
           <a href="/" className="flex items-center gap-2" onClick={handleLogoClick}>
-            <img alt="Memo Logo" className="h-8 max-h-[32px] w-auto" src="/lovable-uploads/317853df-42ec-46e4-ba19-27a5e372dabc.png" />
+            <img alt="Memo Logo" className="h-8 max-h-[32px] w-auto" src="/lovable-uploads/e1a7afda-0fb2-4e53-a979-19bac1bfa59f.png" />
           </a>
         </div>
         <nav className="flex items-center gap-3">
