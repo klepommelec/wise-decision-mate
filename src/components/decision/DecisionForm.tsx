@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,12 +15,14 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover
 import { format } from 'date-fns';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
+
 interface Decision {
   id?: string;
   title: string;
   description: string;
   deadline?: string;
 }
+
 interface DecisionFormProps {
   onSubmit: (decision: {
     title: string;
@@ -28,6 +31,7 @@ interface DecisionFormProps {
   }, generateOptions?: boolean) => void;
   initialDecision?: Decision;
 }
+
 export function DecisionForm({
   onSubmit,
   initialDecision
@@ -37,41 +41,35 @@ export function DecisionForm({
   const [deadline, setDeadline] = useState<Date | undefined>(initialDecision?.deadline ? new Date(initialDecision.deadline) : undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [useAI, setUseAI] = useState(true);
-  const {
-    user
-  } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
+
+  // Mise à jour des champs si initialDecision change
   useEffect(() => {
     if (initialDecision) {
+      setTitle(initialDecision.title || '');
+      setDescription(initialDecision.description || '');
+      setDeadline(initialDecision.deadline ? new Date(initialDecision.deadline) : undefined);
       console.log("DecisionForm received initialDecision:", initialDecision);
     }
   }, [initialDecision]);
-  useEffect(() => {
-    if (initialDecision && initialDecision.title) {
-      console.log("Auto-submitting with initialDecision:", initialDecision);
-      onSubmit({
-        title: initialDecision.title,
-        description: initialDecision.description,
-        deadline: initialDecision.deadline
-      }, false);
-    }
-  }, [initialDecision, onSubmit]);
+
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
     setIsSubmitting(true);
+    
     if (!user) {
       toast.error("Vous devez être connecté pour créer une décision");
       navigate("/auth");
       setIsSubmitting(false);
       return;
     }
+    
     try {
       if (!initialDecision?.id) {
         console.log("Creating new decision:", title);
-        const {
-          error
-        } = await supabase.from('decisions').insert({
+        const { error } = await supabase.from('decisions').insert({
           user_id: user.id,
           title,
           description,
@@ -81,9 +79,7 @@ export function DecisionForm({
       } else {
         console.log("Using existing decision:", initialDecision.id);
         if (initialDecision.title !== title || initialDecision.description !== description || initialDecision.deadline !== (deadline ? deadline.toISOString() : null)) {
-          const {
-            error
-          } = await supabase.from('decisions').update({
+          const { error } = await supabase.from('decisions').update({
             title,
             description,
             deadline: deadline ? deadline.toISOString() : null
@@ -91,11 +87,13 @@ export function DecisionForm({
           if (error) throw error;
         }
       }
+      
       onSubmit({
         title,
         description,
         deadline: deadline ? deadline.toISOString() : undefined
       }, useAI);
+      
       setIsSubmitting(false);
     } catch (error: any) {
       console.error("Erreur lors de l'enregistrement de la décision:", error);
@@ -103,7 +101,9 @@ export function DecisionForm({
       setIsSubmitting(false);
     }
   }, [title, description, deadline, useAI, user, navigate, onSubmit, initialDecision]);
-  return <div className="w-full max-w-2xl mx-auto animate-fade-in pt-0">
+
+  return (
+    <div className="w-full max-w-2xl mx-auto animate-fade-in pt-0">
       <Card className="gradient-border-card transition-all duration-300 shadow-sm overflow-hidden bg-white rounded-lg">
         <CardHeader className="bg-white border-b rounded-t-xl">
           <div className="flex items-center gap-3">
@@ -147,12 +147,13 @@ export function DecisionForm({
               </div>
             </div>
             
-            <Button type="submit" variant="secondary" disabled={!title.trim() || isSubmitting} className="w-full transition-all mt-2 gap-2 py-6 rounded-full bg-gray-300 hover:bg-gray-400 text-gray-700">
-              {isSubmitting ? "Traitement..." : initialDecision ? "Continuer" : "Continuer"}
+            <Button type="submit" variant="secondary" disabled={!title.trim() || isSubmitting} className="w-full transition-all mt-2 gap-2 py-6 rounded-full bg-lime-400 hover:bg-lime-500 text-gray-700">
+              {isSubmitting ? "Traitement..." : "Continuer"}
               <ArrowRight className="h-4 w-4" />
             </Button>
           </form>
         </CardContent>
       </Card>
-    </div>;
+    </div>
+  );
 }

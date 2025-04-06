@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,7 @@ import {
 } from "@/components/ui/carousel";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
+import { LandingDecisionForm } from "@/components/landing/LandingDecisionForm";
 
 // Helper component for animated feature cards
 const FeatureCard = ({
@@ -192,7 +192,7 @@ export default function Landing() {
   
   return (
     <div className="flex flex-col min-h-screen overflow-hidden">
-      {/* Hero Section - Reimagined with dynamic split design */}
+      {/* Hero Section - Reimagined with dynamic split design and interactive form */}
       <section className="min-h-screen relative overflow-hidden flex flex-col lg:flex-row">
         {/* Left Section - Content */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12 bg-gradient-to-br from-white to-lime-50">
@@ -209,7 +209,7 @@ export default function Landing() {
                 Une approche structurée et interactive pour analyser vos options et faire les meilleurs choix.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button variant="highlight" size="lg" className="rounded-full text-gray-900" onClick={() => navigate("/new-decision")}>
+                <Button variant="highlight" size="lg" className="rounded-full text-gray-900" onClick={() => navigate("/auth")}>
                   Commencer maintenant <ArrowRight className="ml-2 animate-pulse" />
                 </Button>
                 <Button variant="outline" size="lg" className="rounded-full" onClick={() => navigate("/about")}>
@@ -230,19 +230,17 @@ export default function Landing() {
           </div>
         </div>
         
-        {/* Right Section - Dynamic Floating Elements */}
+        {/* Right Section - Interactive Decision Form */}
         <div className="w-full lg:w-1/2 bg-gradient-to-tl from-lime-50 to-white relative">
-          <div className="absolute inset-0 overflow-hidden">
-            {/* Main image */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/4 transition-all duration-700 hover:scale-105">
-              <AspectRatio ratio={16/9} className="rounded-xl shadow-xl overflow-hidden">
-                <img 
-                  src="/lovable-uploads/c2e072d3-6efa-4ea3-82df-5e038dd43589.png" 
-                  alt="Interface Memo" 
-                  className="w-full h-full object-cover"
-                />
-              </AspectRatio>
+          <div className="absolute inset-0 flex items-center justify-center p-8 overflow-hidden">
+            {/* Interactive Decision Form */}
+            <div className="w-full max-w-md transform transition-all duration-700 hover:scale-[1.02] z-20">
+              <LandingDecisionForm />
             </div>
+            
+            {/* Abstract shapes in background */}
+            <div className="absolute top-[10%] right-[10%] w-24 h-24 rounded-full bg-gradient-to-br from-lime-200 to-lime-400 opacity-40 blur-lg"></div>
+            <div className="absolute bottom-[10%] left-[10%] w-32 h-32 rounded-full bg-gradient-to-br from-blue-200 to-purple-200 opacity-30 blur-xl"></div>
             
             {/* Floating Elements */}
             <div className="absolute top-[20%] left-[15%] transform -translate-x-1/2 -translate-y-1/2 p-3 bg-white rounded-lg shadow-lg animate-float">
@@ -254,10 +252,6 @@ export default function Landing() {
             <div className="absolute top-[70%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 p-4 bg-white rounded-xl shadow-lg">
               <BarChart3 className="text-blue-500 h-8 w-8" />
             </div>
-            
-            {/* Abstract shapes */}
-            <div className="absolute top-[10%] right-[10%] w-24 h-24 rounded-full bg-gradient-to-br from-lime-200 to-lime-400 opacity-40 blur-lg"></div>
-            <div className="absolute bottom-[10%] left-[10%] w-32 h-32 rounded-full bg-gradient-to-br from-blue-200 to-purple-200 opacity-30 blur-xl"></div>
           </div>
         </div>
       </section>
