@@ -144,13 +144,9 @@ export default function Landing() {
                 Choisissez mieux avec Memo
               </h1>
               
-              <p className="text-xl text-gray-600 text-center">
-                Une approche structurée et interactive pour analyser vos options et faire les meilleurs choix.
-              </p>
               
-              <div className="text-center text-2xl font-semibold text-gray-800">
-                Prenez des décisions éclairées
-              </div>
+              
+              
               
               <p className="text-lg text-gray-600 text-center max-w-lg mx-auto">
                 Memo vous assiste à structurer votre réflexion
