@@ -132,10 +132,10 @@ const Index = () => {
         {...pageTransition}
       >
         <h1 className="main-title font-medium">
-          Prenez des décisions<br />averties, avec Jupi.
+          Prenez des décisions<br />averties, avec Memo.
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Jupi vous assiste à structurer votre réflexion<br />
+          Memo vous assiste à structurer votre réflexion<br />
           et à analyser objectivement les options qui s'offrent à vous.
         </p>
       </motion.div>
