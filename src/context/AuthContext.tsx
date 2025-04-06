@@ -7,12 +7,14 @@ interface AuthContextType {
   session: Session | null;
   user: User | null;
   loading: boolean;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   session: null,
   user: null,
   loading: true,
+  signOut: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -54,10 +56,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
+  // Fonction de déconnexion
+  const signOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      // La mise à jour de l'état sera gérée par l'écouteur onAuthStateChange
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error);
+    }
+  };
+
   const value = {
     session,
     user,
     loading,
+    signOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
