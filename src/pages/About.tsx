@@ -5,6 +5,7 @@ import { Separator } from '@/components/ui/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { BookOpen, PenTool, Brain, Scale, Lightbulb, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const About = () => {
   return (
@@ -160,11 +161,11 @@ const About = () => {
             qui vient avec une approche structurée, objective et personnalisée.
           </p>
           <Button 
-            href="/auth" 
             size="lg" 
             className="text-base px-8 py-6 h-auto"
+            asChild
           >
-            Commencer votre voyage
+            <Link to="/auth">Commencer votre voyage</Link>
           </Button>
         </section>
       </div>
@@ -173,4 +174,3 @@ const About = () => {
 };
 
 export default About;
-
