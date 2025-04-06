@@ -164,9 +164,9 @@ export default function Auth() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-4">
-                <TabsTrigger value="signin">Connexion</TabsTrigger>
-                <TabsTrigger value="signup">Inscription</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 mb-4 rounded-full">
+                <TabsTrigger value="signin" className="rounded-full">Connexion</TabsTrigger>
+                <TabsTrigger value="signup" className="rounded-full">Inscription</TabsTrigger>
               </TabsList>
               
               {/* Onglet de connexion */}
