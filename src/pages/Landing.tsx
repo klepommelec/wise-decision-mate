@@ -137,7 +137,7 @@ export default function Landing() {
   };
   return <div className="flex flex-col min-h-screen overflow-hidden">
       <section className="min-h-screen relative overflow-hidden flex flex-col lg:flex-row">
-        <div className="w-full flex items-center justify-center bg-gradient-to-br from-white to-lime-50 relative">
+        <div className="w-full flex items-center justify-center bg-gradient-to-br from-white to-lime-50">
           <div className="max-w-xl relative z-10">
             <div className="space-y-6 animate-fade-in text-center">
               <h1 className="font-bold tracking-tight text-gray-900 text-6xl">
