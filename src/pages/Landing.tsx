@@ -149,7 +149,7 @@ export default function Landing() {
       {/* Hero Section - Reimagined with dynamic split design and interactive form */}
       <section className="min-h-screen relative overflow-hidden flex flex-col lg:flex-row">
         {/* Left Section - Content */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12 bg-gradient-to-br from-white to-lime-50">
+        <div className="w-full flex items-center justify-center p-6 lg:p-12 bg-gradient-to-br from-white to-lime-50">
           <div className="max-w-xl space-y-8 py-16">
             <div className="space-y-6 animate-fade-in">
               
@@ -177,9 +177,7 @@ export default function Landing() {
         </div>
         
         {/* Right Section - Interactive Decision Form */}
-        <div className="w-full lg:w-1/2 bg-gradient-to-tl from-lime-50 to-white relative">
-          
-        </div>
+        
       </section>
 
       {/* Features Section with Interactive Elements */}
