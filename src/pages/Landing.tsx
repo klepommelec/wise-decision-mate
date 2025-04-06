@@ -248,16 +248,7 @@ export default function Landing() {
             </div>
             
             <div className="relative order-1 lg:order-2">
-              <div className="aspect-square relative rounded-2xl overflow-hidden shadow-xl bg-white p-4">
-                <div className="absolute inset-4 bg-gradient-to-br from-lime-50 to-white rounded-xl"></div>
-                <img src="/lovable-uploads/6101851f-2549-45ba-a231-ed9bfb465e2b.png" alt="Processus de décision" className="absolute inset-0 w-full h-full object-cover rounded-xl z-10" />
-                <div className="absolute inset-0 bg-gradient-to-t from-lime-900/30 to-transparent z-20 rounded-xl"></div>
-                
-                {/* Interactive indicators */}
-                <div className="absolute top-[20%] left-[20%] w-6 h-6 bg-lime-500 rounded-full z-30 animate-pulse"></div>
-                <div className="absolute top-[40%] left-[60%] w-6 h-6 bg-blue-500 rounded-full z-30 animate-pulse"></div>
-                <div className="absolute top-[70%] left-[30%] w-6 h-6 bg-purple-500 rounded-full z-30 animate-pulse"></div>
-              </div>
+              
               
               {/* Abstract decorations */}
               <div className="absolute -top-8 -right-8 w-24 h-24 bg-lime-200 rounded-full opacity-60 blur-xl"></div>
