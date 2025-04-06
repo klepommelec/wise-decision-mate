@@ -120,7 +120,6 @@ const Testimonial = ({
       </div>
     </div>
   </div>;
-
 export default function Landing() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>("businesses");
@@ -146,14 +145,13 @@ export default function Landing() {
       behavior: "smooth"
     });
   };
-
   return <div className="flex flex-col min-h-screen overflow-hidden">
       {/* Hero Section - Reimagined with dynamic split design and interactive form */}
       <section className="min-h-screen relative overflow-hidden flex flex-col lg:flex-row">
         {/* Left Section - Content */}
         <div className="w-full flex items-center justify-center p-6 lg:p-12 bg-gradient-to-br from-white to-lime-50">
           <div className="max-w-xl space-y-8 py-16">
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-6 animate-fade-in text-center">
               
               <h1 className="text-5xl md:text-7xl font-bold leading-tight">
                 Prenez des <span className="relative">
@@ -161,17 +159,10 @@ export default function Landing() {
                   <span className="absolute -bottom-2 left-0 right-0 h-3 bg-lime-400 z-0 transform -rotate-1"></span>
                 </span> avec confiance
               </h1>
-              <p className="text-xl text-gray-600 md:max-w-md">
+              <p className="text-xl text-gray-600 text-center">
                 Une approche structurée et interactive pour analyser vos options et faire les meilleurs choix.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button variant="highlight" size="lg" onClick={() => navigate("/auth")} className="rounded-full text-gray-900 bg-lime-400 ">
-                  Commencer maintenant <ArrowRight className="ml-2 animate-pulse" />
-                </Button>
-                <Button variant="outline" size="lg" className="rounded-full" onClick={() => navigate("/about")}>
-                  En savoir plus
-                </Button>
-              </div>
+              
             </div>
             
             <div className="mt-10 w-full">
