@@ -147,7 +147,7 @@ export default function Auth() {
   };
   return <div className="container flex items-center justify-center min-h-screen py-10">
       <div className="w-full max-w-md">
-        <Button variant="ghost" className="mb-6" onClick={() => navigate("/")}>
+        <Button variant="ghost" onClick={() => navigate("/")} className="mb-6 rounded-full">
           <ArrowLeft className="mr-2 h-4 w-4" /> Retour à l'accueil
         </Button>
 
