@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Trash2 } from 'lucide-react';
+import { Sparkles, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import { Option } from './types';
@@ -27,6 +27,12 @@ export function OptionItem({
   onDelete,
   onTitleBlur
 }: OptionItemProps) {
+  const [showDescription, setShowDescription] = useState(false);
+
+  const toggleDescription = () => {
+    setShowDescription(prev => !prev);
+  };
+
   return (
     <div 
       className={cn(
@@ -66,24 +72,36 @@ export function OptionItem({
             className="w-full bg-white"
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor={`description-${option.id}`}>Description (optionnel)</Label>
-          {option.isLoading ? (
-            <div className="space-y-2 animate-pulse">
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-              <Progress className="h-1 mt-1" value={50} />
-            </div>
-          ) : (
-            <Textarea
-              id={`description-${option.id}`}
-              value={option.description}
-              onChange={(e) => onUpdate(option.id, 'description', e.target.value)}
-              placeholder="Détails, avantages et inconvénients de cette option..."
-              className="min-h-[80px] bg-white"
-            />
-          )}
-        </div>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={toggleDescription}
+          className="w-full text-sm flex justify-between items-center bg-white"
+        >
+          <span>Description (optionnel)</span>
+          {showDescription ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        </Button>
+        
+        {showDescription && (
+          <div className="space-y-2">
+            {option.isLoading ? (
+              <div className="space-y-2 animate-pulse">
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                <Progress className="h-1 mt-1" value={50} />
+              </div>
+            ) : (
+              <Textarea
+                id={`description-${option.id}`}
+                value={option.description}
+                onChange={(e) => onUpdate(option.id, 'description', e.target.value)}
+                placeholder="Détails, avantages et inconvénients de cette option..."
+                className="min-h-[80px] bg-white"
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
