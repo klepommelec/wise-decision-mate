@@ -191,7 +191,7 @@ export default function Auth() {
                           </FormControl>
                           <FormMessage />
                         </FormItem>} />
-                    <Button type="submit" disabled={isLoading} className="w-full bg-lime-400 hover:bg-lime-500">
+                    <Button type="submit" disabled={isLoading} className="w-full bg-lime-400 hover:bg-lime-500 rounded-full">
                       {isLoading ? "Connexion en cours..." : "Se connecter"}
                     </Button>
                   </form>
