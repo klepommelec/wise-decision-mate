@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -172,7 +173,7 @@ export default function Landing() {
 
           <div className="hidden lg:block absolute top-0 right-0 w-1/3 h-full">
             <img
-              src="/lovable-uploads/70e4d817-b2d8-4613-9584-67d00db6abe0.png"
+              src="/lovable-uploads/3acfe473-9198-4327-83ed-253f468b53a3.png"
               alt="Main droite"
               className="absolute top-10 right-0 w-full max-w-sm opacity-70 object-contain z-0"
             />
