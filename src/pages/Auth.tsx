@@ -229,7 +229,7 @@ export default function Auth() {
                           </FormControl>
                           <FormMessage />
                         </FormItem>} />
-                    <Button type="submit" className="w-full" disabled={isLoading}>
+                    <Button type="submit" disabled={isLoading} className="w-full rounded-full bg-lime-400 hover:bg-lime-500">
                       {isLoading ? "Inscription en cours..." : "S'inscrire"}
                     </Button>
                   </form>
