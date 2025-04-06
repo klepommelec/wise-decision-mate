@@ -150,7 +150,7 @@ export default function Landing() {
       <section className="min-h-screen relative overflow-hidden flex flex-col lg:flex-row">
         {/* Left Section - Content */}
         <div className="w-full flex items-center justify-center p-6 lg:p-12 bg-gradient-to-br from-white to-lime-50">
-          <div className="max-w-xl space-y-8 py-16">
+          <div className="max-w-xl ">
             <div className="space-y-6 animate-fade-in text-center">
               
               <h1 className="text-5xl md:text-7xl font-bold leading-tight">
