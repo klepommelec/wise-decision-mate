@@ -152,7 +152,9 @@ export default function Landing() {
         <div className="w-full flex items-center justify-center p-6 lg:p-12 bg-gradient-to-br from-white to-lime-50">
           <div className="max-w-xl ">
             <div className="space-y-6 animate-fade-in text-center">
-              
+              <h1 className="text-5xl font-bold tracking-tight text-gray-900">
+                Choisissez mieux avec Memo
+              </h1>
               
               <p className="text-xl text-gray-600 text-center">
                 Une approche structurée et interactive pour analyser vos options et faire les meilleurs choix.
