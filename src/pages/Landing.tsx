@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,6 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
 import { LandingDecisionForm } from "@/components/landing/LandingDecisionForm";
-
 const FeatureCard = ({
   icon: Icon,
   title,
@@ -49,7 +47,6 @@ const FeatureCard = ({
       <p className="text-gray-600">{description}</p>
     </div>;
 };
-
 const ProcessStep = ({
   number,
   title,
@@ -90,7 +87,6 @@ const ProcessStep = ({
       </div>
     </div>;
 };
-
 const Testimonial = ({
   quote,
   author,
@@ -118,12 +114,10 @@ const Testimonial = ({
       </div>
     </div>
   </div>;
-
 export default function Landing() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>("businesses");
   const [scrolled, setScrolled] = useState(false);
-
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -135,14 +129,12 @@ export default function Landing() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
   const scrollToNextSection = () => {
     window.scrollTo({
       top: window.innerHeight,
       behavior: "smooth"
     });
   };
-
   return <div className="flex flex-col min-h-screen overflow-hidden">
       <section className="min-h-screen relative overflow-hidden flex flex-col lg:flex-row">
         <div className="w-full flex items-center justify-center bg-gradient-to-br from-white to-lime-50 relative">
@@ -172,19 +164,11 @@ export default function Landing() {
           </div>
 
           <div className="hidden lg:block absolute top-0 right-0 w-1/3 h-full">
-            <img
-              src="/lovable-uploads/3acfe473-9198-4327-83ed-253f468b53a3.png"
-              alt="Main droite"
-              className="absolute top-10 right-0 w-full max-w-sm opacity-70 object-contain z-0"
-            />
+            <img alt="Main droite" className="absolute top-10 right-0 w-full max-w-sm opacity-70 object-contain z-0" src="/lovable-uploads/49017462-c901-45f8-9cdd-2c12f141987a.png" />
           </div>
           
           <div className="hidden lg:block absolute bottom-0 left-0 w-1/3 h-full">
-            <img
-              src="/lovable-uploads/48468dde-ce5d-47a7-8c02-3c1640b44558.png"
-              alt="Main gauche"
-              className="absolute bottom-10 left-0 w-full max-w-sm opacity-70 object-contain z-0"
-            />
+            <img src="/lovable-uploads/48468dde-ce5d-47a7-8c02-3c1640b44558.png" alt="Main gauche" className="absolute bottom-10 left-0 w-full max-w-sm opacity-70 object-contain z-0" />
           </div>
         </div>
       </section>
