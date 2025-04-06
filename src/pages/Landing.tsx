@@ -160,7 +160,7 @@ export default function Landing() {
           </div>
 
           <div className="hidden lg:block absolute top-0 right-0 w-1/3 h-full">
-            <img alt="Main droite" className="absolute top-10 right-0 w-full max-w-sm opacity-70 object-contain z-0" src="/lovable-uploads/49017462-c901-45f8-9cdd-2c12f141987a.png" />
+            <img alt="Main droite" src="/lovable-uploads/49017462-c901-45f8-9cdd-2c12f141987a.png" className="absolute top-40 right-0 w-full max-w-sm opacity-70 object-contain z-0" />
           </div>
           
           <div className="hidden lg:block absolute bottom-0 left-0 w-1/3 h-full">
