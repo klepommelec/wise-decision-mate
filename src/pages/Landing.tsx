@@ -152,18 +152,18 @@ export default function Landing() {
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12 bg-gradient-to-br from-white to-lime-50">
           <div className="max-w-xl space-y-8 py-16">
             <div className="space-y-6 animate-fade-in">
-              <Badge className="bg-lime-200 text-lime-800 px-4 py-2 text-sm hover:bg-lime-300">Simplifiez vos choix</Badge>
+              <Badge className="bg-lime-200 text-lime-800 px-4 py-2 text-sm hover:bg-lime-400">Simplifiez vos choix</Badge>
               <h1 className="text-5xl md:text-7xl font-bold leading-tight">
                 Prenez des <span className="relative">
                   <span className="relative z-10">décisions</span>
-                  <span className="absolute -bottom-2 left-0 right-0 h-3 bg-lime-300 z-0 transform -rotate-1"></span>
+                  <span className="absolute -bottom-2 left-0 right-0 h-3 bg-lime-400 z-0 transform -rotate-1"></span>
                 </span> avec confiance
               </h1>
               <p className="text-xl text-gray-600 md:max-w-md">
                 Une approche structurée et interactive pour analyser vos options et faire les meilleurs choix.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button variant="highlight" size="lg" className="rounded-full text-gray-900" onClick={() => navigate("/auth")}>
+                <Button variant="highlight" size="lg" onClick={() => navigate("/auth")} className="rounded-full text-gray-900 bg-lime-400 ">
                   Commencer maintenant <ArrowRight className="ml-2 animate-pulse" />
                 </Button>
                 <Button variant="outline" size="lg" className="rounded-full" onClick={() => navigate("/about")}>
@@ -172,12 +172,7 @@ export default function Landing() {
               </div>
             </div>
             
-            <div className="pt-16 hidden md:block">
-              <button onClick={scrollToNextSection} className="flex flex-col items-center text-gray-500 hover:text-gray-800 transition-colors">
-                <span className="mb-2 text-sm">Découvrir</span>
-                <ArrowDown className="animate-bounce" />
-              </button>
-            </div>
+            
           </div>
         </div>
         
