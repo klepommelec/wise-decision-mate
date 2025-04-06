@@ -120,6 +120,7 @@ const Testimonial = ({
       </div>
     </div>
   </div>;
+
 export default function Landing() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>("businesses");
@@ -145,6 +146,7 @@ export default function Landing() {
       behavior: "smooth"
     });
   };
+
   return <div className="flex flex-col min-h-screen overflow-hidden">
       {/* Hero Section - Reimagined with dynamic split design and interactive form */}
       <section className="min-h-screen relative overflow-hidden flex flex-col lg:flex-row">
@@ -172,6 +174,9 @@ export default function Landing() {
               </div>
             </div>
             
+            <div className="mt-10 w-full">
+              <LandingDecisionForm />
+            </div>
             
           </div>
         </div>
