@@ -120,6 +120,7 @@ const Testimonial = ({
       </div>
     </div>
   </div>;
+
 export default function Landing() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>("businesses");
@@ -165,7 +166,7 @@ export default function Landing() {
               
             </div>
             
-            <div className="mt-10 w-full">
+            <div className="mt-10 w-full flex justify-center">
               <LandingDecisionForm />
             </div>
             
