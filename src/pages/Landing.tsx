@@ -178,25 +178,7 @@ export default function Landing() {
         
         {/* Right Section - Interactive Decision Form */}
         <div className="w-full lg:w-1/2 bg-gradient-to-tl from-lime-50 to-white relative">
-          <div className="absolute inset-0 flex items-center justify-center p-8 overflow-hidden">
-            {/* Interactive Decision Form */}
-            <div className="w-full max-w-md transform transition-all duration-700 hover:scale-[1.02] z-20">
-              <LandingDecisionForm />
-            </div>
-            
-            {/* Abstract shapes in background */}
-            <div className="absolute top-[10%] right-[10%] w-24 h-24 rounded-full bg-gradient-to-br from-lime-200 to-lime-400 opacity-40 blur-lg"></div>
-            <div className="absolute bottom-[10%] left-[10%] w-32 h-32 rounded-full bg-gradient-to-br from-blue-200 to-purple-200 opacity-30 blur-xl"></div>
-            
-            {/* Floating Elements */}
-            
-            <div className="absolute bottom-[30%] right-[20%] transform translate-x-1/2 translate-y-1/2 p-3 bg-white rounded-lg shadow-lg">
-              <Star className="text-yellow-500 h-6 w-6" />
-            </div>
-            <div className="absolute top-[70%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 p-4 bg-white rounded-xl shadow-lg">
-              <BarChart3 className="text-blue-500 h-8 w-8" />
-            </div>
-          </div>
+          
         </div>
       </section>
 
