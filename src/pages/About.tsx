@@ -16,7 +16,7 @@ const About = () => {
             Prise de décision simplifiée et éclairée
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            DecisionMate vous aide à prendre des décisions complexes de manière structurée et objective.
+            Memo vous aide à prendre des décisions complexes de manière structurée et objective.
           </p>
         </section>
 
@@ -26,7 +26,7 @@ const About = () => {
               <div className="space-y-4">
                 <h2 className="text-2xl font-semibold">Notre approche</h2>
                 <p className="text-muted-foreground">
-                  DecisionMate utilise une méthode d'analyse multicritères pour vous aider à évaluer objectivement 
+                  Memo utilise une méthode d'analyse multicritères pour vous aider à évaluer objectivement 
                   différentes options. Notre processus vous guide pas à pas pour structurer votre réflexion.
                 </p>
               </div>
@@ -44,7 +44,7 @@ const About = () => {
         <Separator />
 
         <section className="space-y-6">
-          <h2 className="text-3xl font-semibold text-center">Pourquoi utiliser DecisionMate?</h2>
+          <h2 className="text-3xl font-semibold text-center">Pourquoi utiliser Memo?</h2>
           
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
             <Card className="glass-card hover:shadow-md transition-all">
@@ -114,7 +114,7 @@ const About = () => {
         <section className="text-center max-w-xl mx-auto">
           <h2 className="text-2xl font-semibold mb-4">Prêt à prendre de meilleures décisions?</h2>
           <p className="text-muted-foreground mb-6">
-            Que ce soit pour votre vie personnelle ou professionnelle, DecisionMate vous aide à faire des choix éclairés.
+            Que ce soit pour votre vie personnelle ou professionnelle, Memo vous aide à faire des choix éclairés.
           </p>
           <a 
             href="/"

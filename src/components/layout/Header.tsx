@@ -23,8 +23,8 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between py-3">
         <div className="flex items-center gap-2">
           <a href={user ? '/dashboard' : '/'} className="flex items-center gap-2" onClick={handleLogoClick}>
-            <img src="/lovable-uploads/1465f08a-adfe-457b-a2f9-f046b763d7f1.png" alt="Jupi Logo" className="h-8 max-h-[32px] w-auto" />
-            <span className="font-semibold text-lg">Jupi</span>
+            <img src="/lovable-uploads/1465f08a-adfe-457b-a2f9-f046b763d7f1.png" alt="Memo Logo" className="h-8 max-h-[32px] w-auto" />
+            <span className="font-semibold text-lg">Memo</span>
           </a>
         </div>
         <nav className="flex items-center gap-3">

@@ -89,7 +89,7 @@ export default function Landing() {
             <div className="md:w-1/2">
               <img 
                 src="/lovable-uploads/c2e072d3-6efa-4ea3-82df-5e038dd43589.png" 
-                alt="Interface Jupi" 
+                alt="Interface Memo" 
                 className="w-full h-auto rounded-lg shadow-lg animate-slide-in"
               />
             </div>
@@ -103,7 +103,7 @@ export default function Landing() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Fonctionnalités principales</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Jupi vous apporte tous les outils nécessaires pour analyser, comparer et finaliser vos décisions importantes.
+              Memo vous apporte tous les outils nécessaires pour analyser, comparer et finaliser vos décisions importantes.
             </p>
           </div>
 
@@ -188,7 +188,7 @@ export default function Landing() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Adapté à tous vos besoins</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Que vous soyez un particulier ou une entreprise, Jupi s'adapte à toutes les situations de prise de décision.
+              Que vous soyez un particulier ou une entreprise, Memo s'adapte à toutes les situations de prise de décision.
             </p>
             <div className="mt-6 flex justify-center space-x-4">
               <Button 
@@ -224,7 +224,7 @@ export default function Landing() {
               <div className="bg-gray-50 p-6 rounded-lg">
                 <h4 className="font-semibold mb-3">Témoignage</h4>
                 <Testimonial 
-                  quote="Jupi a transformé notre processus de sélection des fournisseurs. Ce qui prenait des semaines de réunions se fait maintenant en quelques heures avec une transparence totale."
+                  quote="Memo a transformé notre processus de sélection des fournisseurs. Ce qui prenait des semaines de réunions se fait maintenant en quelques heures avec une transparence totale."
                   author="Marie Dupont"
                   role="Directrice des achats"
                 />
@@ -248,7 +248,7 @@ export default function Landing() {
               <div className="bg-gray-50 p-6 rounded-lg">
                 <h4 className="font-semibold mb-3">Témoignage</h4>
                 <Testimonial 
-                  quote="J'hésitais entre plusieurs options de carrière. Grâce à Jupi, j'ai pu clarifier mes priorités et prendre une décision en fonction de ce qui compte vraiment pour moi."
+                  quote="J'hésitais entre plusieurs options de carrière. Grâce à Memo, j'ai pu clarifier mes priorités et prendre une décision en fonction de ce qui compte vraiment pour moi."
                   author="Thomas Leroy"
                   role="Ingénieur logiciel"
                 />
@@ -264,19 +264,19 @@ export default function Landing() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Questions fréquentes</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Tout ce que vous devez savoir pour commencer à utiliser Jupi
+              Tout ce que vous devez savoir pour commencer à utiliser Memo
             </p>
           </div>
 
           <div className="max-w-3xl mx-auto divide-y">
             {[
               {
-                q: "Comment Jupi m'aide-t-il à prendre de meilleures décisions ?",
-                a: "Jupi structure votre processus de décision en décomposant les problèmes complexes en critères mesurables, en facilitant la comparaison des options et en permettant une analyse visuelle claire des résultats."
+                q: "Comment Memo m'aide-t-il à prendre de meilleures décisions ?",
+                a: "Memo structure votre processus de décision en décomposant les problèmes complexes en critères mesurables, en facilitant la comparaison des options et en permettant une analyse visuelle claire des résultats."
               },
               {
                 q: "Est-ce que l'outil est gratuit ?",
-                a: "Jupi propose une version gratuite qui permet d'accéder aux fonctionnalités essentielles. Des options premium sont disponibles pour les utilisateurs qui ont besoin de fonctionnalités avancées."
+                a: "Memo propose une version gratuite qui permet d'accéder aux fonctionnalités essentielles. Des options premium sont disponibles pour les utilisateurs qui ont besoin de fonctionnalités avancées."
               },
               {
                 q: "Puis-je partager mes analyses avec d'autres personnes ?",
@@ -302,7 +302,7 @@ export default function Landing() {
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold mb-4">Prêt à prendre de meilleures décisions ?</h2>
             <p className="text-xl text-gray-600 mb-8">
-              Commencez dès maintenant et découvrez comment Jupi peut transformer votre façon de prendre des décisions.
+              Commencez dès maintenant et découvrez comment Memo peut transformer votre façon de prendre des décisions.
             </p>
             <Button 
               variant="highlight" 
@@ -322,8 +322,8 @@ export default function Landing() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
               <div className="flex items-center gap-2">
-                <img src="/lovable-uploads/1465f08a-adfe-457b-a2f9-f046b763d7f1.png" alt="Jupi Logo" className="h-8 w-auto" />
-                <span className="text-xl font-semibold">Jupi</span>
+                <img src="/lovable-uploads/1465f08a-adfe-457b-a2f9-f046b763d7f1.png" alt="Memo Logo" className="h-8 w-auto" />
+                <span className="text-xl font-semibold">Memo</span>
               </div>
               <p className="text-gray-500 mt-2">Décisions éclairées, résultats assurés</p>
             </div>
@@ -335,7 +335,7 @@ export default function Landing() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-200 text-center text-gray-500">
-            <p>&copy; {new Date().getFullYear()} Jupi. Tous droits réservés.</p>
+            <p>&copy; {new Date().getFullYear()} Memo. Tous droits réservés.</p>
           </div>
         </div>
       </footer>
