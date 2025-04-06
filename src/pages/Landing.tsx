@@ -120,7 +120,6 @@ const Testimonial = ({
       </div>
     </div>
   </div>;
-
 export default function Landing() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>("businesses");
