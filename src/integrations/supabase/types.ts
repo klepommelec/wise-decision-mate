@@ -9,6 +9,62 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      chat_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          role: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          role: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       criteria: {
         Row: {
           created_at: string
@@ -129,6 +185,80 @@ export type Database = {
           },
         ]
       }
+      melodies: {
+        Row: {
+          bpm: number
+          created_at: string
+          description: string | null
+          genre: string | null
+          id: string
+          title: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          bpm?: number
+          created_at?: string
+          description?: string | null
+          genre?: string | null
+          id?: string
+          title: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          bpm?: number
+          created_at?: string
+          description?: string | null
+          genre?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      melody_notes: {
+        Row: {
+          created_at: string
+          duration: number
+          id: string
+          melody_id: string
+          note: number
+          start: number
+          updated_at: string
+          velocity: number
+        }
+        Insert: {
+          created_at?: string
+          duration: number
+          id?: string
+          melody_id: string
+          note: number
+          start: number
+          updated_at?: string
+          velocity?: number
+        }
+        Update: {
+          created_at?: string
+          duration?: number
+          id?: string
+          melody_id?: string
+          note?: number
+          start?: number
+          updated_at?: string
+          velocity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "melody_notes_melody_id_fkey"
+            columns: ["melody_id"]
+            isOneToOne: false
+            referencedRelation: "melodies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       options: {
         Row: {
           created_at: string
@@ -188,6 +318,86 @@ export type Database = {
           last_name?: string | null
           updated_at?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      track_notes: {
+        Row: {
+          created_at: string
+          duration: number
+          id: string
+          note: number
+          start: number
+          track_id: string
+          updated_at: string
+          velocity: number
+        }
+        Insert: {
+          created_at?: string
+          duration: number
+          id?: string
+          note: number
+          start: number
+          track_id: string
+          updated_at?: string
+          velocity?: number
+        }
+        Update: {
+          created_at?: string
+          duration?: number
+          id?: string
+          note?: number
+          start?: number
+          track_id?: string
+          updated_at?: string
+          velocity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "track_notes_track_id_fkey"
+            columns: ["track_id"]
+            isOneToOne: false
+            referencedRelation: "tracks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tracks: {
+        Row: {
+          created_at: string
+          id: string
+          instrument: string
+          mute: boolean
+          pan: number
+          solo: boolean
+          title: string
+          updated_at: string
+          user_id: string | null
+          volume: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          instrument?: string
+          mute?: boolean
+          pan?: number
+          solo?: boolean
+          title: string
+          updated_at?: string
+          user_id?: string | null
+          volume?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          instrument?: string
+          mute?: boolean
+          pan?: number
+          solo?: boolean
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+          volume?: number
         }
         Relationships: []
       }

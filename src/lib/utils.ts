@@ -14,3 +14,12 @@ export function getInitials(name: string) {
     .toUpperCase()
     .slice(0, 2);
 }
+
+export function formatDate(date: Date | string): string {
+  const d = typeof date === 'string' ? new Date(date) : date;
+  return d.toLocaleDateString('fr-FR', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+}
