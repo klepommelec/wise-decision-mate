@@ -1,4 +1,3 @@
-
 import { Container } from '@/components/layout/Container';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -6,14 +5,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { BookOpen, PenTool, Brain, Scale, Lightbulb, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-
 const About = () => {
-  return (
-    <Container>
+  return <Container>
       <div className="max-w-4xl mx-auto py-12 space-y-16 animate-fade-in">
         {/* En-tête du manifeste */}
         <section className="text-center space-y-6">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4">
+          <div className="inline-flex items-center gap-2 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4 bg-lime300">
             <BookOpen className="h-4 w-4" />
             <span>Notre Manifeste</span>
           </div>
@@ -160,17 +157,11 @@ const About = () => {
             Transformez votre façon de prendre des décisions et découvrez la sérénité 
             qui vient avec une approche structurée, objective et personnalisée.
           </p>
-          <Button 
-            size="lg" 
-            className="text-base px-8 py-6 h-auto"
-            asChild
-          >
+          <Button size="lg" className="text-base px-8 py-6 h-auto" asChild>
             <Link to="/auth">Commencer votre voyage</Link>
           </Button>
         </section>
       </div>
-    </Container>
-  );
+    </Container>;
 };
-
 export default About;
