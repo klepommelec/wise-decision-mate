@@ -1,260 +1,659 @@
-import { useState } from "react";
+
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, Brain, Zap, BarChart3, Award } from "lucide-react";
+import { 
+  ArrowRight, CheckCircle2, Brain, Zap, 
+  BarChart3, Award, ArrowDown, Users, Globe,
+  MessageSquare, Star
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { 
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Badge } from "@/components/ui/badge";
 
-// Helper component for feature cards
+// Helper component for animated feature cards
 const FeatureCard = ({
   icon: Icon,
   title,
   description,
-  className
+  className,
+  delay = 0
 }: {
   icon: any;
   title: string;
   description: string;
   className?: string;
-}) => <div className={cn("bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow", className)}>
-    <div className="rounded-full bg-lime-100 w-12 h-12 flex items-center justify-center mb-4">
-      <Icon className="text-lime-600" size={24} />
+  delay?: number;
+}) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setIsVisible(true), delay);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+    
+    return () => {
+      if (cardRef.current) {
+        observer.unobserve(cardRef.current);
+      }
+    };
+  }, [delay]);
+  
+  return (
+    <div 
+      ref={cardRef}
+      className={cn(
+        "bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-500 transform",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
+        className
+      )}
+    >
+      <div className="rounded-full bg-lime-100 w-12 h-12 flex items-center justify-center mb-4">
+        <Icon className="text-lime-600" size={24} />
+      </div>
+      <h3 className="text-xl font-semibold mb-2">{title}</h3>
+      <p className="text-gray-600">{description}</p>
     </div>
-    <h3 className="text-xl font-semibold mb-2">{title}</h3>
-    <p className="text-gray-600">{description}</p>
-  </div>;
+  );
+};
 
-// Helper component for process steps
+// Helper component for process steps with animations
 const ProcessStep = ({
   number,
   title,
-  description
+  description,
+  delay = 0
 }: {
   number: number;
   title: string;
   description: string;
-}) => <div className="flex gap-4 items-start">
-    <div className="bg-lime-500 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 font-bold">
-      {number}
+  delay?: number;
+}) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const stepRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setIsVisible(true), delay);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    
+    if (stepRef.current) {
+      observer.observe(stepRef.current);
+    }
+    
+    return () => {
+      if (stepRef.current) {
+        observer.unobserve(stepRef.current);
+      }
+    };
+  }, [delay]);
+  
+  return (
+    <div 
+      ref={stepRef}
+      className={cn(
+        "flex gap-4 items-start transition-all duration-700 transform",
+        isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-[-50px]"
+      )}
+    >
+      <div className="bg-lime-500 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 font-bold">
+        {number}
+      </div>
+      <div>
+        <h3 className="text-xl font-semibold mb-1">{title}</h3>
+        <p className="text-gray-600">{description}</p>
+      </div>
     </div>
-    <div>
-      <h3 className="text-xl font-semibold mb-1">{title}</h3>
-      <p className="text-gray-600">{description}</p>
-    </div>
-  </div>;
+  );
+};
 
-// Helper component for testimonials
+// Interactive testimonial component
 const Testimonial = ({
   quote,
   author,
   role,
+  avatar,
   className
 }: {
   quote: string;
   author: string;
   role: string;
+  avatar?: string;
   className?: string;
-}) => <div className={cn("bg-white rounded-xl p-6 shadow-sm border border-gray-100", className)}>
-    <p className="italic text-gray-700 mb-4">"{quote}"</p>
-    <div>
-      <p className="font-semibold">{author}</p>
-      <p className="text-gray-500 text-sm">{role}</p>
+}) => (
+  <div className={cn(
+    "bg-white rounded-xl p-6 shadow-sm border border-gray-100 h-full flex flex-col",
+    className
+  )}>
+    <div className="flex-1">
+      <Badge className="bg-lime-100 text-lime-800 mb-4 hover:bg-lime-200">Témoignage</Badge>
+      <p className="italic text-gray-700 mb-4 text-lg">"{quote}"</p>
     </div>
-  </div>;
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-200 to-lime-400 flex items-center justify-center text-lime-800 font-semibold">
+        {avatar || author.charAt(0)}
+      </div>
+      <div>
+        <p className="font-semibold">{author}</p>
+        <p className="text-gray-500 text-sm">{role}</p>
+      </div>
+    </div>
+  </div>
+);
+
 export default function Landing() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>("businesses");
-  return <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-b from-white to-lime-50 py-16 md:py-24">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-            <div className="md:w-1/2 space-y-6 animate-fade-in">
-              <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                Prenez des décisions <span className="text-lime-500">éclairées</span> avec confiance
+  const [scrolled, setScrolled] = useState(false);
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Scroll to next section
+  const scrollToNextSection = () => {
+    window.scrollTo({
+      top: window.innerHeight,
+      behavior: "smooth"
+    });
+  };
+  
+  return (
+    <div className="flex flex-col min-h-screen overflow-hidden">
+      {/* Hero Section - Reimagined with dynamic split design */}
+      <section className="min-h-screen relative overflow-hidden flex flex-col lg:flex-row">
+        {/* Left Section - Content */}
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12 bg-gradient-to-br from-white to-lime-50">
+          <div className="max-w-xl space-y-8 py-16">
+            <div className="space-y-6 animate-fade-in">
+              <Badge className="bg-lime-200 text-lime-800 px-4 py-2 text-sm hover:bg-lime-300">Simplifiez vos choix</Badge>
+              <h1 className="text-5xl md:text-7xl font-bold leading-tight">
+                Prenez des <span className="relative">
+                  <span className="relative z-10">décisions</span>
+                  <span className="absolute -bottom-2 left-0 right-0 h-3 bg-lime-300 z-0 transform -rotate-1"></span>
+                </span> avec confiance
               </h1>
               <p className="text-xl text-gray-600 md:max-w-md">
-                Une approche structurée pour analyser vos options et faire les meilleurs choix, professionnels comme personnels.
+                Une approche structurée et interactive pour analyser vos options et faire les meilleurs choix.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button variant="highlight" size="lg" className="rounded-full text-gray-900" onClick={() => navigate("/new-decision")}>
-                  Nouvelle décision <ArrowRight className="ml-2" />
+                  Commencer maintenant <ArrowRight className="ml-2 animate-pulse" />
                 </Button>
                 <Button variant="outline" size="lg" className="rounded-full" onClick={() => navigate("/about")}>
                   En savoir plus
                 </Button>
               </div>
             </div>
-            <div className="md:w-1/2">
-              <img src="/lovable-uploads/c2e072d3-6efa-4ea3-82df-5e038dd43589.png" alt="Interface Memo" className="w-full h-auto rounded-lg shadow-lg animate-slide-in" />
+            
+            <div className="pt-16 hidden md:block">
+              <button 
+                onClick={scrollToNextSection} 
+                className="flex flex-col items-center text-gray-500 hover:text-gray-800 transition-colors"
+              >
+                <span className="mb-2 text-sm">Découvrir</span>
+                <ArrowDown className="animate-bounce" />
+              </button>
             </div>
+          </div>
+        </div>
+        
+        {/* Right Section - Dynamic Floating Elements */}
+        <div className="w-full lg:w-1/2 bg-gradient-to-tl from-lime-50 to-white relative">
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Main image */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/4 transition-all duration-700 hover:scale-105">
+              <AspectRatio ratio={16/9} className="rounded-xl shadow-xl overflow-hidden">
+                <img 
+                  src="/lovable-uploads/c2e072d3-6efa-4ea3-82df-5e038dd43589.png" 
+                  alt="Interface Memo" 
+                  className="w-full h-full object-cover"
+                />
+              </AspectRatio>
+            </div>
+            
+            {/* Floating Elements */}
+            <div className="absolute top-[20%] left-[15%] transform -translate-x-1/2 -translate-y-1/2 p-3 bg-white rounded-lg shadow-lg animate-float">
+              <CheckCircle2 className="text-lime-500 h-6 w-6" />
+            </div>
+            <div className="absolute bottom-[30%] right-[20%] transform translate-x-1/2 translate-y-1/2 p-3 bg-white rounded-lg shadow-lg">
+              <Star className="text-yellow-500 h-6 w-6" />
+            </div>
+            <div className="absolute top-[70%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 p-4 bg-white rounded-xl shadow-lg">
+              <BarChart3 className="text-blue-500 h-8 w-8" />
+            </div>
+            
+            {/* Abstract shapes */}
+            <div className="absolute top-[10%] right-[10%] w-24 h-24 rounded-full bg-gradient-to-br from-lime-200 to-lime-400 opacity-40 blur-lg"></div>
+            <div className="absolute bottom-[10%] left-[10%] w-32 h-32 rounded-full bg-gradient-to-br from-blue-200 to-purple-200 opacity-30 blur-xl"></div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-16 bg-white">
+      {/* Features Section with Interactive Elements */}
+      <section className="py-24 bg-white">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Fonctionnalités principales</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Memo vous apporte tous les outils nécessaires pour analyser, comparer et finaliser vos décisions importantes.
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <Badge className="bg-lime-100 text-lime-800 mb-4">Fonctionnalités</Badge>
+            <h2 className="text-4xl font-bold mb-6">Une expérience de décision révolutionnaire</h2>
+            <p className="text-xl text-gray-600">
+              Memo vous apporte tous les outils nécessaires pour analyser, comparer et 
+              finaliser vos décisions importantes avec clarté et confiance.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FeatureCard icon={Brain} title="Analyse structurée" description="Décomposez vos décisions complexes en critères clairs et évaluez méthodiquement chaque option." />
-            <FeatureCard icon={Zap} title="Aide IA intelligente" description="Générez des options et des critères adaptés à votre situation grâce à notre assistant IA." />
-            <FeatureCard icon={BarChart3} title="Visualisation claire" description="Comprenez facilement vos données grâce à des graphiques et tableaux comparatifs intuitifs." />
-            <FeatureCard icon={Award} title="Recommandations précises" description="Obtenez une recommandation basée sur l'analyse approfondie de vos critères et priorités." />
-            <FeatureCard icon={CheckCircle2} title="Sauvegarde des décisions" description="Conservez l'historique de vos décisions et consultez-les à tout moment." className="md:col-span-2 lg:col-span-1" />
+            <FeatureCard 
+              icon={Brain} 
+              title="Analyse structurée" 
+              description="Décomposez vos décisions complexes en critères clairs et évaluez méthodiquement chaque option."
+              delay={100}
+            />
+            <FeatureCard 
+              icon={Zap} 
+              title="Aide IA intelligente" 
+              description="Générez des options et des critères adaptés à votre situation grâce à notre assistant IA."
+              delay={300}
+            />
+            <FeatureCard 
+              icon={BarChart3} 
+              title="Visualisation dynamique" 
+              description="Comprenez facilement vos données grâce à des graphiques et tableaux comparatifs interactifs."
+              delay={500}
+            />
+            <FeatureCard 
+              icon={Award} 
+              title="Recommandations précises" 
+              description="Obtenez une recommandation basée sur l'analyse approfondie de vos critères et priorités."
+              delay={700}
+            />
+            <FeatureCard 
+              icon={Globe} 
+              title="Accessibilité totale" 
+              description="Accédez à vos décisions depuis n'importe quel appareil, à tout moment."
+              delay={900}
+            />
+            <FeatureCard 
+              icon={Users} 
+              title="Collaboration d'équipe" 
+              description="Partagez vos analyses et travaillez ensemble sur des décisions importantes."
+              delay={1100}
+            />
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-16 bg-gray-50">
+      {/* Interactive How It Works Section */}
+      <section className="py-24 bg-gradient-to-b from-white to-lime-50">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Comment ça fonctionne</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Un processus simple en 4 étapes pour vous aider à prendre les meilleures décisions
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <Badge className="bg-lime-100 text-lime-800 mb-4">Processus</Badge>
+            <h2 className="text-4xl font-bold mb-6">Comment ça fonctionne</h2>
+            <p className="text-xl text-gray-600">
+              Un processus simple en 4 étapes pour transformer votre façon de prendre des décisions
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="space-y-8">
-              <ProcessStep number={1} title="Définissez votre décision" description="Commencez par clarifier le problème à résoudre ou la décision à prendre." />
-              <ProcessStep number={2} title="Ajoutez vos options" description="Listez toutes les alternatives possibles ou utilisez l'IA pour en générer." />
-              <ProcessStep number={3} title="Établissez vos critères" description="Identifiez les facteurs importants pour évaluer chaque option." />
-              <ProcessStep number={4} title="Analysez et décidez" description="Évaluez chaque option selon vos critères et obtenez une recommandation claire." />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-12 order-2 lg:order-1">
+              <ProcessStep 
+                number={1} 
+                title="Définissez votre décision" 
+                description="Commencez par clarifier précisément le problème à résoudre ou la décision à prendre."
+                delay={100}
+              />
+              <ProcessStep 
+                number={2} 
+                title="Ajoutez vos options" 
+                description="Listez toutes les alternatives possibles ou utilisez notre IA pour vous aider à générer des options pertinentes."
+                delay={300}
+              />
+              <ProcessStep 
+                number={3} 
+                title="Établissez vos critères" 
+                description="Identifiez les facteurs importants pour évaluer chaque option selon vos priorités personnelles."
+                delay={500}
+              />
+              <ProcessStep 
+                number={4} 
+                title="Analysez et décidez" 
+                description="Visualisez la comparaison de vos options et obtenez une recommandation claire basée sur votre analyse."
+                delay={700}
+              />
             </div>
-            <div className="flex items-center justify-center">
-              <img src="/lovable-uploads/6101851f-2549-45ba-a231-ed9bfb465e2b.png" alt="Processus de décision" className="max-w-full h-auto rounded-lg shadow-md" />
+            
+            <div className="relative order-1 lg:order-2">
+              <div className="aspect-square relative rounded-2xl overflow-hidden shadow-xl bg-white p-4">
+                <div className="absolute inset-4 bg-gradient-to-br from-lime-50 to-white rounded-xl"></div>
+                <img 
+                  src="/lovable-uploads/6101851f-2549-45ba-a231-ed9bfb465e2b.png" 
+                  alt="Processus de décision" 
+                  className="absolute inset-0 w-full h-full object-cover rounded-xl z-10" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-lime-900/30 to-transparent z-20 rounded-xl"></div>
+                
+                {/* Interactive indicators */}
+                <div className="absolute top-[20%] left-[20%] w-6 h-6 bg-lime-500 rounded-full z-30 animate-pulse"></div>
+                <div className="absolute top-[40%] left-[60%] w-6 h-6 bg-blue-500 rounded-full z-30 animate-pulse"></div>
+                <div className="absolute top-[70%] left-[30%] w-6 h-6 bg-purple-500 rounded-full z-30 animate-pulse"></div>
+              </div>
+              
+              {/* Abstract decorations */}
+              <div className="absolute -top-8 -right-8 w-24 h-24 bg-lime-200 rounded-full opacity-60 blur-xl"></div>
+              <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-blue-100 rounded-full opacity-60 blur-xl"></div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Use Cases Section */}
-      <section className="py-16 bg-white">
+      {/* Use Cases with Carousel */}
+      <section className="py-24 bg-white">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Adapté à tous vos besoins</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <Badge className="bg-lime-100 text-lime-800 mb-4">Applications</Badge>
+            <h2 className="text-4xl font-bold mb-6">Adapté à tous vos besoins</h2>
+            <p className="text-xl text-gray-600">
               Que vous soyez un particulier ou une entreprise, Memo s'adapte à toutes les situations de prise de décision.
             </p>
-            <div className="mt-6 flex justify-center space-x-4">
-              <Button variant={activeTab === "businesses" ? "highlight" : "outline"} onClick={() => setActiveTab("businesses")} className={activeTab === "businesses" ? "text-gray-900" : ""}>
+            
+            <div className="mt-8 flex justify-center space-x-4">
+              <Button 
+                variant={activeTab === "businesses" ? "highlight" : "outline"} 
+                onClick={() => setActiveTab("businesses")} 
+                className={cn(
+                  "rounded-full transition-all duration-300",
+                  activeTab === "businesses" ? "text-gray-900" : ""
+                )}
+              >
                 Entreprises
               </Button>
-              <Button variant={activeTab === "individuals" ? "highlight" : "outline"} onClick={() => setActiveTab("individuals")} className={activeTab === "individuals" ? "text-gray-900" : ""}>
+              <Button 
+                variant={activeTab === "individuals" ? "highlight" : "outline"} 
+                onClick={() => setActiveTab("individuals")} 
+                className={cn(
+                  "rounded-full transition-all duration-300",
+                  activeTab === "individuals" ? "text-gray-900" : ""
+                )}
+              >
                 Particuliers
               </Button>
             </div>
           </div>
 
-          {activeTab === "businesses" && <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
-              <div>
-                <h3 className="text-2xl font-semibold mb-4">Pour les entreprises</h3>
-                <ul className="space-y-3">
-                  {["Recrutement et sélection de candidats", "Choix de fournisseurs", "Investissements stratégiques", "Planification de projets", "Décisions d'expansion"].map(item => <li key={item} className="flex items-center gap-2">
-                      <CheckCircle2 className="text-lime-500" size={20} />
+          {activeTab === "businesses" && (
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 animate-fade-in">
+              <div className="lg:col-span-2 space-y-6">
+                <h3 className="text-2xl font-semibold mb-6">Pour les entreprises</h3>
+                <ul className="space-y-4">
+                  {[
+                    "Recrutement et sélection de candidats", 
+                    "Choix de fournisseurs et partenariats", 
+                    "Décisions d'investissements stratégiques", 
+                    "Planification de lancement de produits", 
+                    "Stratégies d'expansion"
+                  ].map((item, index) => (
+                    <li key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-lime-50 transition-colors">
+                      <CheckCircle2 className="text-lime-500 flex-shrink-0" size={20} />
                       <span>{item}</span>
-                    </li>)}
+                    </li>
+                  ))}
                 </ul>
               </div>
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h4 className="font-semibold mb-3">Témoignage</h4>
-                <Testimonial quote="Memo a transformé notre processus de sélection des fournisseurs. Ce qui prenait des semaines de réunions se fait maintenant en quelques heures avec une transparence totale." author="Marie Dupont" role="Directrice des achats" />
+              
+              <div className="lg:col-span-3">
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    <CarouselItem>
+                      <div className="p-1 h-full">
+                        <Testimonial 
+                          quote="Memo a transformé notre processus de sélection des fournisseurs. Ce qui prenait des semaines de réunions se fait maintenant en quelques heures avec une transparence totale."
+                          author="Marie Dupont"
+                          role="Directrice des achats, TechCorp"
+                        />
+                      </div>
+                    </CarouselItem>
+                    <CarouselItem>
+                      <div className="p-1 h-full">
+                        <Testimonial 
+                          quote="La clarté que Memo apporte à nos décisions stratégiques est inestimable. Nous pouvons maintenant justifier chaque choix avec des données concrètes."
+                          author="Jean Martin"
+                          role="CEO, Innovatech"
+                        />
+                      </div>
+                    </CarouselItem>
+                    <CarouselItem>
+                      <div className="p-1 h-full">
+                        <Testimonial 
+                          quote="Nos réunions d'équipe sont devenues beaucoup plus productives depuis que nous utilisons Memo pour structurer nos processus décisionnels."
+                          author="Sophie Bernard"
+                          role="Responsable innovation, MediaPlus"
+                        />
+                      </div>
+                    </CarouselItem>
+                  </CarouselContent>
+                  <CarouselPrevious className="left-0" />
+                  <CarouselNext className="right-0" />
+                </Carousel>
               </div>
-            </div>}
+            </div>
+          )}
 
-          {activeTab === "individuals" && <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
-              <div>
-                <h3 className="text-2xl font-semibold mb-4">Pour les particuliers</h3>
-                <ul className="space-y-3">
-                  {["Choix de carrière", "Achat immobilier", "Planification financière", "Choix d'éducation", "Décisions familiales importantes"].map(item => <li key={item} className="flex items-center gap-2">
-                      <CheckCircle2 className="text-lime-500" size={20} />
+          {activeTab === "individuals" && (
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 animate-fade-in">
+              <div className="lg:col-span-2 space-y-6">
+                <h3 className="text-2xl font-semibold mb-6">Pour les particuliers</h3>
+                <ul className="space-y-4">
+                  {[
+                    "Orientations de carrière et changements professionnels", 
+                    "Décisions d'achat importantes (immobilier, véhicule)", 
+                    "Choix de formations et d'études", 
+                    "Planification financière et investissements", 
+                    "Déménagements et choix de vie"
+                  ].map((item, index) => (
+                    <li key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-lime-50 transition-colors">
+                      <CheckCircle2 className="text-lime-500 flex-shrink-0" size={20} />
                       <span>{item}</span>
-                    </li>)}
+                    </li>
+                  ))}
                 </ul>
               </div>
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h4 className="font-semibold mb-3">Témoignage</h4>
-                <Testimonial quote="J'hésitais entre plusieurs options de carrière. Grâce à Memo, j'ai pu clarifier mes priorités et prendre une décision en fonction de ce qui compte vraiment pour moi." author="Thomas Leroy" role="Ingénieur logiciel" />
+              
+              <div className="lg:col-span-3">
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    <CarouselItem>
+                      <div className="p-1 h-full">
+                        <Testimonial 
+                          quote="J'hésitais entre plusieurs options de carrière. Grâce à Memo, j'ai pu clarifier mes priorités et prendre une décision en fonction de ce qui compte vraiment pour moi."
+                          author="Thomas Leroy"
+                          role="Ingénieur logiciel"
+                        />
+                      </div>
+                    </CarouselItem>
+                    <CarouselItem>
+                      <div className="p-1 h-full">
+                        <Testimonial 
+                          quote="Pour l'achat de notre maison, Memo nous a permis de comparer objectivement toutes les options. Sans cette méthode, nous aurions probablement fait le mauvais choix."
+                          author="Émilie et Marc Dubois"
+                          role="Jeunes parents"
+                        />
+                      </div>
+                    </CarouselItem>
+                    <CarouselItem>
+                      <div className="p-1 h-full">
+                        <Testimonial 
+                          quote="Choisir entre plusieurs universités était stressant jusqu'à ce que j'utilise Memo pour organiser toutes les informations. Ça a rendu ma décision beaucoup plus claire."
+                          author="Léa Martin"
+                          role="Étudiante"
+                        />
+                      </div>
+                    </CarouselItem>
+                  </CarouselContent>
+                  <CarouselPrevious className="left-0" />
+                  <CarouselNext className="right-0" />
+                </Carousel>
               </div>
-            </div>}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-16 bg-gray-50">
+      {/* Redesigned FAQ Section */}
+      <section className="py-24 bg-lime-50">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Questions fréquentes</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Tout ce que vous devez savoir pour commencer à utiliser Memo
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <Badge className="bg-lime-200 text-lime-800 mb-4">Questions fréquentes</Badge>
+            <h2 className="text-4xl font-bold mb-6">Tout ce que vous devez savoir</h2>
+            <p className="text-xl text-gray-600">
+              Les réponses aux questions les plus courantes sur Memo
             </p>
           </div>
 
-          <div className="max-w-3xl mx-auto divide-y">
-            {[{
-            q: "Comment Memo m'aide-t-il à prendre de meilleures décisions ?",
-            a: "Memo structure votre processus de décision en décomposant les problèmes complexes en critères mesurables, en facilitant la comparaison des options et en permettant une analyse visuelle claire des résultats."
-          }, {
-            q: "Est-ce que l'outil est gratuit ?",
-            a: "Memo propose une version gratuite qui permet d'accéder aux fonctionnalités essentielles. Des options premium sont disponibles pour les utilisateurs qui ont besoin de fonctionnalités avancées."
-          }, {
-            q: "Puis-je partager mes analyses avec d'autres personnes ?",
-            a: "Oui, vous pouvez facilement partager vos analyses de décision avec d'autres personnes, ce qui est particulièrement utile pour les décisions collaboratives en entreprise ou en famille."
-          }, {
-            q: "Mes données sont-elles sécurisées ?",
-            a: "Absolument. La sécurité des données est notre priorité. Toutes les données sont chiffrées et nous ne partageons jamais vos informations avec des tiers."
-          }].map((faq, i) => <div key={i} className="py-6">
-                <h3 className="text-xl font-semibold mb-2">{faq.q}</h3>
-                <p className="text-gray-600">{faq.a}</p>
-              </div>)}
+          <div className="max-w-3xl mx-auto">
+            <div className="grid gap-6">
+              {[{
+                q: "Comment Memo m'aide-t-il à prendre de meilleures décisions ?",
+                a: "Memo structure votre processus de décision en décomposant les problèmes complexes en critères mesurables, en facilitant la comparaison des options et en permettant une analyse visuelle claire des résultats."
+              }, {
+                q: "Est-ce que l'outil est gratuit ?",
+                a: "Memo propose une version gratuite qui permet d'accéder aux fonctionnalités essentielles. Des options premium sont disponibles pour les utilisateurs qui ont besoin de fonctionnalités avancées."
+              }, {
+                q: "Puis-je partager mes analyses avec d'autres personnes ?",
+                a: "Oui, vous pouvez facilement partager vos analyses de décision avec d'autres personnes, ce qui est particulièrement utile pour les décisions collaboratives en entreprise ou en famille."
+              }, {
+                q: "Mes données sont-elles sécurisées ?",
+                a: "Absolument. La sécurité des données est notre priorité. Toutes les données sont chiffrées et nous ne partageons jamais vos informations avec des tiers."
+              }].map((faq, i) => (
+                <div key={i} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                  <h3 className="text-xl font-semibold mb-3">{faq.q}</h3>
+                  <p className="text-gray-600">{faq.a}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-lime-50">
-        <div className="container mx-auto px-4 md:px-6 text-center">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold mb-4">Prêt à prendre de meilleures décisions ?</h2>
+      {/* Interactive CTA Section */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-lime-400 to-lime-600 z-0"></div>
+        
+        {/* Abstract shapes */}
+        <div className="absolute top-0 left-0 w-64 h-64 rounded-full bg-lime-300 opacity-20"></div>
+        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-lime-200 opacity-20"></div>
+        <div className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-white opacity-10"></div>
+        
+        <div className="container mx-auto px-4 md:px-6 relative z-10">
+          <div className="max-w-3xl mx-auto bg-white rounded-2xl p-8 md:p-12 shadow-xl text-center">
+            <h2 className="text-4xl font-bold mb-6">Prêt à prendre de meilleures décisions ?</h2>
             <p className="text-xl text-gray-600 mb-8">
               Commencez dès maintenant et découvrez comment Memo peut transformer votre façon de prendre des décisions.
             </p>
-            <Button variant="highlight" size="lg" className="rounded-full text-gray-900" onClick={() => navigate("/new-decision")}>
-              Créer ma première décision <ArrowRight className="ml-2" />
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button variant="highlight" size="lg" className="rounded-full text-gray-900 text-lg" onClick={() => navigate("/new-decision")}>
+                Créer ma première décision <ArrowRight className="ml-2" />
+              </Button>
+              <Button variant="outline" size="lg" className="rounded-full text-lg border-lime-500 text-lime-700 hover:bg-lime-50" onClick={() => navigate("/about")}>
+                Découvrir les fonctionnalités
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-100 py-12">
+      {/* Redesigned Footer */}
+      <footer className="bg-gray-50 py-16">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-6 md:mb-0">
-              <div className="flex items-center gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
                 <img src="/lovable-uploads/1465f08a-adfe-457b-a2f9-f046b763d7f1.png" alt="Memo Logo" className="h-8 w-auto" />
-                
               </div>
-              <p className="text-gray-500 mt-2">Décisions éclairées, résultats assurés</p>
+              <p className="text-gray-500 mb-4">Décisions éclairées, résultats assurés</p>
+              <div className="flex space-x-4">
+                <a href="#" className="text-gray-400 hover:text-gray-600">
+                  <span className="sr-only">Twitter</span>
+                  <Globe className="h-5 w-5" />
+                </a>
+                <a href="#" className="text-gray-400 hover:text-gray-600">
+                  <span className="sr-only">LinkedIn</span>
+                  <Users className="h-5 w-5" />
+                </a>
+                <a href="#" className="text-gray-400 hover:text-gray-600">
+                  <span className="sr-only">Instagram</span>
+                  <MessageSquare className="h-5 w-5" />
+                </a>
+              </div>
             </div>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button variant="ghost" onClick={() => navigate("/about")}>À propos</Button>
-              <Button variant="ghost" onClick={() => navigate("/help")}>Aide</Button>
-              <Button variant="ghost">Confidentialité</Button>
-              <Button variant="ghost">Contact</Button>
+            
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-4">Produit</h3>
+              <ul className="space-y-2">
+                <li><Button variant="link" onClick={() => navigate("/about")}>À propos</Button></li>
+                <li><Button variant="link" onClick={() => navigate("/help")}>Guide d'utilisation</Button></li>
+                <li><Button variant="link">Fonctionnalités</Button></li>
+                <li><Button variant="link">Tarifs</Button></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-4">Ressources</h3>
+              <ul className="space-y-2">
+                <li><Button variant="link">Blog</Button></li>
+                <li><Button variant="link">Tutoriels</Button></li>
+                <li><Button variant="link">FAQ</Button></li>
+                <li><Button variant="link">Support</Button></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-4">Légal</h3>
+              <ul className="space-y-2">
+                <li><Button variant="link">Conditions d'utilisation</Button></li>
+                <li><Button variant="link">Politique de confidentialité</Button></li>
+                <li><Button variant="link">Mentions légales</Button></li>
+                <li><Button variant="link">Cookies</Button></li>
+              </ul>
             </div>
           </div>
-          <div className="mt-8 pt-8 border-t border-gray-200 text-center text-gray-500">
-            <p>&copy; {new Date().getFullYear()} Memo. Tous droits réservés.</p>
+          
+          <div className="mt-12 pt-8 border-t border-gray-200 text-center">
+            <p className="text-gray-500">&copy; {new Date().getFullYear()} Memo. Tous droits réservés.</p>
           </div>
         </div>
       </footer>
-    </div>;
+    </div>
+  );
 }
