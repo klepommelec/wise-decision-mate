@@ -10,9 +10,9 @@ const About = () => {
       <div className="max-w-4xl mx-auto py-12 space-y-16 animate-fade-in">
         {/* En-tête du manifeste */}
         <section className="text-center space-y-6">
-          <div className="inline-flex items-center gap-2 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4 bg-lime300">
-            <BookOpen className="h-4 w-4" />
-            <span>Notre Manifeste</span>
+          <div className="inline-flex items-center gap-2 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4 bg-lime-300 border-none">
+            
+            <span className="text-lime-900">Notre Manifeste</span>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold tracking-tighter">
             Pour des décisions<br />éclairées et sans regrets
@@ -25,7 +25,7 @@ const About = () => {
 
         {/* Déclaration de principes */}
         <section className="prose prose-lg dark:prose-invert mx-auto">
-          <div className="font-medium text-xl mb-6 text-primary border-l-4 border-primary pl-4 py-2">
+          <div className="font-medium text-xl mb-6 border-l-4 border-lime-400 pl-4 py-2 text-lime-400 ">
             Dans un monde où l'information est abondante mais la clarté rare, nous défendons une approche 
             différente de la prise de décision.
           </div>
