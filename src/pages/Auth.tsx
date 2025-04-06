@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,9 +17,15 @@ import { ArrowLeft } from "lucide-react";
 
 // Schéma de validation pour le formulaire d'inscription
 const signUpSchema = z.object({
-  email: z.string().email({ message: "Email invalide" }),
-  password: z.string().min(6, { message: "Le mot de passe doit contenir au moins 6 caractères" }),
-  confirm: z.string().min(6, { message: "La confirmation doit contenir au moins 6 caractères" })
+  email: z.string().email({
+    message: "Email invalide"
+  }),
+  password: z.string().min(6, {
+    message: "Le mot de passe doit contenir au moins 6 caractères"
+  }),
+  confirm: z.string().min(6, {
+    message: "La confirmation doit contenir au moins 6 caractères"
+  })
 }).refine(data => data.password === data.confirm, {
   message: "Les mots de passe ne correspondent pas",
   path: ["confirm"]
@@ -28,13 +33,15 @@ const signUpSchema = z.object({
 
 // Schéma de validation pour le formulaire de connexion
 const signInSchema = z.object({
-  email: z.string().email({ message: "Email invalide" }),
-  password: z.string().min(1, { message: "Veuillez entrer votre mot de passe" })
+  email: z.string().email({
+    message: "Email invalide"
+  }),
+  password: z.string().min(1, {
+    message: "Veuillez entrer votre mot de passe"
+  })
 });
-
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 type SignInFormValues = z.infer<typeof signInSchema>;
-
 interface LocationState {
   message?: string;
   decisionData?: {
@@ -43,13 +50,14 @@ interface LocationState {
     useAI: boolean;
   };
 }
-
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const {
+    user
+  } = useAuth();
   const locationState = location.state as LocationState | null;
   const message = locationState?.message;
   const decisionData = locationState?.decisionData;
@@ -63,7 +71,6 @@ export default function Auth() {
       confirm: ""
     }
   });
-
   const signInForm = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -77,7 +84,11 @@ export default function Auth() {
     if (user) {
       if (decisionData) {
         // Si des données de décision sont présentes, redirigez vers la page de création de décision
-        navigate("/new-decision", { state: { decisionData } });
+        navigate("/new-decision", {
+          state: {
+            decisionData
+          }
+        });
       } else {
         // Sinon, redirigez vers le tableau de bord
         navigate("/dashboard");
@@ -86,19 +97,19 @@ export default function Auth() {
   }, [user, navigate, decisionData]);
 
   // Fonction de connexion
-  const onSignIn: SubmitHandler<SignInFormValues> = async (data) => {
+  const onSignIn: SubmitHandler<SignInFormValues> = async data => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const {
+        error
+      } = await supabase.auth.signInWithPassword({
         email: data.email,
-        password: data.password,
+        password: data.password
       });
-
       if (error) {
         throw error;
       }
-
       toast.success("Connexion réussie");
       // La redirection est gérée par useEffect ci-dessus
     } catch (error: any) {
@@ -111,19 +122,19 @@ export default function Auth() {
   };
 
   // Fonction d'inscription
-  const onSignUp: SubmitHandler<SignUpFormValues> = async (data) => {
+  const onSignUp: SubmitHandler<SignUpFormValues> = async data => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      const { error } = await supabase.auth.signUp({
+      const {
+        error
+      } = await supabase.auth.signUp({
         email: data.email,
-        password: data.password,
+        password: data.password
       });
-
       if (error) {
         throw error;
       }
-
       toast.success("Compte créé avec succès");
       // La redirection est gérée par useEffect ci-dessus
     } catch (error: any) {
@@ -134,23 +145,15 @@ export default function Auth() {
       setIsLoading(false);
     }
   };
-
-  return (
-    <div className="container flex items-center justify-center min-h-screen py-10">
+  return <div className="container flex items-center justify-center min-h-screen py-10">
       <div className="w-full max-w-md">
-        <Button
-          variant="ghost"
-          className="mb-6"
-          onClick={() => navigate("/")}
-        >
+        <Button variant="ghost" className="mb-6" onClick={() => navigate("/")}>
           <ArrowLeft className="mr-2 h-4 w-4" /> Retour à l'accueil
         </Button>
 
-        {message && (
-          <Alert className="mb-6 bg-lime-50 border-lime-200">
+        {message && <Alert className="mb-6 bg-lime-50 border-lime-200">
             <AlertDescription className="text-lime-800">{message}</AlertDescription>
-          </Alert>
-        )}
+          </Alert>}
 
         <Card className="w-full">
           <CardHeader>
@@ -170,33 +173,25 @@ export default function Auth() {
               <TabsContent value="signin">
                 <Form {...signInForm}>
                   <form onSubmit={signInForm.handleSubmit(onSignIn)} className="space-y-4">
-                    <FormField
-                      control={signInForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
+                    <FormField control={signInForm.control} name="email" render={({
+                    field
+                  }) => <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
                             <Input placeholder="votre@email.fr" {...field} />
                           </FormControl>
                           <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={signInForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
+                        </FormItem>} />
+                    <FormField control={signInForm.control} name="password" render={({
+                    field
+                  }) => <FormItem>
                           <FormLabel>Mot de passe</FormLabel>
                           <FormControl>
                             <Input type="password" placeholder="••••••••" {...field} />
                           </FormControl>
                           <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit" className="w-full" disabled={isLoading}>
+                        </FormItem>} />
+                    <Button type="submit" disabled={isLoading} className="w-full bg-lime-400 hover:bg-lime-500">
                       {isLoading ? "Connexion en cours..." : "Se connecter"}
                     </Button>
                   </form>
@@ -207,45 +202,33 @@ export default function Auth() {
               <TabsContent value="signup">
                 <Form {...signUpForm}>
                   <form onSubmit={signUpForm.handleSubmit(onSignUp)} className="space-y-4">
-                    <FormField
-                      control={signUpForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
+                    <FormField control={signUpForm.control} name="email" render={({
+                    field
+                  }) => <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
                             <Input placeholder="votre@email.fr" {...field} />
                           </FormControl>
                           <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={signUpForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
+                        </FormItem>} />
+                    <FormField control={signUpForm.control} name="password" render={({
+                    field
+                  }) => <FormItem>
                           <FormLabel>Mot de passe</FormLabel>
                           <FormControl>
                             <Input type="password" placeholder="••••••••" {...field} />
                           </FormControl>
                           <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={signUpForm.control}
-                      name="confirm"
-                      render={({ field }) => (
-                        <FormItem>
+                        </FormItem>} />
+                    <FormField control={signUpForm.control} name="confirm" render={({
+                    field
+                  }) => <FormItem>
                           <FormLabel>Confirmer le mot de passe</FormLabel>
                           <FormControl>
                             <Input type="password" placeholder="••••••••" {...field} />
                           </FormControl>
                           <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                        </FormItem>} />
                     <Button type="submit" className="w-full" disabled={isLoading}>
                       {isLoading ? "Inscription en cours..." : "S'inscrire"}
                     </Button>
@@ -254,11 +237,9 @@ export default function Auth() {
               </TabsContent>
             </Tabs>
             
-            {authError && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-md">
+            {authError && <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-md">
                 <p className="text-red-600 text-sm">{authError}</p>
-              </div>
-            )}
+              </div>}
           </CardContent>
           <CardFooter className="flex flex-col space-y-2 border-t pt-4">
             <p className="text-center text-sm text-gray-500">
@@ -269,6 +250,5 @@ export default function Auth() {
           </CardFooter>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 }
