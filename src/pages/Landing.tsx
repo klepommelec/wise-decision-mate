@@ -120,6 +120,7 @@ const Testimonial = ({
       </div>
     </div>
   </div>;
+
 export default function Landing() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>("businesses");
@@ -149,8 +150,8 @@ export default function Landing() {
       {/* Hero Section - Reimagined with dynamic split design and interactive form */}
       <section className="min-h-screen relative overflow-hidden flex flex-col lg:flex-row">
         {/* Left Section - Content */}
-        <div className="w-full flex items-center justify-center bg-gradient-to-br from-white to-lime-50">
-          <div className="max-w-xl ">
+        <div className="w-full flex items-center justify-center bg-gradient-to-br from-white to-lime-50 relative">
+          <div className="max-w-xl relative z-10">
             <div className="space-y-6 animate-fade-in text-center">
               <h1 className="font-bold tracking-tight text-gray-900 text-6xl">
                 Choisissez mieux avec Memo
@@ -160,17 +161,38 @@ export default function Landing() {
                 Une approche structurée et interactive pour analyser vos options et faire les meilleurs choix.
               </p>
               
+              <div className="text-center text-2xl font-semibold text-gray-800">
+                Prenez des décisions éclairées
+              </div>
+              
+              <p className="text-lg text-gray-600 text-center max-w-lg mx-auto">
+                Memo vous assiste à structurer votre réflexion
+                et à analyser objectivement les options qui s'offrent à vous.
+              </p>
             </div>
             
             <div className="mt-10 w-full flex justify-center">
               <LandingDecisionForm />
             </div>
-            
+          </div>
+
+          {/* Hand images */}
+          <div className="hidden lg:block absolute top-0 right-0 w-1/3 h-full">
+            <img
+              src="/lovable-uploads/70e4d817-b2d8-4613-9584-67d00db6abe0.png"
+              alt="Main droite"
+              className="absolute top-10 right-0 w-full max-w-sm opacity-70 object-contain z-0"
+            />
+          </div>
+          
+          <div className="hidden lg:block absolute bottom-0 left-0 w-1/3 h-full">
+            <img
+              src="/lovable-uploads/4df7ae2c-1443-427a-b6b9-5548058e39d4.png"
+              alt="Main gauche"
+              className="absolute bottom-10 left-0 w-full max-w-sm opacity-70 object-contain z-0"
+            />
           </div>
         </div>
-        
-        {/* Right Section - Interactive Decision Form */}
-        
       </section>
 
       {/* Features Section with Interactive Elements */}
