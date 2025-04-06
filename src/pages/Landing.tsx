@@ -149,7 +149,7 @@ export default function Landing() {
       {/* Hero Section - Reimagined with dynamic split design and interactive form */}
       <section className="min-h-screen relative overflow-hidden flex flex-col lg:flex-row">
         {/* Left Section - Content */}
-        <div className="w-full flex items-center justify-center bg-gradient-to-br from-white to-lime-150">
+        <div className="w-full flex items-center justify-center bg-gradient-to-br from-white to-lime-50">
           <div className="max-w-xl ">
             <div className="space-y-6 animate-fade-in text-center">
               <h1 className="font-bold tracking-tight text-gray-900 text-6xl">
