@@ -37,7 +37,7 @@ export function LandingDecisionForm() {
   const toggleDescription = () => {
     setShowDescription(prev => !prev);
   };
-  return <Card className="gradient-border-card transition-all duration-300 shadow-sm overflow-hidden bg-white w-full max-w-md rounded-2xl">
+  return <Card className="gradient-border-card transition-all duration-300 shadow-sm overflow-hidden bg-white w-full max-w-lg rounded-2xl">
       <CardHeader className="bg-white border-b rounded-t-2xl">
         <div className="flex items-center gap-3">
           <div className="rounded-full w-11 h-10 flex items-center justify-center text-black font-bold text-xl font-handwriting bg-lime-400">M</div>
