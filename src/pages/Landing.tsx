@@ -1,19 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { 
-  ArrowRight, CheckCircle2, Brain, Zap, 
-  BarChart3, Award, ArrowDown, Users, Globe,
-  MessageSquare, Star
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, Brain, Zap, BarChart3, Award, ArrowDown, Users, Globe, MessageSquare, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { 
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
 import { LandingDecisionForm } from "@/components/landing/LandingDecisionForm";
@@ -34,44 +24,30 @@ const FeatureCard = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => setIsVisible(true), delay);
-        }
-      },
-      { threshold: 0.1 }
-    );
-    
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => setIsVisible(true), delay);
+      }
+    }, {
+      threshold: 0.1
+    });
     if (cardRef.current) {
       observer.observe(cardRef.current);
     }
-    
     return () => {
       if (cardRef.current) {
         observer.unobserve(cardRef.current);
       }
     };
   }, [delay]);
-  
-  return (
-    <div 
-      ref={cardRef}
-      className={cn(
-        "bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-500 transform",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
-        className
-      )}
-    >
+  return <div ref={cardRef} className={cn("bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-500 transform", isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10", className)}>
       <div className="rounded-full bg-lime-100 w-12 h-12 flex items-center justify-center mb-4">
         <Icon className="text-lime-600" size={24} />
       </div>
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
       <p className="text-gray-600">{description}</p>
-    </div>
-  );
+    </div>;
 };
 
 // Helper component for process steps with animations
@@ -88,36 +64,24 @@ const ProcessStep = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const stepRef = useRef<HTMLDivElement>(null);
-  
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => setIsVisible(true), delay);
-        }
-      },
-      { threshold: 0.1 }
-    );
-    
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => setIsVisible(true), delay);
+      }
+    }, {
+      threshold: 0.1
+    });
     if (stepRef.current) {
       observer.observe(stepRef.current);
     }
-    
     return () => {
       if (stepRef.current) {
         observer.unobserve(stepRef.current);
       }
     };
   }, [delay]);
-  
-  return (
-    <div 
-      ref={stepRef}
-      className={cn(
-        "flex gap-4 items-start transition-all duration-700 transform",
-        isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-[-50px]"
-      )}
-    >
+  return <div ref={stepRef} className={cn("flex gap-4 items-start transition-all duration-700 transform", isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-[-50px]")}>
       <div className="bg-lime-500 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 font-bold">
         {number}
       </div>
@@ -125,8 +89,7 @@ const ProcessStep = ({
         <h3 className="text-xl font-semibold mb-1">{title}</h3>
         <p className="text-gray-600">{description}</p>
       </div>
-    </div>
-  );
+    </div>;
 };
 
 // Interactive testimonial component
@@ -142,11 +105,7 @@ const Testimonial = ({
   role: string;
   avatar?: string;
   className?: string;
-}) => (
-  <div className={cn(
-    "bg-white rounded-xl p-6 shadow-sm border border-gray-100 h-full flex flex-col",
-    className
-  )}>
+}) => <div className={cn("bg-white rounded-xl p-6 shadow-sm border border-gray-100 h-full flex flex-col", className)}>
     <div className="flex-1">
       <Badge className="bg-lime-100 text-lime-800 mb-4 hover:bg-lime-200">Témoignage</Badge>
       <p className="italic text-gray-700 mb-4 text-lg">"{quote}"</p>
@@ -160,9 +119,7 @@ const Testimonial = ({
         <p className="text-gray-500 text-sm">{role}</p>
       </div>
     </div>
-  </div>
-);
-
+  </div>;
 export default function Landing() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>("businesses");
@@ -177,7 +134,6 @@ export default function Landing() {
         setScrolled(false);
       }
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -189,9 +145,7 @@ export default function Landing() {
       behavior: "smooth"
     });
   };
-  
-  return (
-    <div className="flex flex-col min-h-screen overflow-hidden">
+  return <div className="flex flex-col min-h-screen overflow-hidden">
       {/* Hero Section - Reimagined with dynamic split design and interactive form */}
       <section className="min-h-screen relative overflow-hidden flex flex-col lg:flex-row">
         {/* Left Section - Content */}
@@ -219,10 +173,7 @@ export default function Landing() {
             </div>
             
             <div className="pt-16 hidden md:block">
-              <button 
-                onClick={scrollToNextSection} 
-                className="flex flex-col items-center text-gray-500 hover:text-gray-800 transition-colors"
-              >
+              <button onClick={scrollToNextSection} className="flex flex-col items-center text-gray-500 hover:text-gray-800 transition-colors">
                 <span className="mb-2 text-sm">Découvrir</span>
                 <ArrowDown className="animate-bounce" />
               </button>
@@ -243,9 +194,7 @@ export default function Landing() {
             <div className="absolute bottom-[10%] left-[10%] w-32 h-32 rounded-full bg-gradient-to-br from-blue-200 to-purple-200 opacity-30 blur-xl"></div>
             
             {/* Floating Elements */}
-            <div className="absolute top-[20%] left-[15%] transform -translate-x-1/2 -translate-y-1/2 p-3 bg-white rounded-lg shadow-lg animate-float">
-              <CheckCircle2 className="text-lime-500 h-6 w-6" />
-            </div>
+            
             <div className="absolute bottom-[30%] right-[20%] transform translate-x-1/2 translate-y-1/2 p-3 bg-white rounded-lg shadow-lg">
               <Star className="text-yellow-500 h-6 w-6" />
             </div>
@@ -269,42 +218,12 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FeatureCard 
-              icon={Brain} 
-              title="Analyse structurée" 
-              description="Décomposez vos décisions complexes en critères clairs et évaluez méthodiquement chaque option."
-              delay={100}
-            />
-            <FeatureCard 
-              icon={Zap} 
-              title="Aide IA intelligente" 
-              description="Générez des options et des critères adaptés à votre situation grâce à notre assistant IA."
-              delay={300}
-            />
-            <FeatureCard 
-              icon={BarChart3} 
-              title="Visualisation dynamique" 
-              description="Comprenez facilement vos données grâce à des graphiques et tableaux comparatifs interactifs."
-              delay={500}
-            />
-            <FeatureCard 
-              icon={Award} 
-              title="Recommandations précises" 
-              description="Obtenez une recommandation basée sur l'analyse approfondie de vos critères et priorités."
-              delay={700}
-            />
-            <FeatureCard 
-              icon={Globe} 
-              title="Accessibilité totale" 
-              description="Accédez à vos décisions depuis n'importe quel appareil, à tout moment."
-              delay={900}
-            />
-            <FeatureCard 
-              icon={Users} 
-              title="Collaboration d'équipe" 
-              description="Partagez vos analyses et travaillez ensemble sur des décisions importantes."
-              delay={1100}
-            />
+            <FeatureCard icon={Brain} title="Analyse structurée" description="Décomposez vos décisions complexes en critères clairs et évaluez méthodiquement chaque option." delay={100} />
+            <FeatureCard icon={Zap} title="Aide IA intelligente" description="Générez des options et des critères adaptés à votre situation grâce à notre assistant IA." delay={300} />
+            <FeatureCard icon={BarChart3} title="Visualisation dynamique" description="Comprenez facilement vos données grâce à des graphiques et tableaux comparatifs interactifs." delay={500} />
+            <FeatureCard icon={Award} title="Recommandations précises" description="Obtenez une recommandation basée sur l'analyse approfondie de vos critères et priorités." delay={700} />
+            <FeatureCard icon={Globe} title="Accessibilité totale" description="Accédez à vos décisions depuis n'importe quel appareil, à tout moment." delay={900} />
+            <FeatureCard icon={Users} title="Collaboration d'équipe" description="Partagez vos analyses et travaillez ensemble sur des décisions importantes." delay={1100} />
           </div>
         </div>
       </section>
@@ -322,40 +241,16 @@ export default function Landing() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-12 order-2 lg:order-1">
-              <ProcessStep 
-                number={1} 
-                title="Définissez votre décision" 
-                description="Commencez par clarifier précisément le problème à résoudre ou la décision à prendre."
-                delay={100}
-              />
-              <ProcessStep 
-                number={2} 
-                title="Ajoutez vos options" 
-                description="Listez toutes les alternatives possibles ou utilisez notre IA pour vous aider à générer des options pertinentes."
-                delay={300}
-              />
-              <ProcessStep 
-                number={3} 
-                title="Établissez vos critères" 
-                description="Identifiez les facteurs importants pour évaluer chaque option selon vos priorités personnelles."
-                delay={500}
-              />
-              <ProcessStep 
-                number={4} 
-                title="Analysez et décidez" 
-                description="Visualisez la comparaison de vos options et obtenez une recommandation claire basée sur votre analyse."
-                delay={700}
-              />
+              <ProcessStep number={1} title="Définissez votre décision" description="Commencez par clarifier précisément le problème à résoudre ou la décision à prendre." delay={100} />
+              <ProcessStep number={2} title="Ajoutez vos options" description="Listez toutes les alternatives possibles ou utilisez notre IA pour vous aider à générer des options pertinentes." delay={300} />
+              <ProcessStep number={3} title="Établissez vos critères" description="Identifiez les facteurs importants pour évaluer chaque option selon vos priorités personnelles." delay={500} />
+              <ProcessStep number={4} title="Analysez et décidez" description="Visualisez la comparaison de vos options et obtenez une recommandation claire basée sur votre analyse." delay={700} />
             </div>
             
             <div className="relative order-1 lg:order-2">
               <div className="aspect-square relative rounded-2xl overflow-hidden shadow-xl bg-white p-4">
                 <div className="absolute inset-4 bg-gradient-to-br from-lime-50 to-white rounded-xl"></div>
-                <img 
-                  src="/lovable-uploads/6101851f-2549-45ba-a231-ed9bfb465e2b.png" 
-                  alt="Processus de décision" 
-                  className="absolute inset-0 w-full h-full object-cover rounded-xl z-10" 
-                />
+                <img src="/lovable-uploads/6101851f-2549-45ba-a231-ed9bfb465e2b.png" alt="Processus de décision" className="absolute inset-0 w-full h-full object-cover rounded-xl z-10" />
                 <div className="absolute inset-0 bg-gradient-to-t from-lime-900/30 to-transparent z-20 rounded-xl"></div>
                 
                 {/* Interactive indicators */}
@@ -383,46 +278,23 @@ export default function Landing() {
             </p>
             
             <div className="mt-8 flex justify-center space-x-4">
-              <Button 
-                variant={activeTab === "businesses" ? "highlight" : "outline"} 
-                onClick={() => setActiveTab("businesses")} 
-                className={cn(
-                  "rounded-full transition-all duration-300",
-                  activeTab === "businesses" ? "text-gray-900" : ""
-                )}
-              >
+              <Button variant={activeTab === "businesses" ? "highlight" : "outline"} onClick={() => setActiveTab("businesses")} className={cn("rounded-full transition-all duration-300", activeTab === "businesses" ? "text-gray-900" : "")}>
                 Entreprises
               </Button>
-              <Button 
-                variant={activeTab === "individuals" ? "highlight" : "outline"} 
-                onClick={() => setActiveTab("individuals")} 
-                className={cn(
-                  "rounded-full transition-all duration-300",
-                  activeTab === "individuals" ? "text-gray-900" : ""
-                )}
-              >
+              <Button variant={activeTab === "individuals" ? "highlight" : "outline"} onClick={() => setActiveTab("individuals")} className={cn("rounded-full transition-all duration-300", activeTab === "individuals" ? "text-gray-900" : "")}>
                 Particuliers
               </Button>
             </div>
           </div>
 
-          {activeTab === "businesses" && (
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 animate-fade-in">
+          {activeTab === "businesses" && <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 animate-fade-in">
               <div className="lg:col-span-2 space-y-6">
                 <h3 className="text-2xl font-semibold mb-6">Pour les entreprises</h3>
                 <ul className="space-y-4">
-                  {[
-                    "Recrutement et sélection de candidats", 
-                    "Choix de fournisseurs et partenariats", 
-                    "Décisions d'investissements stratégiques", 
-                    "Planification de lancement de produits", 
-                    "Stratégies d'expansion"
-                  ].map((item, index) => (
-                    <li key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-lime-50 transition-colors">
+                  {["Recrutement et sélection de candidats", "Choix de fournisseurs et partenariats", "Décisions d'investissements stratégiques", "Planification de lancement de produits", "Stratégies d'expansion"].map((item, index) => <li key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-lime-50 transition-colors">
                       <CheckCircle2 className="text-lime-500 flex-shrink-0" size={20} />
                       <span>{item}</span>
-                    </li>
-                  ))}
+                    </li>)}
                 </ul>
               </div>
               
@@ -431,29 +303,17 @@ export default function Landing() {
                   <CarouselContent>
                     <CarouselItem>
                       <div className="p-1 h-full">
-                        <Testimonial 
-                          quote="Memo a transformé notre processus de sélection des fournisseurs. Ce qui prenait des semaines de réunions se fait maintenant en quelques heures avec une transparence totale."
-                          author="Marie Dupont"
-                          role="Directrice des achats, TechCorp"
-                        />
+                        <Testimonial quote="Memo a transformé notre processus de sélection des fournisseurs. Ce qui prenait des semaines de réunions se fait maintenant en quelques heures avec une transparence totale." author="Marie Dupont" role="Directrice des achats, TechCorp" />
                       </div>
                     </CarouselItem>
                     <CarouselItem>
                       <div className="p-1 h-full">
-                        <Testimonial 
-                          quote="La clarté que Memo apporte à nos décisions stratégiques est inestimable. Nous pouvons maintenant justifier chaque choix avec des données concrètes."
-                          author="Jean Martin"
-                          role="CEO, Innovatech"
-                        />
+                        <Testimonial quote="La clarté que Memo apporte à nos décisions stratégiques est inestimable. Nous pouvons maintenant justifier chaque choix avec des données concrètes." author="Jean Martin" role="CEO, Innovatech" />
                       </div>
                     </CarouselItem>
                     <CarouselItem>
                       <div className="p-1 h-full">
-                        <Testimonial 
-                          quote="Nos réunions d'équipe sont devenues beaucoup plus productives depuis que nous utilisons Memo pour structurer nos processus décisionnels."
-                          author="Sophie Bernard"
-                          role="Responsable innovation, MediaPlus"
-                        />
+                        <Testimonial quote="Nos réunions d'équipe sont devenues beaucoup plus productives depuis que nous utilisons Memo pour structurer nos processus décisionnels." author="Sophie Bernard" role="Responsable innovation, MediaPlus" />
                       </div>
                     </CarouselItem>
                   </CarouselContent>
@@ -461,26 +321,16 @@ export default function Landing() {
                   <CarouselNext className="right-0" />
                 </Carousel>
               </div>
-            </div>
-          )}
+            </div>}
 
-          {activeTab === "individuals" && (
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 animate-fade-in">
+          {activeTab === "individuals" && <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 animate-fade-in">
               <div className="lg:col-span-2 space-y-6">
                 <h3 className="text-2xl font-semibold mb-6">Pour les particuliers</h3>
                 <ul className="space-y-4">
-                  {[
-                    "Orientations de carrière et changements professionnels", 
-                    "Décisions d'achat importantes (immobilier, véhicule)", 
-                    "Choix de formations et d'études", 
-                    "Planification financière et investissements", 
-                    "Déménagements et choix de vie"
-                  ].map((item, index) => (
-                    <li key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-lime-50 transition-colors">
+                  {["Orientations de carrière et changements professionnels", "Décisions d'achat importantes (immobilier, véhicule)", "Choix de formations et d'études", "Planification financière et investissements", "Déménagements et choix de vie"].map((item, index) => <li key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-lime-50 transition-colors">
                       <CheckCircle2 className="text-lime-500 flex-shrink-0" size={20} />
                       <span>{item}</span>
-                    </li>
-                  ))}
+                    </li>)}
                 </ul>
               </div>
               
@@ -489,29 +339,17 @@ export default function Landing() {
                   <CarouselContent>
                     <CarouselItem>
                       <div className="p-1 h-full">
-                        <Testimonial 
-                          quote="J'hésitais entre plusieurs options de carrière. Grâce à Memo, j'ai pu clarifier mes priorités et prendre une décision en fonction de ce qui compte vraiment pour moi."
-                          author="Thomas Leroy"
-                          role="Ingénieur logiciel"
-                        />
+                        <Testimonial quote="J'hésitais entre plusieurs options de carrière. Grâce à Memo, j'ai pu clarifier mes priorités et prendre une décision en fonction de ce qui compte vraiment pour moi." author="Thomas Leroy" role="Ingénieur logiciel" />
                       </div>
                     </CarouselItem>
                     <CarouselItem>
                       <div className="p-1 h-full">
-                        <Testimonial 
-                          quote="Pour l'achat de notre maison, Memo nous a permis de comparer objectivement toutes les options. Sans cette méthode, nous aurions probablement fait le mauvais choix."
-                          author="Émilie et Marc Dubois"
-                          role="Jeunes parents"
-                        />
+                        <Testimonial quote="Pour l'achat de notre maison, Memo nous a permis de comparer objectivement toutes les options. Sans cette méthode, nous aurions probablement fait le mauvais choix." author="Émilie et Marc Dubois" role="Jeunes parents" />
                       </div>
                     </CarouselItem>
                     <CarouselItem>
                       <div className="p-1 h-full">
-                        <Testimonial 
-                          quote="Choisir entre plusieurs universités était stressant jusqu'à ce que j'utilise Memo pour organiser toutes les informations. Ça a rendu ma décision beaucoup plus claire."
-                          author="Léa Martin"
-                          role="Étudiante"
-                        />
+                        <Testimonial quote="Choisir entre plusieurs universités était stressant jusqu'à ce que j'utilise Memo pour organiser toutes les informations. Ça a rendu ma décision beaucoup plus claire." author="Léa Martin" role="Étudiante" />
                       </div>
                     </CarouselItem>
                   </CarouselContent>
@@ -519,8 +357,7 @@ export default function Landing() {
                   <CarouselNext className="right-0" />
                 </Carousel>
               </div>
-            </div>
-          )}
+            </div>}
         </div>
       </section>
 
@@ -538,23 +375,21 @@ export default function Landing() {
           <div className="max-w-3xl mx-auto">
             <div className="grid gap-6">
               {[{
-                q: "Comment Memo m'aide-t-il à prendre de meilleures décisions ?",
-                a: "Memo structure votre processus de décision en décomposant les problèmes complexes en critères mesurables, en facilitant la comparaison des options et en permettant une analyse visuelle claire des résultats."
-              }, {
-                q: "Est-ce que l'outil est gratuit ?",
-                a: "Memo propose une version gratuite qui permet d'accéder aux fonctionnalités essentielles. Des options premium sont disponibles pour les utilisateurs qui ont besoin de fonctionnalités avancées."
-              }, {
-                q: "Puis-je partager mes analyses avec d'autres personnes ?",
-                a: "Oui, vous pouvez facilement partager vos analyses de décision avec d'autres personnes, ce qui est particulièrement utile pour les décisions collaboratives en entreprise ou en famille."
-              }, {
-                q: "Mes données sont-elles sécurisées ?",
-                a: "Absolument. La sécurité des données est notre priorité. Toutes les données sont chiffrées et nous ne partageons jamais vos informations avec des tiers."
-              }].map((faq, i) => (
-                <div key={i} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+              q: "Comment Memo m'aide-t-il à prendre de meilleures décisions ?",
+              a: "Memo structure votre processus de décision en décomposant les problèmes complexes en critères mesurables, en facilitant la comparaison des options et en permettant une analyse visuelle claire des résultats."
+            }, {
+              q: "Est-ce que l'outil est gratuit ?",
+              a: "Memo propose une version gratuite qui permet d'accéder aux fonctionnalités essentielles. Des options premium sont disponibles pour les utilisateurs qui ont besoin de fonctionnalités avancées."
+            }, {
+              q: "Puis-je partager mes analyses avec d'autres personnes ?",
+              a: "Oui, vous pouvez facilement partager vos analyses de décision avec d'autres personnes, ce qui est particulièrement utile pour les décisions collaboratives en entreprise ou en famille."
+            }, {
+              q: "Mes données sont-elles sécurisées ?",
+              a: "Absolument. La sécurité des données est notre priorité. Toutes les données sont chiffrées et nous ne partageons jamais vos informations avec des tiers."
+            }].map((faq, i) => <div key={i} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
                   <h3 className="text-xl font-semibold mb-3">{faq.q}</h3>
                   <p className="text-gray-600">{faq.a}</p>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </div>
@@ -648,6 +483,5 @@ export default function Landing() {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 }
