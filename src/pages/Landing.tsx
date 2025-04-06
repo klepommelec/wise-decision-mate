@@ -152,7 +152,7 @@ export default function Landing() {
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12 bg-gradient-to-br from-white to-lime-50">
           <div className="max-w-xl space-y-8 py-16">
             <div className="space-y-6 animate-fade-in">
-              <Badge className="bg-lime-200 text-lime-900 px-4 py-2 text-sm hover:bg-lime-400">Simplifiez vos choix</Badge>
+              
               <h1 className="text-5xl md:text-7xl font-bold leading-tight">
                 Prenez des <span className="relative">
                   <span className="relative z-10">décisions</span>
