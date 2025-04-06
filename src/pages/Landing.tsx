@@ -8,7 +8,6 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
 import { LandingDecisionForm } from "@/components/landing/LandingDecisionForm";
 
-// Helper component for animated feature cards
 const FeatureCard = ({
   icon: Icon,
   title,
@@ -50,7 +49,6 @@ const FeatureCard = ({
     </div>;
 };
 
-// Helper component for process steps with animations
 const ProcessStep = ({
   number,
   title,
@@ -92,7 +90,6 @@ const ProcessStep = ({
     </div>;
 };
 
-// Interactive testimonial component
 const Testimonial = ({
   quote,
   author,
@@ -126,7 +123,6 @@ export default function Landing() {
   const [activeTab, setActiveTab] = useState<string>("businesses");
   const [scrolled, setScrolled] = useState(false);
 
-  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -139,17 +135,15 @@ export default function Landing() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Scroll to next section
   const scrollToNextSection = () => {
     window.scrollTo({
       top: window.innerHeight,
       behavior: "smooth"
     });
   };
+
   return <div className="flex flex-col min-h-screen overflow-hidden">
-      {/* Hero Section - Reimagined with dynamic split design and interactive form */}
       <section className="min-h-screen relative overflow-hidden flex flex-col lg:flex-row">
-        {/* Left Section - Content */}
         <div className="w-full flex items-center justify-center bg-gradient-to-br from-white to-lime-50 relative">
           <div className="max-w-xl relative z-10">
             <div className="space-y-6 animate-fade-in text-center">
@@ -176,7 +170,6 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Hand images */}
           <div className="hidden lg:block absolute top-0 right-0 w-1/3 h-full">
             <img
               src="/lovable-uploads/70e4d817-b2d8-4613-9584-67d00db6abe0.png"
@@ -187,7 +180,7 @@ export default function Landing() {
           
           <div className="hidden lg:block absolute bottom-0 left-0 w-1/3 h-full">
             <img
-              src="/lovable-uploads/4df7ae2c-1443-427a-b6b9-5548058e39d4.png"
+              src="/lovable-uploads/48468dde-ce5d-47a7-8c02-3c1640b44558.png"
               alt="Main gauche"
               className="absolute bottom-10 left-0 w-full max-w-sm opacity-70 object-contain z-0"
             />
@@ -195,7 +188,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Features Section with Interactive Elements */}
       <section className="py-24 bg-white">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16 max-w-3xl mx-auto">
@@ -218,7 +210,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Interactive How It Works Section */}
       <section className="py-24 bg-gradient-to-b from-white to-lime-50">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16 max-w-3xl mx-auto">
@@ -238,9 +229,6 @@ export default function Landing() {
             </div>
             
             <div className="relative order-1 lg:order-2">
-              
-              
-              {/* Abstract decorations */}
               <div className="absolute -top-8 -right-8 w-24 h-24 bg-lime-200 rounded-full opacity-60 blur-xl"></div>
               <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-blue-100 rounded-full opacity-60 blur-xl"></div>
             </div>
@@ -248,7 +236,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Use Cases with Carousel */}
       <section className="py-24 bg-white">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16 max-w-3xl mx-auto">
@@ -294,7 +281,7 @@ export default function Landing() {
                     </CarouselItem>
                     <CarouselItem>
                       <div className="p-1 h-full">
-                        <Testimonial quote="Nos réunions d'équipe sont devenues beaucoup plus productives depuis que nous utilisons Memo pour structurer nos processus décisionnels." author="Sophie Bernard" role="Responsable innovation, MediaPlus" />
+                        <Testimonial quote="Nos réunions d'équipe sont devenues beaucoup plus productives jusqu'à ce que nous utilisons Memo pour structurer nos processus décisionnels." author="Sophie Bernard" role="Responsable innovation, MediaPlus" />
                       </div>
                     </CarouselItem>
                   </CarouselContent>
@@ -342,7 +329,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Redesigned FAQ Section */}
       <section className="py-24 bg-lime-50">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16 max-w-3xl mx-auto">
@@ -376,11 +362,9 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Interactive CTA Section */}
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-lime-400 to-lime-600 z-0"></div>
         
-        {/* Abstract shapes */}
         <div className="absolute top-0 left-0 w-64 h-64 rounded-full bg-lime-300 opacity-20"></div>
         <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-lime-200 opacity-20"></div>
         <div className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-white opacity-10"></div>
@@ -403,7 +387,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Redesigned Footer */}
       <footer className="bg-gray-50 py-16">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
