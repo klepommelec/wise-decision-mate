@@ -1,27 +1,23 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, PlusCircle, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-
 export function Header() {
   const {
     user,
     loading
   } = useAuth();
   const navigate = useNavigate();
-
   const handleLogoClick = (e: React.MouseEvent) => {
     navigate('/');
   };
-
   return <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200">
       <div className="container flex h-16 items-center justify-between py-3">
         <div className="flex items-center gap-2">
           <a href="/" className="flex items-center gap-2" onClick={handleLogoClick}>
-            <img src="/lovable-uploads/1465f08a-adfe-457b-a2f9-f046b763d7f1.png" alt="Memo Logo" className="h-8 max-h-[32px] w-auto" />
+            <img alt="Memo Logo" className="h-8 max-h-[32px] w-auto" src="/lovable-uploads/317853df-42ec-46e4-ba19-27a5e372dabc.png" />
           </a>
         </div>
         <nav className="flex items-center gap-3">
