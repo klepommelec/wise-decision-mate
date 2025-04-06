@@ -140,9 +140,7 @@ export default function Landing() {
         <div className="w-full flex items-center justify-center bg-gradient-to-br from-white to-lime-50">
           <div className="max-w-xl relative z-10">
             <div className="space-y-6 animate-fade-in text-center">
-              <h1 className="font-bold tracking-tight text-gray-900 text-6xl">
-                Choisissez mieux avec Memo
-              </h1>
+              <h1 className="font-bold tracking-tight text-gray-900 text-6xl">Choisissez mieux avec Memo</h1>
               
               
               
