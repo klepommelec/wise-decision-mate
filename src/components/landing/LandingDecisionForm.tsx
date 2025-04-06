@@ -6,12 +6,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Calendar } from 'lucide-react';
+import { ArrowRight, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export function LandingDecisionForm() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [showDescription, setShowDescription] = useState(false);
   const [useAI, setUseAI] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -36,6 +37,10 @@ export function LandingDecisionForm() {
     }, 300);
   };
 
+  const toggleDescription = () => {
+    setShowDescription(prev => !prev);
+  };
+
   return (
     <Card className="gradient-border-card transition-all duration-300 shadow-sm overflow-hidden bg-white rounded-lg w-full max-w-md">
       <CardHeader className="bg-white border-b rounded-t-xl">
@@ -51,10 +56,28 @@ export function LandingDecisionForm() {
             <Input id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Choisir une nouvelle voiture" className="w-full bg-white" required />
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="description">Description (optionnel)</Label>
-            <Textarea id="description" value={description} onChange={e => setDescription(e.target.value)} placeholder="Détails supplémentaires sur votre décision..." className="min-h-[80px] bg-white" />
-          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={toggleDescription}
+            className="w-full text-sm flex justify-between items-center bg-white"
+          >
+            <span>Description (optionnel)</span>
+            {showDescription ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </Button>
+          
+          {showDescription && (
+            <div className="space-y-2">
+              <Textarea 
+                id="description" 
+                value={description} 
+                onChange={e => setDescription(e.target.value)} 
+                placeholder="Détails supplémentaires sur votre décision..." 
+                className="min-h-[80px] bg-white" 
+              />
+            </div>
+          )}
           
           <div className="flex items-center space-x-2 pt-2 border-t">
             <Switch id="ai-options" checked={useAI} onCheckedChange={setUseAI} className="bg-lime-400 hover:bg-lime-500" />

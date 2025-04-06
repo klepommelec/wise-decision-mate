@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Sparkles, Calendar, ArrowRight } from 'lucide-react';
+import { Sparkles, Calendar, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -38,6 +38,7 @@ export function DecisionForm({
 }: DecisionFormProps) {
   const [title, setTitle] = useState(initialDecision?.title || '');
   const [description, setDescription] = useState(initialDecision?.description || '');
+  const [showDescription, setShowDescription] = useState(!!initialDecision?.description);
   const [deadline, setDeadline] = useState<Date | undefined>(initialDecision?.deadline ? new Date(initialDecision.deadline) : undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [useAI, setUseAI] = useState(true);
@@ -50,9 +51,14 @@ export function DecisionForm({
       setTitle(initialDecision.title || '');
       setDescription(initialDecision.description || '');
       setDeadline(initialDecision.deadline ? new Date(initialDecision.deadline) : undefined);
+      setShowDescription(!!initialDecision.description);
       console.log("DecisionForm received initialDecision:", initialDecision);
     }
   }, [initialDecision]);
+
+  const toggleDescription = () => {
+    setShowDescription(prev => !prev);
+  };
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,10 +124,28 @@ export function DecisionForm({
               <Input id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Choisir une nouvelle voiture" className="w-full bg-white" required />
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="description">Description (optionnel)</Label>
-              <Textarea id="description" value={description} onChange={e => setDescription(e.target.value)} placeholder="Détails supplémentaires sur votre décision..." className="min-h-[80px] bg-white" />
-            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={toggleDescription}
+              className="w-full text-sm flex justify-between items-center bg-white"
+            >
+              <span>Description (optionnel)</span>
+              {showDescription ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </Button>
+            
+            {showDescription && (
+              <div className="space-y-2">
+                <Textarea 
+                  id="description" 
+                  value={description} 
+                  onChange={e => setDescription(e.target.value)} 
+                  placeholder="Détails supplémentaires sur votre décision..." 
+                  className="min-h-[80px] bg-white" 
+                />
+              </div>
+            )}
             
             <div className="space-y-2">
               <Label htmlFor="deadline">Date limite (optionnel)</Label>
