@@ -1,30 +1,23 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, PlusCircle, HelpCircle } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+
 export function Header() {
   const {
     user,
-    loading,
-    signOut
+    loading
   } = useAuth();
   const navigate = useNavigate();
+
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     navigate(user ? '/dashboard' : '/');
   };
-  const handleLogout = async () => {
-    try {
-      await signOut();
-      toast.success("Déconnecté avec succès");
-      navigate('/');
-    } catch (error) {
-      toast.error("Erreur lors de la déconnexion");
-      console.error("Erreur de déconnexion:", error);
-    }
-  };
+
   return <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200">
       <div className="container flex h-16 items-center justify-between py-3">
         <div className="flex items-center gap-2">
@@ -43,10 +36,6 @@ export function Header() {
               </Button>
               <Button variant="highlight" size="sm" onClick={() => navigate("/new-decision")} className="rounded-full text-gray-900 bg-lime-400 hover:bg-lime-500 font-medium">
                 Nouvelle décision
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleLogout} className="rounded-full text-gray-600 border-gray-200 hover:bg-gray-100">
-                <LogOut className="h-4 w-4 mr-1" />
-                Déconnexion
               </Button>
             </div> : <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" className="rounded-full text-gray-600 bg-white border-gray-300 hover:bg-gray-50 font-medium" onClick={() => navigate('/help')}>

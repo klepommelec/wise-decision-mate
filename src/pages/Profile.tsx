@@ -6,9 +6,10 @@ import { UserInfo } from "@/components/profile/UserInfo";
 import { DecisionsList } from "@/components/profile/DecisionsList";
 import { useState } from "react";
 import { useDecisions } from "@/hooks/use-decisions";
+import { UserProfile } from "@/components/profile/UserProfile";
 
 export default function Profile() {
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState<string>("recent");
   const [showFavorites, setShowFavorites] = useState<boolean>(false);
@@ -38,7 +39,7 @@ export default function Profile() {
 
   return (
     <Container className="py-8 space-y-8">
-      <UserInfo />
+      <UserProfile user={user} onSignOut={signOut} />
       <DecisionsList 
         decisions={decisions}
         isLoading={loadingDecisions}

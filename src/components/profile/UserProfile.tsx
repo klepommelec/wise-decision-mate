@@ -16,6 +16,16 @@ interface UserProfileProps {
 export const UserProfile = ({ user, onSignOut }: UserProfileProps) => {
   const { theme, setTheme } = useTheme();
 
+  const handleSignOut = async () => {
+    try {
+      await onSignOut();
+      toast.success("Déconnexion réussie");
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error);
+      toast.error("Une erreur s'est produite lors de la déconnexion");
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -137,7 +147,7 @@ export const UserProfile = ({ user, onSignOut }: UserProfileProps) => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button variant="destructive" onClick={onSignOut} className="w-full rounded-full">
+        <Button variant="destructive" onClick={handleSignOut} className="w-full rounded-full">
           <LogOut className="mr-2 h-4 w-4" />
           Déconnexion
         </Button>

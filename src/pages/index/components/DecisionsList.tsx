@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -6,6 +7,7 @@ import { ArrowRight, List, Clock, Star, CheckCircle, RefreshCw } from 'lucide-re
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/context/AuthContext';
+
 interface Decision {
   id: string;
   title: string;
@@ -15,10 +17,12 @@ interface Decision {
   favorite_option?: string | null;
   ai_recommendation?: string | null;
 }
+
 interface DecisionsListProps {
   onDecisionClick: (decision: Decision) => void;
   onNewDecision: () => void;
 }
+
 export function DecisionsList({
   onDecisionClick,
   onNewDecision
@@ -26,37 +30,46 @@ export function DecisionsList({
   const [userDecisions, setUserDecisions] = useState<Decision[]>([]);
   const [loadingDecisions, setLoadingDecisions] = useState(true);
   const [recommendationsMap, setRecommendationsMap] = useState<Record<string, string>>({});
+  
   const {
     user
   } = useAuth();
+  
   useEffect(() => {
     if (user) {
       fetchDecisionsWithRecommendations();
     }
   }, [user]);
+  
   const fetchDecisionsWithRecommendations = async () => {
     if (!user) return;
+    
     try {
       setLoadingDecisions(true);
       console.log("Récupération des décisions pour l'utilisateur:", user.id);
+      
       const {
         data,
         error
       } = await supabase.from("decisions").select("id, title, description, created_at, deadline, favorite_option, ai_recommendation").eq("user_id", user.id).order("created_at", {
         ascending: false
       });
+      
       if (error) {
         console.error("Erreur lors de la récupération des décisions:", error);
         throw error;
       }
+      
       console.log("Décisions récupérées:", data);
       setUserDecisions(data || []);
+      
       const recMap: Record<string, string> = {};
       data?.forEach(decision => {
         if (decision.ai_recommendation) {
           recMap[decision.id] = decision.ai_recommendation;
         }
       });
+      
       setRecommendationsMap(recMap);
     } catch (error: any) {
       console.error("Erreur lors de la récupération des décisions:", error);
@@ -65,6 +78,7 @@ export function DecisionsList({
       setLoadingDecisions(false);
     }
   };
+  
   const formatDate = (dateString: string | undefined | null) => {
     if (!dateString) return "Pas de deadline";
     const date = new Date(dateString);
@@ -74,10 +88,12 @@ export function DecisionsList({
       year: "numeric"
     }).format(date);
   };
+  
   const handleRefresh = () => {
     fetchDecisionsWithRecommendations();
     toast.success("Liste des décisions actualisée");
   };
+  
   return <div className="w-full max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-6 pt-24">
         <h2 className="text-2xl font-bold">Mes Décisions</h2>

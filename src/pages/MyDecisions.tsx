@@ -6,8 +6,8 @@ const MyDecisions = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to homepage since decisions are now there
-    navigate("/");
+    // Redirect to dashboard instead of homepage
+    navigate("/dashboard");
   }, [navigate]);
 
   return null;
