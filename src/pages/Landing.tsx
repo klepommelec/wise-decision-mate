@@ -393,30 +393,30 @@ export default function Landing() {
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">Produit</h3>
               <ul className="space-y-2">
-                <li><Button variant="link" onClick={() => navigate("/about")}>À propos</Button></li>
-                <li><Button variant="link" onClick={() => navigate("/help")}>Guide d'utilisation</Button></li>
-                <li><Button variant="link">Fonctionnalités</Button></li>
-                <li><Button variant="link">Tarifs</Button></li>
+                <li className="text-gray-500 "><Button variant="link" onClick={() => navigate("/about")}>À propos</Button></li>
+                <li className="text-gray-500 "><Button variant="link" onClick={() => navigate("/help")}>Guide d'utilisation</Button></li>
+                <li className="text-gray-500 "><Button variant="link">Fonctionnalités</Button></li>
+                <li className="text-gray-500 "><Button variant="link">Tarifs</Button></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">Ressources</h3>
               <ul className="space-y-2">
-                <li><Button variant="link">Blog</Button></li>
-                <li><Button variant="link">Tutoriels</Button></li>
-                <li><Button variant="link">FAQ</Button></li>
-                <li><Button variant="link">Support</Button></li>
+                <li className="text-gray-500 "><Button variant="link">Blog</Button></li>
+                <li className="text-gray-500 "><Button variant="link">Tutoriels</Button></li>
+                <li className="text-gray-500 "><Button variant="link">FAQ</Button></li>
+                <li className="text-gray-500 "><Button variant="link">Support</Button></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">Légal</h3>
               <ul className="space-y-2">
-                <li><Button variant="link">Conditions d'utilisation</Button></li>
-                <li><Button variant="link">Politique de confidentialité</Button></li>
-                <li><Button variant="link">Mentions légales</Button></li>
-                <li><Button variant="link">Cookies</Button></li>
+                <li className="text-gray-500 "><Button variant="link">Conditions d'utilisation</Button></li>
+                <li className="text-gray-500 "><Button variant="link">Politique de confidentialité</Button></li>
+                <li className="text-gray-500 "><Button variant="link">Mentions légales</Button></li>
+                <li className="text-gray-500 "><Button variant="link">Cookies</Button></li>
               </ul>
             </div>
           </div>
