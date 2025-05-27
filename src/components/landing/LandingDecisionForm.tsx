@@ -64,14 +64,7 @@ export function LandingDecisionForm() {
               <Textarea id="description" value={description} onChange={e => setDescription(e.target.value)} placeholder="Détails supplémentaires sur votre décision..." className="min-h-[80px] bg-white" />
             </div>}
           
-          <div className="flex items-center space-x-2 pt-2 border-t">
-            <Switch id="ai-options" checked={useAI} onCheckedChange={setUseAI} className="bg-lime-400 hover:bg-lime-500" />
-            <div className="grid gap-1.5">
-              <Label htmlFor="ai-options" className="text-sm font-medium leading-none flex items-center gap-1.5">
-                Générer automatiquement des options et critères
-              </Label>
-            </div>
-          </div>
+          
           
           <Button type="submit" variant="secondary" disabled={!title.trim() || isSubmitting} className="w-full transition-all mt-2 gap-2 py-6 rounded-full bg-lime-400 hover:bg-lime-500 text-gray-700">
             {isSubmitting ? "Traitement..." : "Continuer"}
