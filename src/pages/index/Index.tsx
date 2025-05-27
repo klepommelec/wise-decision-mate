@@ -171,7 +171,7 @@ const Index = () => {
             }} transition={{
               duration: 0.3,
               delay: 0.3
-            }}>
+            }} className="px-0">
                   <DecisionsList onDecisionClick={handleDecisionClick} onNewDecision={handleReset} />
                 </motion.div>
               </Container>

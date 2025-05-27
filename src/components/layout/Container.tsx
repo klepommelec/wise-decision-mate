@@ -10,7 +10,7 @@ export function Container({
   className,
   fullWidth = false
 }: ContainerProps) {
-  return <main className="pt-[72px]">
+  return <main className="pt-[72px] px-[24px]">
       {children}
     </main>;
 }
