@@ -30,11 +30,11 @@
 .lovable-gradient-bg {
   background: linear-gradient(135deg, 
     #a3e635 0%,     /* lime-400 */
-    #84cc16 1%,    /* lime-500 */
-    #65a30d 3%,    /* lime-600 */
-    #3b82f6 6%,    /* blue-500 */
-    #6366f1 8%,    /* indigo-500 */
-    #8b5cf6 10%    /* violet-500 */
+    #84cc16 15%,    /* lime-500 */
+    #65a30d 35%,    /* lime-600 */
+    #3b82f6 65%,    /* blue-500 */
+    #6366f1 85%,    /* indigo-500 */
+    #8b5cf6 100%    /* violet-500 */
   );
   background-size: 400% 400%;
   animation: gradient-shift 15s ease infinite;
