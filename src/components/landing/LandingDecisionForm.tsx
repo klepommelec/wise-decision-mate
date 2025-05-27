@@ -45,14 +45,14 @@ export function LandingDecisionForm() {
   const toggleDescription = () => {
     setShowDescription(prev => !prev);
   };
-  return <Card className="gradient-border-card transition-all duration-300 shadow-sm overflow-hidden bg-white w-full max-w-lg rounded-2xl">
-      <CardHeader className="bg-white border-b rounded-t-2xl">
+  return <Card className="gradient-border-card transition-all duration-300 shadow-sm overflow-hidden bg-white w-full max-w-lg rounded-3xl">
+      <CardHeader className="bg-white border-b rounded-t-3xl">
         <div className="flex items-center gap-3">
-          <div className="rounded-full w-11 h-10 flex items-center justify-center text-black font-bold text-xl font-handwriting bg-lime-400">M</div>
-          <CardTitle className="font-medium text-xl">Bonjour, quelle décision voulez-vous prendre ?</CardTitle>
+          <div className="rounded-full w-10 h-10 flex items-center justify-center text-black font-bold text-xl font-handwriting bg-lime-400">M</div>
+          <CardTitle className="font-medium text-xl">Bonjour, comment puis-je vous aider aujourd'hui ?</CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="pt-6 bg-white rounded-b-2xl my-0 py-0">
+      <CardContent className="pt-6 bg-white rounded-b-3xl my-0 py-0">
         <form onSubmit={handleSubmit} className="flex flex-col gap-6 my-0 pt-[12px] pb-[24px]">
           <div className="h-28">
             <Input ref={titleInputRef} id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Choisir une nouvelle voiture" required style={{
