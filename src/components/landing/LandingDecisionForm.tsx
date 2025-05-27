@@ -57,7 +57,7 @@ export function LandingDecisionForm() {
           <div className="h-28">
             <Input ref={titleInputRef} id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Choisir une nouvelle voiture" required style={{
             textAlignLast: 'left'
-          }} className="w-full bg-white border-none px-0 text-start align-top pt-0 leading-tight focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none" />
+          }} className="w-full bg-white border-none px-0 text-start align-top leading-tight focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none" />
           </div>
           
           {showDescription && <div className="space-y-2">
