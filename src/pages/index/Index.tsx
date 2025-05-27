@@ -215,7 +215,7 @@ const Index = () => {
           </AnimatePresence>
 
           {user && step === 'decision' && !existingDecision && (
-            <div className="w-full mt-auto">
+            <div className="w-full mt-auto decisions-gradient-overlay">
               <Container className="py-12">
                 <motion.div 
                   initial={{ opacity: 0 }}
