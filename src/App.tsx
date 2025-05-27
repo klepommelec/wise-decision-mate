@@ -13,7 +13,6 @@ import MyDecisions from "./pages/MyDecisions";
 import NotFound from "./pages/NotFound";
 import Help from "./pages/Help";
 import Components from "./pages/Components";
-import Landing from "./pages/Landing";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./hooks/use-theme";
 import { Header } from "./components/layout/Header";
@@ -30,7 +29,7 @@ const App = () => (
           <BrowserRouter>
             <Header />
             <Routes>
-              <Route path="/" element={<Landing />} />
+              <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Index />} />
               <Route path="/about" element={<About />} />
               <Route path="/auth" element={<Auth />} />
