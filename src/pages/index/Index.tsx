@@ -133,7 +133,7 @@ const Index = () => {
         {...pageTransition}
       >
         <h1 className="main-title font-medium">
-          Prenez des décisions<br />averties, avec Memo.
+          Bonjour, comment puis-je vous<br />aider aujourd'hui ?
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Memo vous assiste à structurer votre réflexion<br />
