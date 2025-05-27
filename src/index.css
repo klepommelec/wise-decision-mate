@@ -29,12 +29,12 @@
 /* Lovable-inspired gradient background */
 .lovable-gradient-bg {
   background: linear-gradient(135deg, 
-    #a3e635 0%,     /* lime-400 */
-    #84cc16 15%,    /* lime-500 */
-    #65a30d 35%,    /* lime-600 */
-    #3b82f6 65%,    /* blue-500 */
-    #6366f1 85%,    /* indigo-500 */
-    #8b5cf6 100%    /* violet-500 */
+    #a3e635 0%,     /* lime-100 */
+    #84cc16 15%,    /* lime-200 */
+    #65a30d 35%,    /* lime-300 */
+    #3b82f6 65%,    /* blue-300 */
+    #6366f1 85%,    /* indigo-300 */
+    #8b5cf6 100%    /* violet-300 */
   );
   background-size: 400% 400%;
   animation: gradient-shift 15s ease infinite;
