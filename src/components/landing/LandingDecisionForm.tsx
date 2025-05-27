@@ -7,7 +7,6 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
 export function LandingDecisionForm() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -55,10 +54,10 @@ export function LandingDecisionForm() {
       </CardHeader>
       <CardContent className="pt-6 bg-white rounded-b-2xl my-0 py-0">
         <form onSubmit={handleSubmit} className="flex flex-col gap-6 my-0 py-[24px]">
-          <div className="my-0 py-0 border-none">
+          <div className="h-28">
             <Input ref={titleInputRef} id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Choisir une nouvelle voiture" required style={{
             textAlignLast: 'left'
-          }} className="w-full bg-white border-none px-0 text-start align-top pt-0 leading-tight focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none" />
+          }} className="w-full bg-white border-none px-0 text-start align-top pt-0 leading-tight focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none pb-4" />
           </div>
           
           {showDescription && <div className="space-y-2">
