@@ -53,7 +53,7 @@ export function LandingDecisionForm() {
         </div>
       </CardHeader>
       <CardContent className="pt-6 bg-white rounded-b-2xl my-0 py-0">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6 my-0 py-0">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6 my-0 py-[24px]">
           <div className="my-0 py-0 border-none">
             <Input ref={titleInputRef} id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Choisir une nouvelle voiture" required style={{
             textAlignLast: 'left'
