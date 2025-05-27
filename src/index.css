@@ -29,6 +29,7 @@
 /* Lovable-inspired organic mesh gradient background */
 .lovable-gradient-bg {
   position: relative;
+  background: #fafafa;
 }
 
 .lovable-gradient-bg::before {
