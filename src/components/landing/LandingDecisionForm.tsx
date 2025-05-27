@@ -7,6 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
 export function LandingDecisionForm() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -57,7 +58,7 @@ export function LandingDecisionForm() {
           <div className="my-0 py-0 border-none">
             <Input ref={titleInputRef} id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Choisir une nouvelle voiture" required style={{
             textAlignLast: 'left'
-          }} className="w-full bg-white border-none px-0 text-start align-top pt-0 leading-tight" />
+          }} className="w-full bg-white border-none px-0 text-start align-top pt-0 leading-tight focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none" />
           </div>
           
           {showDescription && <div className="space-y-2">
