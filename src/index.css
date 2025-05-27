@@ -29,12 +29,12 @@
 /* Lovable-inspired organic gradient background with rounded shapes */
 .lovable-gradient-bg {
   background: 
-    radial-gradient(circle at 20% 80%, rgba(163, 230, 53, 0.3) 0%, transparent 5%),
-    radial-gradient(circle at 80% 20%, rgba(132, 204, 22, 0.25) 0%, transparent 5%),
-    radial-gradient(circle at 40% 40%, rgba(101, 163, 13, 0.2) 0%, transparent 5%),
-    radial-gradient(circle at 60% 70%, rgba(59, 130, 246, 0.3) 0%, transparent 5%),
-    radial-gradient(circle at 90% 90%, rgba(99, 102, 241, 0.25) 0%, transparent 5%),
-    radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.2) 0%, transparent 5%),
+    radial-gradient(circle at 20% 80%, rgba(163, 230, 53, 0.3) 0%, transparent 100%),
+    radial-gradient(circle at 80% 20%, rgba(132, 204, 22, 0.25) 0%, transparent 100%),
+    radial-gradient(circle at 40% 40%, rgba(101, 163, 13, 0.2) 0%, transparent 100%),
+    radial-gradient(circle at 60% 70%, rgba(59, 130, 246, 0.3) 0%, transparent 100%),
+    radial-gradient(circle at 90% 90%, rgba(99, 102, 241, 0.25) 0%, transparent 100%),
+    radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.2) 0%, transparent 100%),
     linear-gradient(135deg, 
       rgba(163, 230, 53, 0.1) 0%,
       rgba(132, 204, 22, 0.15) 25%,
