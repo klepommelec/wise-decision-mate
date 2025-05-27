@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -26,73 +25,66 @@
   animation: fontFadeIn 0.5s ease-in-out forwards;
 }
 
-/* Lovable-inspired organic gradient background with rounded shapes */
+/* Lovable-inspired organic mesh gradient background */
 .lovable-gradient-bg {
   background: 
-    radial-gradient(circle at 20% 80%, rgba(163, 230, 53, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(132, 204, 22, 0.25) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(101, 163, 13, 0.2) 0%, transparent 50%),
-    radial-gradient(circle at 60% 70%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 90% 90%, rgba(99, 102, 241, 0.25) 0%, transparent 50%),
-    radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.2) 0%, transparent 50%),
+    /* Primary organic shapes with blur effect */
+    radial-gradient(ellipse 80% 60% at 25% 20%, rgba(163, 230, 53, 0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 70% 90% at 75% 80%, rgba(132, 204, 22, 0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 90% 50% at 10% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 75%),
+    radial-gradient(ellipse 60% 80% at 90% 30%, rgba(99, 102, 241, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 70% at 50% 50%, rgba(139, 92, 246, 0.04) 0%, transparent 80%),
+    
+    /* Secondary blending layers */
+    radial-gradient(ellipse 120% 40% at 60% 10%, rgba(163, 230, 53, 0.05) 0%, transparent 85%),
+    radial-gradient(ellipse 50% 100% at 20% 90%, rgba(217, 70, 239, 0.03) 0%, transparent 70%),
+    
+    /* Base subtle gradient */
     linear-gradient(135deg, 
-      rgba(163, 230, 53, 0.1) 0%,
-      rgba(132, 204, 22, 0.15) 12%,
-      rgba(101, 163, 13, 0.1) 25%,
-      rgba(59, 130, 246, 0.15) 37%,
-      rgba(99, 102, 241, 0.1) 50%
+      rgba(163, 230, 53, 0.02) 0%,
+      rgba(132, 204, 22, 0.03) 25%,
+      rgba(59, 130, 246, 0.02) 50%,
+      rgba(99, 102, 241, 0.02) 75%,
+      rgba(139, 92, 246, 0.01) 100%
     );
-  background-size: 
-    600px 600px,
-    800px 800px,
-    500px 500px,
-    700px 700px,
-    600px 600px,
-    400px 400px,
-    100% 100%;
-  animation: organic-flow 20s ease-in-out infinite;
+  
+  /* Soft animation for organic movement */
+  animation: organic-mesh-flow 25s ease-in-out infinite;
+  
+  /* Subtle blur for softer edges */
+  filter: blur(0.5px);
 }
 
-@keyframes organic-flow {
+@keyframes organic-mesh-flow {
   0%, 100% {
     background-position: 
-      20% 80%,
-      80% 20%,
-      40% 40%,
-      60% 70%,
-      90% 90%,
-      10% 10%,
-      0% 50%;
+      25% 20%,
+      75% 80%,
+      10% 70%,
+      90% 30%,
+      50% 50%,
+      60% 10%,
+      20% 90%;
   }
-  25% {
+  33% {
     background-position: 
-      30% 70%,
-      70% 30%,
-      50% 30%,
-      70% 60%,
-      80% 80%,
-      20% 20%,
-      25% 75%;
-  }
-  50% {
-    background-position: 
+      35% 30%,
+      65% 70%,
+      20% 60%,
+      80% 40%,
       40% 60%,
-      60% 40%,
-      60% 20%,
-      80% 50%,
-      70% 70%,
-      30% 30%,
-      50% 100%;
+      70% 20%,
+      30% 80%;
   }
-  75% {
+  66% {
     background-position: 
-      25% 75%,
-      75% 25%,
-      35% 55%,
+      45% 25%,
       55% 75%,
-      85% 85%,
-      15% 15%,
-      75% 25%;
+      15% 65%,
+      85% 35%,
+      60% 45%,
+      50% 15%,
+      25% 85%;
   }
 }
 
