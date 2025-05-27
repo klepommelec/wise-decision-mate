@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { DecisionForm } from '@/components/decision/DecisionForm';
@@ -144,7 +143,7 @@ const Index = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50" ref={contentRef}>
+    <div className="flex flex-col min-h-screen lovable-gradient-bg" ref={contentRef}>
       <div className="flex-1 flex flex-col relative pt-[110px] pb-[90px] py-0">
         <div className="relative z-10 flex-1 flex flex-col">
           <AnimatePresence mode="wait">
