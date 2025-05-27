@@ -44,17 +44,14 @@ export function LandingDecisionForm() {
           <CardTitle className="font-medium text-xl">Bonjour, quelle décision voulez-vous prendre ?</CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="pt-6 bg-white rounded-b-2xl">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="title">Titre de la décision</Label>
-            <Input id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Choisir une nouvelle voiture" className="w-full bg-white" required />
+      <CardContent className="pt-6 bg-white rounded-b-2xl my-0 py-0">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6 my-0 py-0">
+          <div className="my-0 py-0 border-none">
+            
+            <Input id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Choisir une nouvelle voiture" required className="w-full bg-white border-none px-0 min-h-40" />
           </div>
           
-          <Button type="button" variant="outline" size="sm" onClick={toggleDescription} className="w-full text-sm flex justify-between items-center bg-white">
-            <span>Description (optionnel)</span>
-            {showDescription ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          </Button>
+          
           
           {showDescription && <div className="space-y-2">
               <Textarea id="description" value={description} onChange={e => setDescription(e.target.value)} placeholder="Détails supplémentaires sur votre décision..." className="min-h-[80px] bg-white" />
