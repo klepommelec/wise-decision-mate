@@ -25,9 +25,11 @@
   animation: fontFadeIn 0.5s ease-in-out forwards;
 }
 
-/* Simple radial gradient background */
+/* Simple radial gradient background - limited to top portion */
 .simple-radial-gradient {
-  background-image: radial-gradient(circle at bottom center, rgba(163, 230, 53, 0.15), rgba(255, 255, 255, 0.95));
+  background-image: 
+    linear-gradient(to bottom, transparent 60%, rgba(255, 255, 255, 1) 100%),
+    radial-gradient(circle at bottom center, rgba(163, 230, 53, 0.15), rgba(255, 255, 255, 0.95));
 }
 
 /* Alternative radial gradient from top */
