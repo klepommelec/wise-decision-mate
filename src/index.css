@@ -57,6 +57,18 @@
   animation: gradient-animation 8s ease infinite;
 }
 
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 /* Consistent styling for form elements */
 .form-input, 
 .form-textarea, 
@@ -65,8 +77,34 @@
   @apply bg-white rounded-xl border border-gray-300;
 }
 
+/* Custom animations for the landing page */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
 .animate-float {
   animation: float 6s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(163, 230, 53, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(163, 230, 53, 0.8);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }
 
 /* Custom components for landing page */
