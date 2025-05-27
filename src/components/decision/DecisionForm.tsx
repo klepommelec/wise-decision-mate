@@ -104,14 +104,14 @@ export function DecisionForm({
     }
   }, [title, description, deadline, useAI, user, navigate, onSubmit, initialDecision]);
   return <div className="w-full max-w-2xl mx-auto animate-fade-in pt-0">
-      <Card className="gradient-border-card transition-all duration-300 shadow-xl overflow-hidden bg-white rounded-2xl">
-        <CardHeader className="bg-white border-b rounded-t-2xl">
+      <Card className="gradient-border-card transition-all duration-300 shadow-xl overflow-hidden bg-white rounded-3xl">
+        <CardHeader className="bg-white border-b rounded-t-3xl">
           <div className="flex items-center gap-3">
             <div className="rounded-full w-10 h-10 flex items-center justify-center text-black font-bold text-xl font-handwriting bg-lime-400">M</div>
             <CardTitle className="font-medium text-xl">Bonjour, quelle décision voulez-vous prendre ?</CardTitle>
           </div>
         </CardHeader>
-        <CardContent className="pt-6 bg-white rounded-b-2xl">
+        <CardContent className="pt-6 bg-white rounded-b-3xl">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="space-y-2">
               <Label htmlFor="title">Titre de la décision</Label>
