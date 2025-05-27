@@ -78,7 +78,7 @@ export function DecisionsList({
     fetchDecisionsWithRecommendations();
     toast.success("Liste des décisions actualisée");
   };
-  return <div className="w-full bg-white rounded-xl p-6 py-[16px] my-[88px] mx-0">
+  return <div className="w-full bg-white rounded-xl p-6 py-[16px] my-[88px] px-[23px] mx-[16px]">
       <div className="flex justify-between items-center mb-6 pt-0">
         <h2 className="text-2xl font-bold">Mes Décisions</h2>
         <div className="flex gap-2">
