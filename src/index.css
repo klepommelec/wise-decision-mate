@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25,61 +26,98 @@
   animation: fontFadeIn 0.5s ease-in-out forwards;
 }
 
-/* Gradient border card with distant shadow effect */
+/* Enhanced gradient border card with improved shadow effects */
 .gradient-border-card {
   position: relative;
-  overflow: visible !important; /* Override any hidden overflow */
-  background-clip: padding-box; /* Important for the gradient to work */
-  border: solid 1px transparent !important; /* Transparent border that will be filled with gradient */
+  overflow: visible !important;
+  background-clip: padding-box;
+  border: solid 1px transparent !important;
   z-index: 0;
   box-shadow: 
-    0 8px 20px -3px rgba(155, 135, 245, 0.02),  /* Purple shadow - opacity set to 0.02 */
-    0 15px 30px -5px rgba(217, 70, 239, 0.02),   /* Magenta shadow - opacity set to 0.02 */
-    0 20px 40px -8px rgba(59, 130, 246, 0.02);  /* Blue shadow - opacity set to 0.02 */
-  transition: box-shadow 0.5s ease;
+    0 8px 20px -3px rgba(155, 135, 245, 0.03),
+    0 15px 30px -5px rgba(217, 70, 239, 0.03),
+    0 20px 40px -8px rgba(59, 130, 246, 0.03);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .gradient-border-card:hover {
   box-shadow: 
-    0 12px 30px -5px rgba(155, 135, 245, 0.02),  /* Purple shadow - opacity set to 0.02 */
-    0 20px 40px -8px rgba(217, 70, 239, 0.02),  /* Magenta shadow - opacity set to 0.02 */
-    0 25px 50px -10px rgba(59, 130, 246, 0.02);  /* Blue shadow - opacity set to 0.02 */
+    0 16px 40px -5px rgba(155, 135, 245, 0.05),
+    0 25px 50px -8px rgba(217, 70, 239, 0.05),
+    0 30px 60px -10px rgba(59, 130, 246, 0.05);
+  transform: translateY(-2px);
 }
 
 .gradient-border-card::before {
   content: "";
   position: absolute;
-  inset: -1px; /* Spread to cover the 1px transparent border */
+  inset: -1px;
   z-index: -1;
-  border-radius: inherit; /* Match the parent's border radius */
+  border-radius: inherit;
   background: linear-gradient(60deg, #9b87f5, #D946EF, #a3e635, #3b82f6);
   background-size: 300% 300%;
   animation: gradient-animation 8s ease infinite;
 }
 
-/* Consistent styling for form elements */
+@keyframes gradient-animation {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Enhanced form elements with better focus states */
 .form-input, 
 .form-textarea, 
 .form-select, 
 .form-multiselect {
-  @apply bg-white rounded-xl border border-gray-300;
+  @apply bg-white rounded-xl border border-gray-300 transition-all duration-200;
 }
 
+.form-input:focus,
+.form-textarea:focus {
+  @apply border-lime-400 ring-2 ring-lime-100 shadow-sm;
+}
+
+/* Improved animations */
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
 
-/* Custom components for landing page */
-.feature-card {
-  @apply bg-white rounded-xl p-6 shadow-md border border-gray-100 transition-all duration-300;
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
 }
 
-.feature-card:hover {
-  @apply border-lime-200 shadow-lg transform -translate-y-1;
+/* Enhanced feature cards */
+.feature-card {
+  @apply bg-white rounded-xl p-6 shadow-md border border-gray-100 transition-all duration-300 hover:shadow-xl hover:border-lime-200 hover:-translate-y-2;
 }
 
 .testimonial-card {
   @apply bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300;
+}
+
+/* Smooth button interactions */
+.btn-smooth {
+  @apply transition-all duration-200 hover:scale-[1.02] active:scale-[0.98];
+}
+
+/* Micro-interactions for better UX */
+.micro-bounce {
+  animation: micro-bounce 0.6s ease-in-out;
+}
+
+@keyframes micro-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+/* Enhanced focus indicators */
+.focus-glow:focus {
+  @apply ring-2 ring-lime-400 ring-opacity-50 shadow-lg;
 }
 
 @layer base {
@@ -203,28 +241,50 @@
   }
 
   .form-element {
-    @apply bg-white rounded-xl border border-gray-200;
+    @apply bg-white rounded-xl border border-gray-200 transition-all duration-200;
+  }
+
+  .form-element:focus-within {
+    @apply border-lime-400 ring-2 ring-lime-100;
   }
 }
 
+/* Enhanced page transitions */
 .page-transition-enter {
   opacity: 0;
-  transform: translateY(5px);
+  transform: translateY(8px) scale(0.98);
 }
 
 .page-transition-enter-active {
   opacity: 1;
-  transform: translateY(0px);
-  transition: opacity 300ms, transform 300ms;
+  transform: translateY(0px) scale(1);
+  transition: opacity 400ms cubic-bezier(0.4, 0, 0.2, 1), 
+              transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .page-transition-exit {
   opacity: 1;
-  transform: translateY(0px);
+  transform: translateY(0px) scale(1);
 }
 
 .page-transition-exit-active {
   opacity: 0;
-  transform: translateY(-5px);
-  transition: opacity 300ms, transform 300ms;
+  transform: translateY(-8px) scale(0.98);
+  transition: opacity 400ms cubic-bezier(0.4, 0, 0.2, 1), 
+              transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Improved scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
